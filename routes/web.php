@@ -8,5 +8,7 @@ Route::group(
 [
 	'prefix' => LaravelLocalization::setLocale(),
 	'middleware' => [ 'localeCookieRedirect', 'localizationRedirect', 'localeViewPath' ]
-], function(){ //...
+], function(){
+	// Test route for component development
+	Route::get('/test', \App\Livewire\Test::class)->name('test');
 });

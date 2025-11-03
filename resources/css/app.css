@@ -1,10 +1,11 @@
+
 @import 'tailwindcss';
 @import "flatpickr/dist/flatpickr.min.css";
-@import "~tom-select/dist/scss/tom-select.bootstrap5";
+/*@import "~tom-select/dist/scss/tom-select.bootstrap5";*/
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
+@source "../**/*.blade.php";
 @source '../**/*.js';
 @source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
 @source '../../app/Livewire/*Table.php';
@@ -19,12 +20,15 @@
 
 
 /** daisyUI */
+@plugin "daisyui" {
+    themes: light --default;
+};
 
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
-  prefersdark: false;
-  color-scheme: "light";
+  color-scheme: light;
+
   --color-base-100: oklch(12% 0.042 264.695);
   --color-base-200: oklch(20% 0.042 265.755);
   --color-base-300: oklch(27% 0.041 260.031);
@@ -55,10 +59,12 @@
   --noise: 0;
 }
 
+
 /**
 * Paginator - Traditional style
 * Because Laravel defaults does not match well the design of daisyUI.
 */
+
 
 .mary-table-pagination span[aria-current="page"] > span {
     @apply bg-primary text-base-100
@@ -66,4 +72,19 @@
 
 .mary-table-pagination button {
     @apply cursor-pointer
+}
+
+.input {
+    border-color: #d9d9d9;
+}
+
+.input:hover {
+    @apply border-info;
+}
+
+.input:focus,
+  .input:focus-within {
+    @apply border-info;
+    box-shadow: 0 0 0 2px var(--fallback-p,oklch(var(--p)/0.2));
+    outline: 0;
 }
