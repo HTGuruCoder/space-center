@@ -1,11 +1,69 @@
 @import 'tailwindcss';
+@import "flatpickr/dist/flatpickr.min.css";
+@import "~tom-select/dist/scss/tom-select.bootstrap5";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
+@source '../../app/Livewire/*Table.php';
+@source '../../app/Livewire/**/*Table.php';
+@source '../../vendor/power-components/livewire-powergrid/src/Themes/DaisyUI.php';
+@source '../../vendor/power-components/livewire-powergrid/resources/views/**/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Roboto', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+
+/** daisyUI */
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(12% 0.042 264.695);
+  --color-base-200: oklch(20% 0.042 265.755);
+  --color-base-300: oklch(27% 0.041 260.031);
+  --color-base-content: oklch(96% 0.007 247.896);
+  --color-primary: rgb(100 197 63);
+  --color-primary-content: oklch(100% 0 0);
+  --color-secondary: oklch(59% 0.293 322.896);
+  --color-secondary-content: oklch(100% 0 0);
+  --color-accent: oklch(87% 0.006 286.286);
+  --color-accent-content: oklch(14% 0.005 285.823);
+  --color-neutral: oklch(20% 0.042 265.755);
+  --color-neutral-content: oklch(98% 0.003 247.858);
+  --color-info: oklch(58% 0.158 241.966);
+  --color-info-content: oklch(97% 0.013 236.62);
+  --color-success: rgb(100 197 63);
+  --color-success-content: oklch(100% 0 0);
+  --color-warning: oklch(64% 0.222 41.116);
+  --color-warning-content: oklch(98% 0.016 73.684);
+  --color-error: oklch(58% 0.253 17.585);
+  --color-error-content: oklch(96% 0.015 12.422);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.28125rem;
+  --size-field: 0.28125rem;
+  --border: 0.5px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/**
+* Paginator - Traditional style
+* Because Laravel defaults does not match well the design of daisyUI.
+*/
+
+.mary-table-pagination span[aria-current="page"] > span {
+    @apply bg-primary text-base-100
+}
+
+.mary-table-pagination button {
+    @apply cursor-pointer
 }
