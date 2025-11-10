@@ -1,6 +1,6 @@
 @use(App\Enums\PermissionEnum)
 
-<div class="overflow-x-auto">
+<div>
     {{-- Header with Create Button --}}
     <div class="flex justify-between items-center mb-6">
         <div>
@@ -17,10 +17,8 @@
     </div>
 
     {{-- PowerGrid Table --}}
-    <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-            <livewire:admin.settings.stores-table />
-        </div>
+    <div class="bg-base-100 shadow-xl w-[calc(100vw-32px)] md:[calc(100vw-48px)] lg:w-[calc(100vw-20rem)] px-2 py-4 rounded-[10px]">
+        <livewire:admin.settings.stores-table />
     </div>
 
 
