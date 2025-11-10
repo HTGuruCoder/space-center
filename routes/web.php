@@ -152,9 +152,8 @@ Route::group(
                         ->name('absence-types');
                 });
 
-                // Settings (placeholder for now)
-                Route::get('/settings', function () {
-                    return 'Admin Settings - TODO';
-                })->name('settings');
+                // Account Settings
+                Route::get('/account/settings', \App\Livewire\Admin\Account\Settings::class)
+                    ->name('account.settings');
             });
     });

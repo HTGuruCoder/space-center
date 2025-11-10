@@ -27,11 +27,11 @@ $isEmployeeSpace = request()->routeIs('employees.*');
 
         <li><hr class="my-2" /></li>
 
-        {{-- Settings link --}}
+        {{-- Account Settings link --}}
         <li>
-            <a href="{{ route(request()->routeIs('employees.*') ? 'employees.settings' : 'admins.settings') }}">
+            <a href="{{ route(request()->routeIs('employees.*') ? 'employees.settings' : 'admins.account.settings') }}">
                 <x-icon name="mdi.cog" class="w-5 h-5" />
-                {{ __('Settings') }}
+                {{ __('Account Settings') }}
             </a>
         </li>
 
