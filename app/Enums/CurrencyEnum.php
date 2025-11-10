@@ -211,8 +211,12 @@ enum CurrencyEnum: string
     public static function options(): array
     {
         return collect(self::cases())
-            ->mapWithKeys(fn(self $currency) => [$currency->value => $currency->label()])
-            ->sort()
+            ->map(fn(self $currency) => [
+                'id' => $currency->value,
+                'name' => $currency->label() . ' (' . $currency->value . ')'
+            ])
+            ->sortBy('name')
+            ->values()
             ->toArray();
     }
 

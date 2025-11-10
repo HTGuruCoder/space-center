@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <rect width="160" height="160" fill="#f3f4f6" rx="8"/>
+  <!-- Document outline -->
+  <path d="M 50 30 L 50 130 L 110 130 L 110 50 L 90 30 Z" fill="white" stroke="#ef4444" stroke-width="2"/>
+  <!-- Folded corner -->
+  <path d="M 90 30 L 90 50 L 110 50 Z" fill="#fecaca" stroke="#ef4444" stroke-width="2"/>
+  <!-- PDF text lines -->
+  <line x1="60" y1="70" x2="100" y2="70" stroke="#ef4444" stroke-width="2"/>
+  <line x1="60" y1="80" x2="100" y2="80" stroke="#ef4444" stroke-width="2"/>
+  <line x1="60" y1="90" x2="100" y2="90" stroke="#ef4444" stroke-width="2"/>
+  <line x1="60" y1="100" x2="85" y2="100" stroke="#ef4444" stroke-width="2"/>
+  <!-- PDF icon -->
+  <circle cx="80" cy="55" r="12" fill="#ef4444"/>
+  <text x="80" y="60" font-size="10" font-family="Arial" font-weight="bold" fill="white" text-anchor="middle">PDF</text>
+</svg>

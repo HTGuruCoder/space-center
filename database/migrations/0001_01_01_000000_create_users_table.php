@@ -20,15 +20,14 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone_number');
             $table->string('picture_url')->nullable();
-            $table->string('timezone')->default('UTC');
+            $table->string('timezone');
             $table->date('birth_date')->nullable();
-            $table->string('country_code', 2)->nullable();
+            $table->string('country_code', 2);
             $table->string('currency_code', 3);
-            $table->string('bank_name')->nullable();
-            $table->string('bank_account_number')->nullable();
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

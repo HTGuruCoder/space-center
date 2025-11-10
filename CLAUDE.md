@@ -31,6 +31,9 @@ This is a Laravel 12 application with Livewire, multi-language support, and role
 - `laravel-lang/common` - Laravel translations - https://laravel-lang.com/introduction.html
 - `kkomelin/laravel-translatable-string-exporter` - Extract translatable strings - https://github.com/kkomelin/laravel-translatable-string-exporter
 
+**Phone Number Validation**:
+- `propaganistas/laravel-phone` - Phone number validation using libphonenumber - https://github.com/Propaganistas/Laravel-Phone
+
 ## Development Commands
 
 ### Initial Setup
@@ -586,83 +589,40 @@ class ResourceManager extends Component
 </x-card>
 ```
 
-## Custom UI Components
-
-The application includes custom Livewire form components located in `app/Livewire/Ui/Forms/`.
-
-### PhoneNumberInput Component
-
-A comprehensive phone number input component with country selection, flags, and validation using Google's libphonenumber library.
-
-**Location**: `app/Livewire/Ui/Forms/PhoneNumberInput.php`
-
-**Features**:
-- Country selection with searchable dropdown
-- Visual country flags (via `country-flag-icons` package)
-- Automatic dial code display
-- Real-time phone number validation using libphonenumber
-- Stores numbers in E.164 format (+15551234567)
-- Shows formatted international number preview
-- Auto-selects authenticated user's country
-- Built with Alpine.js and DaisyUI components
-
-**Dependencies**:
-- PHP: `giggsey/libphonenumber-for-php` (installed)
-- NPM: `country-flag-icons` (installed)
-
-**Basic Usage**:
-```blade
-<livewire:ui.forms.phone-number-input
-    wire:model="phoneNumber"
-    label="Phone Number"
-/>
-```
-
-**With All Options**:
-```blade
-<livewire:ui.forms.phone-number-input
-    wire:model="phoneNumber"
-    label="Contact Number"
-    hint="We'll use this to contact you"
-    placeholder="Enter your phone number"
-    :required="true"
-    :disabled="false"
-/>
-```
-
-**In Livewire Component**:
+**Phone Number Validation**:
 ```php
-class UserForm extends Component
+// In Livewire component validation
+use Propaganistas\LaravelPhone\Rules\Phone;
+
+public function rules()
 {
-    public string $phoneNumber = '';
-
-    public function save()
-    {
-        $validated = $this->validate([
-            'phoneNumber' => 'required|string',
-        ]);
-
-        // $validated['phoneNumber'] is in E.164 format: +15551234567
-        // Ready to save to database
-    }
+    return [
+        'phone_number' => ['required', new Phone()],
+        // With country specification
+        'phone_number' => ['required', (new Phone())->country('US')],
+        // Auto-detect country from another field
+        'phone_number' => ['required', (new Phone())->country('country_code')],
+    ];
 }
+
+// Format phone number for storage (E.164 format)
+use Propaganistas\LaravelPhone\PhoneNumber;
+
+$formattedPhone = PhoneNumber::make($phoneInput, 'US')->formatE164();
+// Result: +15551234567
+
+// Format for display
+$displayPhone = PhoneNumber::make($storedPhone)->formatInternational();
+// Result: +1 555-123-4567
 ```
 
-**Props**:
-- `wire:model` (required) - The phone number in E.164 format
-- `label` (optional) - Label text for the input
-- `hint` (optional) - Helper text shown below the input
-- `placeholder` (optional) - Placeholder text
-- `required` (optional) - Whether the field is required (default: false)
-- `disabled` (optional) - Whether the input is disabled (default: false)
-
-**Storage Format**:
-Phone numbers are stored in E.164 format (international standard):
-- Format: `+[country code][subscriber number]`
-- Example: `+15551234567` (US), `+34912345678` (Spain)
-- Database field: `$table->string('phone_number', 20)->nullable();`
-
-**Example File**: See `resources/views/livewire/ui/forms/phone-number-input-example.blade.php` for complete usage examples.
+**Usage in Models**:
+```php
+// Cast phone number fields
+protected $casts = [
+    'phone_number' => \Propaganistas\LaravelPhone\Casts\E164PhoneNumberCast::class,
+];
+```
 
 ## Testing Strategy
 

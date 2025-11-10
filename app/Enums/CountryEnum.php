@@ -276,8 +276,13 @@ enum CountryEnum: string
     public static function options(): array
     {
         return collect(self::cases())
-            ->mapWithKeys(fn(self $country) => [$country->value => $country->label()])
-            ->sort()
+            ->map(fn(self $country) => [
+                'id' => $country->value,
+                'name' => $country->label(),
+                'avatar' => "https://purecatamphetamine.github.io/country-flag-icons/3x2/{$country->value}.svg"
+            ])
+            ->sortBy('name')
+            ->values()
             ->toArray();
     }
 

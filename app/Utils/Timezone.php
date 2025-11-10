@@ -19,9 +19,13 @@ class Timezone
     {
         $timezones = \DateTimeZone::listIdentifiers();
 
-        return collect($timezones)->mapWithKeys(function ($timezone) {
-            return [$timezone => self::formatLabel($timezone)];
-        })->toArray();
+        return collect($timezones)
+            ->map(fn($timezone) => [
+                'id' => $timezone,
+                'name' => self::formatLabel($timezone)
+            ])
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -36,7 +40,16 @@ class Timezone
             $parts = explode('/', $timezone, 2);
             if (count($parts) === 2) {
                 $region = $parts[0];
-                $grouped[__("continents.{$region}")][$timezone] = self::formatLabel($timezone);
+                $regionLabel = __("continents.{$region}");
+
+                if (!isset($grouped[$regionLabel])) {
+                    $grouped[$regionLabel] = [];
+                }
+
+                $grouped[$regionLabel][] = [
+                    'id' => $timezone,
+                    'name' => self::formatLabel($timezone)
+                ];
             }
         }
 

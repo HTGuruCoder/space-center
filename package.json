@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "country-flag-icons": "^1.5.21",
+        "cropperjs": "^1.6.2",
         "flatpickr": "^4.6.13",
         "tom-select": "^2.4.3"
     }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Propaganistas\LaravelPhone\Casts\RawPhoneNumberCast;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -57,6 +58,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'birth_date' => 'date',
+            'phone_number' => RawPhoneNumberCast::class.':country_code',
         ];
     }
 
