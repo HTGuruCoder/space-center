@@ -47,11 +47,11 @@ final class StoresTable extends PowerGridComponent
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
-            ->add('id', fn(Store $model) => view('livewire.admin.settings.stores-table-actions', [
+            ->add('id', fn(Store $model) => view('livewire.admin.settings.stores-table.actions', [
                 'storeId' => $model->id
             ])->render())
             ->add('name')
-            ->add('location', fn(Store $model) => view('livewire.admin.settings.stores-table-location', [
+            ->add('location', fn(Store $model) => view('livewire.admin.settings.stores-table.location', [
                 'latitude' => $model->latitude,
                 'longitude' => $model->longitude
             ])->render())
