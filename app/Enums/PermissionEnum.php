@@ -4,6 +4,9 @@ namespace App\Enums;
 
 enum PermissionEnum: string
 {
+    // Admin Dashboard
+    case VIEW_ADMIN_DASHBOARD = 'view_admin_dashboard';
+
     // User Management
     case VIEW_USERS = 'view_users';
     case CREATE_USERS = 'create_users';
@@ -20,12 +23,55 @@ enum PermissionEnum: string
     case VIEW_PERMISSIONS = 'view_permissions';
     case ASSIGN_PERMISSIONS = 'assign_permissions';
 
+    // Employee Management
+    case VIEW_EMPLOYEES = 'view_employees';
+    case CREATE_EMPLOYEES = 'create_employees';
+    case EDIT_EMPLOYEES = 'edit_employees';
+    case DELETE_EMPLOYEES = 'delete_employees';
+
+    // Work Periods Management
+    case VIEW_WORK_PERIODS = 'view_work_periods';
+    case CREATE_WORK_PERIODS = 'create_work_periods';
+    case EDIT_WORK_PERIODS = 'edit_work_periods';
+    case DELETE_WORK_PERIODS = 'delete_work_periods';
+
+    // Absences Management
+    case VIEW_ABSENCES = 'view_absences';
+    case CREATE_ABSENCES = 'create_absences';
+    case EDIT_ABSENCES = 'edit_absences';
+    case DELETE_ABSENCES = 'delete_absences';
+
+    // Allowed Locations Management
+    case VIEW_ALLOWED_LOCATIONS = 'view_allowed_locations';
+    case CREATE_ALLOWED_LOCATIONS = 'create_allowed_locations';
+    case EDIT_ALLOWED_LOCATIONS = 'edit_allowed_locations';
+    case DELETE_ALLOWED_LOCATIONS = 'delete_allowed_locations';
+
+    // Store Management
+    case VIEW_STORES = 'view_stores';
+    case CREATE_STORES = 'create_stores';
+    case EDIT_STORES = 'edit_stores';
+    case DELETE_STORES = 'delete_stores';
+
+    // Position Management
+    case VIEW_POSITIONS = 'view_positions';
+    case CREATE_POSITIONS = 'create_positions';
+    case EDIT_POSITIONS = 'edit_positions';
+    case DELETE_POSITIONS = 'delete_positions';
+
+    // Absence Type Management
+    case VIEW_ABSENCE_TYPES = 'view_absence_types';
+    case CREATE_ABSENCE_TYPES = 'create_absence_types';
+    case EDIT_ABSENCE_TYPES = 'edit_absence_types';
+    case DELETE_ABSENCE_TYPES = 'delete_absence_types';
+
     /**
      * Get the label for display
      */
     public function label(): string
     {
         return match($this) {
+            self::VIEW_ADMIN_DASHBOARD => __('View Admin Dashboard'),
             self::VIEW_USERS => __('View Users'),
             self::CREATE_USERS => __('Create Users'),
             self::EDIT_USERS => __('Edit Users'),
@@ -36,6 +82,34 @@ enum PermissionEnum: string
             self::DELETE_ROLES => __('Delete Roles'),
             self::VIEW_PERMISSIONS => __('View Permissions'),
             self::ASSIGN_PERMISSIONS => __('Assign Permissions'),
+            self::VIEW_EMPLOYEES => __('View Employees'),
+            self::CREATE_EMPLOYEES => __('Create Employees'),
+            self::EDIT_EMPLOYEES => __('Edit Employees'),
+            self::DELETE_EMPLOYEES => __('Delete Employees'),
+            self::VIEW_WORK_PERIODS => __('View Work Periods'),
+            self::CREATE_WORK_PERIODS => __('Create Work Periods'),
+            self::EDIT_WORK_PERIODS => __('Edit Work Periods'),
+            self::DELETE_WORK_PERIODS => __('Delete Work Periods'),
+            self::VIEW_ABSENCES => __('View Absences'),
+            self::CREATE_ABSENCES => __('Create Absences'),
+            self::EDIT_ABSENCES => __('Edit Absences'),
+            self::DELETE_ABSENCES => __('Delete Absences'),
+            self::VIEW_ALLOWED_LOCATIONS => __('View Allowed Locations'),
+            self::CREATE_ALLOWED_LOCATIONS => __('Create Allowed Locations'),
+            self::EDIT_ALLOWED_LOCATIONS => __('Edit Allowed Locations'),
+            self::DELETE_ALLOWED_LOCATIONS => __('Delete Allowed Locations'),
+            self::VIEW_STORES => __('View Stores'),
+            self::CREATE_STORES => __('Create Stores'),
+            self::EDIT_STORES => __('Edit Stores'),
+            self::DELETE_STORES => __('Delete Stores'),
+            self::VIEW_POSITIONS => __('View Positions'),
+            self::CREATE_POSITIONS => __('Create Positions'),
+            self::EDIT_POSITIONS => __('Edit Positions'),
+            self::DELETE_POSITIONS => __('Delete Positions'),
+            self::VIEW_ABSENCE_TYPES => __('View Absence Types'),
+            self::CREATE_ABSENCE_TYPES => __('Create Absence Types'),
+            self::EDIT_ABSENCE_TYPES => __('Edit Absence Types'),
+            self::DELETE_ABSENCE_TYPES => __('Delete Absence Types'),
         };
     }
 
@@ -45,6 +119,7 @@ enum PermissionEnum: string
     public function description(): string
     {
         return match($this) {
+            self::VIEW_ADMIN_DASHBOARD => __('Can access admin dashboard'),
             self::VIEW_USERS => __('Can view users list'),
             self::CREATE_USERS => __('Can create new users'),
             self::EDIT_USERS => __('Can edit existing users'),
@@ -55,6 +130,34 @@ enum PermissionEnum: string
             self::DELETE_ROLES => __('Can delete roles'),
             self::VIEW_PERMISSIONS => __('Can view permissions list'),
             self::ASSIGN_PERMISSIONS => __('Can assign permissions to roles'),
+            self::VIEW_EMPLOYEES => __('Can view employees list'),
+            self::CREATE_EMPLOYEES => __('Can create new employees'),
+            self::EDIT_EMPLOYEES => __('Can edit existing employees'),
+            self::DELETE_EMPLOYEES => __('Can delete employees'),
+            self::VIEW_WORK_PERIODS => __('Can view work periods list'),
+            self::CREATE_WORK_PERIODS => __('Can create new work periods'),
+            self::EDIT_WORK_PERIODS => __('Can edit existing work periods'),
+            self::DELETE_WORK_PERIODS => __('Can delete work periods'),
+            self::VIEW_ABSENCES => __('Can view absences list'),
+            self::CREATE_ABSENCES => __('Can create new absences'),
+            self::EDIT_ABSENCES => __('Can edit existing absences'),
+            self::DELETE_ABSENCES => __('Can delete absences'),
+            self::VIEW_ALLOWED_LOCATIONS => __('Can view allowed locations list'),
+            self::CREATE_ALLOWED_LOCATIONS => __('Can create new allowed locations'),
+            self::EDIT_ALLOWED_LOCATIONS => __('Can edit existing allowed locations'),
+            self::DELETE_ALLOWED_LOCATIONS => __('Can delete allowed locations'),
+            self::VIEW_STORES => __('Can view stores list'),
+            self::CREATE_STORES => __('Can create new stores'),
+            self::EDIT_STORES => __('Can edit existing stores'),
+            self::DELETE_STORES => __('Can delete stores'),
+            self::VIEW_POSITIONS => __('Can view positions list'),
+            self::CREATE_POSITIONS => __('Can create new positions'),
+            self::EDIT_POSITIONS => __('Can edit existing positions'),
+            self::DELETE_POSITIONS => __('Can delete positions'),
+            self::VIEW_ABSENCE_TYPES => __('Can view absence types list'),
+            self::CREATE_ABSENCE_TYPES => __('Can create new absence types'),
+            self::EDIT_ABSENCE_TYPES => __('Can edit existing absence types'),
+            self::DELETE_ABSENCE_TYPES => __('Can delete absence types'),
         };
     }
 
@@ -64,9 +167,17 @@ enum PermissionEnum: string
     public function category(): string
     {
         return match($this) {
+            self::VIEW_ADMIN_DASHBOARD => __('Admin Dashboard'),
             self::VIEW_USERS, self::CREATE_USERS, self::EDIT_USERS, self::DELETE_USERS => __('User Management'),
             self::VIEW_ROLES, self::CREATE_ROLES, self::EDIT_ROLES, self::DELETE_ROLES => __('Role Management'),
             self::VIEW_PERMISSIONS, self::ASSIGN_PERMISSIONS => __('Permission Management'),
+            self::VIEW_EMPLOYEES, self::CREATE_EMPLOYEES, self::EDIT_EMPLOYEES, self::DELETE_EMPLOYEES => __('Employee Management'),
+            self::VIEW_WORK_PERIODS, self::CREATE_WORK_PERIODS, self::EDIT_WORK_PERIODS, self::DELETE_WORK_PERIODS => __('Work Periods Management'),
+            self::VIEW_ABSENCES, self::CREATE_ABSENCES, self::EDIT_ABSENCES, self::DELETE_ABSENCES => __('Absences Management'),
+            self::VIEW_ALLOWED_LOCATIONS, self::CREATE_ALLOWED_LOCATIONS, self::EDIT_ALLOWED_LOCATIONS, self::DELETE_ALLOWED_LOCATIONS => __('Allowed Locations Management'),
+            self::VIEW_STORES, self::CREATE_STORES, self::EDIT_STORES, self::DELETE_STORES => __('Store Management'),
+            self::VIEW_POSITIONS, self::CREATE_POSITIONS, self::EDIT_POSITIONS, self::DELETE_POSITIONS => __('Position Management'),
+            self::VIEW_ABSENCE_TYPES, self::CREATE_ABSENCE_TYPES, self::EDIT_ABSENCE_TYPES, self::DELETE_ABSENCE_TYPES => __('Absence Type Management'),
         };
     }
 

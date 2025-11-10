@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasCreator;
+use App\Traits\HasWorkspaces;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids, HasRoles, HasCreator;
+    use HasFactory, Notifiable, HasUuids, HasRoles, HasCreator, HasWorkspaces;
 
     /**
      * The attributes that are mass assignable.
@@ -68,6 +69,16 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
+     * Get the user's initials.
+     */
+    public function getInitialsAttribute(): string
+    {
+        return strtoupper(
+            mb_substr($this->first_name, 0, 1) . mb_substr($this->last_name, 0, 1)
+        );
     }
 
     /**
