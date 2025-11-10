@@ -17,7 +17,7 @@
     </div>
 
     {{-- PowerGrid Table --}}
-    <div class="bg-base-100 shadow-xl w-[calc(100vw-32px)] md:[calc(100vw-48px)] lg:w-[calc(100vw-20rem)] px-2 py-4 rounded-[10px]">
+    <div class="bg-base-100 shadow-xl w-[calc(100vw-32px)] md:w-[calc(100vw-48px)] lg:w-[calc(100vw-20rem)] px-2 py-4 rounded-[10px]">
         <livewire:admin.settings.stores-table />
     </div>
 

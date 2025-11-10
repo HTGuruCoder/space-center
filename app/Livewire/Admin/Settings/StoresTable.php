@@ -2,17 +2,23 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use App\Enums\PermissionEnum;
 use App\Helpers\DateHelper;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
+use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class StoresTable extends PowerGridComponent
 {
+    use WithExport;
+
     public string $tableName = 'stores-table';
 
     public function setUp(): array
@@ -27,7 +33,34 @@ final class StoresTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
+
+            PowerGrid::exportable(fileName: 'stores-export')
+                ->type('xlsx', 'csv')
+                ->striped(),
         ];
+    }
+
+    public function header(): array
+    {
+        return [
+            Button::add('bulk-actions')
+                ->slot(view('livewire.admin.settings.stores-table.bulk-actions', [
+                    'tableName' => $this->tableName
+                ])->render())
+                ->class(''),
+        ];
+    }
+
+    #[On('bulkDeleteStores.{tableName}')]
+    public function bulkDeleteStores(): void
+    {
+        $this->authorize(PermissionEnum::DELETE_STORES->value);
+
+        if ($this->checkboxValues) {
+            Store::destroy($this->checkboxValues);
+            $this->js('window.pgBulkActions.clearAll()');
+            $this->dispatch('store-deleted');
+        }
     }
 
     public function datasource(): Builder
@@ -55,6 +88,8 @@ final class StoresTable extends PowerGridComponent
                 'latitude' => $model->latitude,
                 'longitude' => $model->longitude
             ])->render())
+            ->add('latitude', fn(Store $model) => $model->latitude ?? '-')
+            ->add('longitude', fn(Store $model) => $model->longitude ?? '-')
             ->add('employees_count')
             ->add('creator_first_name', fn (Store $model) =>
                 $model->creator ? e($model->creator->first_name) : '-'
@@ -66,10 +101,12 @@ final class StoresTable extends PowerGridComponent
             ->add('created_at_formatted', fn (Store $model) =>
                 DateHelper::formatDateTime($model->created_at)
             )
+            ->add('created_at_export', fn (Store $model) => $model->created_at?->toIso8601String() ?? '-')
             ->add('updated_at')
             ->add('updated_at_formatted', fn (Store $model) =>
                 DateHelper::formatDateTime($model->updated_at)
-            );
+            )
+            ->add('updated_at_export', fn (Store $model) => $model->updated_at?->toIso8601String() ?? '-');
     }
 
     public function columns(): array
@@ -78,6 +115,7 @@ final class StoresTable extends PowerGridComponent
             Column::add()
                 ->title(__('Actions'))
                 ->field('id')
+                ->visibleInExport(false)
                 ->bodyAttribute('class', 'w-16')
                 ->headerAttribute('class', 'w-16'),
 
@@ -86,9 +124,18 @@ final class StoresTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make(__('Location'), 'location')
+                ->visibleInExport(false)
                 ->sortable()
                 ->searchable()
                 ->bodyAttribute('class', 'align-middle'),
+
+            Column::make(__('Latitude'), 'latitude')
+                ->hidden()
+                ->visibleInExport(true),
+
+            Column::make(__('Longitude'), 'longitude')
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Employees'), 'employees_count')
                 ->sortable(),
@@ -104,8 +151,16 @@ final class StoresTable extends PowerGridComponent
             Column::make(__('Created At'), 'created_at_formatted', 'created_at')
                 ->sortable(),
 
+            Column::make(__('Created At'), 'created_at_export')
+                ->hidden()
+                ->visibleInExport(true),
+
             Column::make(__('Updated At'), 'updated_at_formatted', 'updated_at')
                 ->sortable(),
+
+            Column::make(__('Updated At'), 'updated_at_export')
+                ->hidden()
+                ->visibleInExport(true),
         ];
     }
 
