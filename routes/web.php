@@ -69,15 +69,13 @@ Route::group(
                 Route::get('/calendar', \App\Livewire\Employee\Calendar::class)
                     ->name('calendar');
 
-                // Settings (placeholder for now)
-                Route::get('/settings', function () {
-                    return 'Employee Settings - TODO';
-                })->name('settings');
+                // Settings
+                Route::get('/settings', \App\Livewire\Employee\Settings::class)
+                    ->name('settings');
 
-                // Allowed Locations (placeholder for now)
-                Route::get('/allowed-locations', function () {
-                    return 'Employee Allowed Locations - TODO';
-                })->name('allowed-locations');
+                // Allowed Locations
+                Route::get('/allowed-locations', \App\Livewire\Employee\AllowedLocations::class)
+                    ->name('allowed-locations');
             });
 
         // ============================================
