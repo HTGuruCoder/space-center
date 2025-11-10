@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
         "mcamara/laravel-localization": "^2.3",
+        "openspout/openspout": "^4.32",
         "postare/blade-mdi": "^1.1",
         "power-components/livewire-powergrid": "^6.6",
         "propaganistas/laravel-phone": "^6.0",
