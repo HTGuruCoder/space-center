@@ -51,30 +51,10 @@ final class StoresTable extends PowerGridComponent
                 'storeId' => $model->id
             ])->render())
             ->add('name')
-            ->add('location', function (Store $model) {
-                if (!$model->latitude || !$model->longitude) {
-                    return '-';
-                }
-
-                $mapsUrl = sprintf(
-                    'https://www.google.com/maps/search/?api=1&query=%s,%s',
-                    $model->latitude,
-                    $model->longitude
-                );
-
-                return sprintf(
-                    '<a href="%s" target="_blank" class="link link-primary flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-l                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                        <span>%s, %s</span>
-                    </a>',
-                    e($mapsUrl),
-                    e($model->latitude),
-                    e($model->longitude)
-                );
-            })
+            ->add('location', fn(Store $model) => view('livewire.admin.settings.stores-table-location', [
+                'latitude' => $model->latitude,
+                'longitude' => $model->longitude
+            ])->render())
             ->add('employees_count')
             ->add('creator_first_name', fn (Store $model) =>
                 $model->creator ? e($model->creator->first_name) : '-'
