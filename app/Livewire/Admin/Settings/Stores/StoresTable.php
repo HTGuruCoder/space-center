@@ -133,7 +133,7 @@ final class StoresTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            ...PowerGridHelper::getDateColumns('stores'),
+            ...PowerGridHelper::getDateColumns(),
         ];
     }
 

@@ -3,25 +3,24 @@
 namespace App\Helpers;
 
 use PowerComponents\LivewirePowerGrid\Column;
+use App\Helpers\DateHelper;
 
 class PowerGridHelper
 {
     /**
      * Get standard date columns for PowerGrid tables.
      */
-    public static function getDateColumns(string $table = null): array
+    public static function getDateColumns(): array
     {
-        $prefix = $table ? "{$table}." : '';
-
         return [
-            Column::make(__('Created At'), 'created_at_formatted', "{$prefix}created_at")
+            Column::make(__('Created At'), 'created_at_formatted', 'created_at')
                 ->sortable(),
 
             Column::make(__('Created At'), 'created_at_export')
                 ->hidden()
                 ->visibleInExport(true),
 
-            Column::make(__('Updated At'), 'updated_at_formatted', "{$prefix}updated_at")
+            Column::make(__('Updated At'), 'updated_at_formatted', 'updated_at')
                 ->sortable(),
 
             Column::make(__('Updated At'), 'updated_at_export')
@@ -36,17 +35,32 @@ class PowerGridHelper
     public static function getDateFields(): array
     {
         return [
+            'created_at' => fn($model) => $model->created_at,
             'created_at_formatted' => fn($model) => DateHelper::formatDateTime($model->created_at),
             'created_at_export' => fn($model) => $model->created_at?->toIso8601String() ?? '-',
+            'updated_at' => fn($model) => $model->updated_at,
             'updated_at_formatted' => fn($model) => DateHelper::formatDateTime($model->updated_at),
             'updated_at_export' => fn($model) => $model->updated_at?->toIso8601String() ?? '-',
         ];
     }
 
     /**
-     * Get standard date filters for PowerGrid tables.
+     * Get standard creator fields for PowerGrid tables.
      */
-    public static function getDateFilters(string $table = null): array
+    public static function getCreatorFields(): array
+    {
+        return [
+            'creator_first_name' => fn($model) => $model->creator ? e($model->creator->first_name) : '-',
+            'creator_last_name' => fn($model) => $model->creator ? e($model->creator->last_name) : '-',
+        ];
+    }
+
+    /**
+     * Get standard date filters for PowerGrid tables.
+     *
+     * @param string|null $table Table name to qualify the field (e.g., 'stores' becomes 'stores.created_at')
+     */
+    public static function getDateFilters(?string $table = null): array
     {
         $prefix = $table ? "{$table}." : '';
 
