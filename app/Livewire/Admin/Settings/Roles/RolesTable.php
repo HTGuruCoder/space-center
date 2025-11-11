@@ -11,6 +11,7 @@ use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
+use PowerComponents\LivewirePowerGrid\Facades\Rule;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class RolesTable extends BasePowerGridComponent
@@ -34,6 +35,82 @@ final class RolesTable extends BasePowerGridComponent
     protected function getModelClass(): string
     {
         return Role::class;
+    }
+
+    public function actionRules(): array
+    {
+        return [
+            // Hide checkbox for core system roles
+            Rule::checkbox()
+                ->when(fn($role) => in_array($role->name, [
+                    RoleEnum::SUPER_ADMIN->value,
+                    RoleEnum::EMPLOYEE->value,
+                ]))
+                ->hide(),
+        ];
+    }
+
+    /**
+     * Override bulk delete to protect core roles
+     */
+    public function bulkDelete(): void
+    {
+        $this->authorize($this->getDeletePermission());
+
+        if ($this->checkboxValues) {
+            // Get all selected roles
+            $selectedRoles = Role::whereIn('id', $this->checkboxValues)->get();
+
+            // Filter out core roles
+            $coreRoleNames = [
+                RoleEnum::SUPER_ADMIN->value,
+                RoleEnum::EMPLOYEE->value,
+            ];
+
+            $rolesWithUsers = [];
+            $protectedRoles = [];
+            $deletableRoleIds = [];
+
+            foreach ($selectedRoles as $role) {
+                // Check if it's a core role
+                if (in_array($role->name, $coreRoleNames)) {
+                    $protectedRoles[] = $role->name;
+                    continue;
+                }
+
+                // Check if role has users
+                if ($role->users()->count() > 0) {
+                    $rolesWithUsers[] = $role->name;
+                    continue;
+                }
+
+                $deletableRoleIds[] = $role->id;
+            }
+
+            // Delete only deletable roles
+            if (!empty($deletableRoleIds)) {
+                Role::destroy($deletableRoleIds);
+                $count = count($deletableRoleIds);
+                $this->success(__(':count role(s) deleted successfully.', ['count' => $count]));
+            }
+
+            // Show warnings for protected roles
+            if (!empty($protectedRoles)) {
+                $this->warning(__('Cannot delete core system roles: :roles', [
+                    'roles' => implode(', ', $protectedRoles)
+                ]));
+            }
+
+            // Show warnings for roles with users
+            if (!empty($rolesWithUsers)) {
+                $this->warning(__('Cannot delete roles with assigned users: :roles', [
+                    'roles' => implode(', ', $rolesWithUsers)
+                ]));
+            }
+
+            $this->js('window.pgBulkActions.clearAll()');
+            $this->dispatch('pg:eventRefresh-' . $this->tableName);
+        }
     }
 
     public function header(): array
