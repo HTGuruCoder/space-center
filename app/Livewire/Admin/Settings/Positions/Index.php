@@ -51,6 +51,7 @@ class Index extends Component
 
     public function createPosition()
     {
+        \Log::info('createPosition method called on ' . get_class($this));
         $this->dispatch('create-position');
     }
 
