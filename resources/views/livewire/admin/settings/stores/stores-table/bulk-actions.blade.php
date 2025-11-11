@@ -3,7 +3,7 @@
 @can(PermissionEnum::DELETE_STORES->value)
     <div class="inline-flex items-center gap-2">
         <button
-            wire:click="$dispatch('bulkDeleteStores.{{ $tableName }}', [])"
+            wire:click="$dispatch('bulkDeleteStores.{{ $tableName }}')"
             class="btn btn-error btn-sm"
             :disabled="window.pgBulkActions.count('{{ $tableName }}') === 0"
         >

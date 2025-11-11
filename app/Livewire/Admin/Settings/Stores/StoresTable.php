@@ -7,6 +7,7 @@ use App\Helpers\DateHelper;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
+use Mary\Traits\Toast;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
@@ -17,7 +18,7 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class StoresTable extends PowerGridComponent
 {
-    use WithExport;
+    use WithExport, Toast;
 
     public string $tableName = 'stores-table';
 
@@ -61,9 +62,13 @@ final class StoresTable extends PowerGridComponent
         $this->authorize(PermissionEnum::DELETE_STORES->value);
 
         if ($this->checkboxValues) {
+            $count = count($this->checkboxValues);
             Store::destroy($this->checkboxValues);
+
+            $this->success(__(':count store(s) deleted successfully.', ['count' => $count]));
+
             $this->js('window.pgBulkActions.clearAll()');
-            $this->dispatch('store-deleted');
+            $this->dispatch('pg:eventRefresh-' . $this->tableName);
         }
     }
 
@@ -86,7 +91,8 @@ final class StoresTable extends PowerGridComponent
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
-            ->add('id', fn(Store $model) => view('livewire.admin.settings.stores.stores-table.actions', [
+            ->add('id')
+            ->add('actions', fn(Store $model) => view('livewire.admin.settings.stores.stores-table.actions', [
                 'storeId' => $model->id
             ])->render())
             ->add('name')
@@ -120,7 +126,7 @@ final class StoresTable extends PowerGridComponent
         return [
             Column::add()
                 ->title(__('Actions'))
-                ->field('id')
+                ->field('actions')
                 ->visibleInExport(false)
                 ->bodyAttribute('class', 'w-16')
                 ->headerAttribute('class', 'w-16'),
