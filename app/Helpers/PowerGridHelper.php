@@ -56,6 +56,48 @@ class PowerGridHelper
     }
 
     /**
+     * Get standard creator relation search configuration.
+     */
+    public static function getCreatorRelationSearch(): array
+    {
+        return [
+            'creator' => ['first_name', 'last_name'],
+        ];
+    }
+
+    /**
+     * Get standard creator columns for PowerGrid tables.
+     */
+    public static function getCreatorColumns(): array
+    {
+        return [
+            Column::make(__('Creator First Name'), 'creator_first_name', 'creator.first_name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('Creator Last Name'), 'creator_last_name', 'creator.last_name')
+                ->sortable()
+                ->searchable(),
+        ];
+    }
+
+    /**
+     * Get standard creator filters for PowerGrid tables.
+     */
+    public static function getCreatorFilters(): array
+    {
+        return [
+            \PowerComponents\LivewirePowerGrid\Facades\Filter::inputText('creator_first_name')
+                ->filterRelation('creator', 'first_name')
+                ->placeholder(__('Creator first name')),
+
+            \PowerComponents\LivewirePowerGrid\Facades\Filter::inputText('creator_last_name')
+                ->filterRelation('creator', 'last_name')
+                ->placeholder(__('Creator last name')),
+        ];
+    }
+
+    /**
      * Get standard date filters for PowerGrid tables.
      *
      * @param string|null $table Table name to qualify the field (e.g., 'stores' becomes 'stores.created_at')

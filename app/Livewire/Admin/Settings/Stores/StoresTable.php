@@ -62,7 +62,7 @@ final class StoresTable extends BasePowerGridComponent
     public function relationSearch(): array
     {
         return [
-            'creator' => ['first_name', 'last_name'],
+            ...PowerGridHelper::getCreatorRelationSearch(),
         ];
     }
 
@@ -80,13 +80,12 @@ final class StoresTable extends BasePowerGridComponent
             ])->render())
             ->add('latitude', fn(Store $model) => $model->latitude ?? '-')
             ->add('longitude', fn(Store $model) => $model->longitude ?? '-')
-            ->add('employees_count')
-            ->add('creator_first_name', fn (Store $model) =>
-                $model->creator ? e($model->creator->first_name) : '-'
-            )
-            ->add('creator_last_name', fn (Store $model) =>
-                $model->creator ? e($model->creator->last_name) : '-'
-            );
+            ->add('employees_count');
+
+        // Add creator fields using helper
+        foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
+            $fields->add($key, $callback);
+        }
 
         // Add date fields using helper
         foreach (PowerGridHelper::getDateFields() as $key => $callback) {
@@ -125,13 +124,7 @@ final class StoresTable extends BasePowerGridComponent
             Column::make(__('Employees'), 'employees_count')
                 ->sortable(),
 
-            Column::make(__('Creator First Name'), 'creator_first_name', 'creator.first_name')
-                ->sortable()
-                ->searchable(),
-
-            Column::make(__('Creator Last Name'), 'creator_last_name', 'creator.last_name')
-                ->sortable()
-                ->searchable(),
+            ...PowerGridHelper::getCreatorColumns(),
 
             ...PowerGridHelper::getDateColumns(),
         ];
@@ -143,13 +136,7 @@ final class StoresTable extends BasePowerGridComponent
             Filter::inputText('name')
                 ->placeholder(__('Search by name')),
 
-            Filter::inputText('creator_first_name')
-                ->filterRelation('creator', 'first_name')
-                ->placeholder(__('Creator first name')),
-
-            Filter::inputText('creator_last_name')
-                ->filterRelation('creator', 'last_name')
-                ->placeholder(__('Creator last name')),
+            ...PowerGridHelper::getCreatorFilters(),
 
             ...PowerGridHelper::getDateFilters('stores'),
         ];
