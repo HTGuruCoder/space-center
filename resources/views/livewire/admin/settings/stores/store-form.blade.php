@@ -55,11 +55,12 @@
                     {{-- Add and Add Another Button (only in create mode) --}}
                     @if(!$isEditMode)
                         <x-button
-                            label="{{ __('Add & Add Another') }}"
                             wire:click="saveAndAddAnother"
                             spinner="saveAndAddAnother"
                             class="btn-secondary"
-                        />
+                        >
+                            {{ __('Add & Add Another') }}
+                        </x-button>
                     @endif
 
                     {{-- Primary Action Button --}}

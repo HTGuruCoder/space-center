@@ -5,15 +5,18 @@ namespace App\Livewire\Admin\Settings\Stores;
 use App\Enums\PermissionEnum;
 use App\Models\Store;
 use App\Traits\Livewire\HasDeleteModal;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Index extends Component
 {
     use HasDeleteModal;
 
-    protected $listeners = [
-        'delete-store' => 'confirmDelete',
-    ];
+    #[On('delete-store')]
+    public function handleDeleteStore(string $storeId): void
+    {
+        $this->confirmDelete($storeId);
+    }
 
     protected function getDeletePermission(): string
     {

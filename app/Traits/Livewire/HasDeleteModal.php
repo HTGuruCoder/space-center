@@ -11,8 +11,17 @@ trait HasDeleteModal
     public bool $showDeleteModal = false;
     public ?string $deleteId = null;
 
-    public function confirmDelete(string $id): void
+    public function confirmDelete(?string $id = null): void
     {
+        // Support both direct call with parameter and event call
+        if ($id === null && isset($this->deleteId)) {
+            $id = $this->deleteId;
+        }
+
+        if (!$id) {
+            return;
+        }
+
         if (!auth()->user()->can($this->getDeletePermission())) {
             $this->error(__('You do not have permission to delete this item.'));
             return;
