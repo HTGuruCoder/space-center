@@ -317,7 +317,7 @@ Complete index view structure:
 ```blade
 @use(App\Enums\PermissionEnum)
 
-<div class="space-y-6">
+<div>
     {{-- Header with Create Button --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
         <div class="min-w-0 flex-1">

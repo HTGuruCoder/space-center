@@ -1,7 +1,7 @@
 <div>
     @includeIf(data_get($setUp, 'header.includeViewOnTop'))
 
-    <div class="mb-3 flex flex-col md:flex-row w-full justify-between items-stretch md:items-center gap-3 px-4 py-3">
+    <div class="mb-3 flex flex-col md:flex-row w-full justify-between items-stretch md:items-center gap-3 py-3">
         <div class="flex flex-col sm:flex-row w-full gap-2">
             <div x-data="pgRenderActions" class="w-full sm:w-auto">
                 <span class="pg-actions flex flex-wrap" x-html="toHtml"></span>
