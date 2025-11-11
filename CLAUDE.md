@@ -632,6 +632,283 @@ protected $casts = [
 - Database uses SQLite in-memory for tests
 - RefreshDatabase trait is commented out by default - uncomment if needed
 
+## PowerGrid Tables - Reusable Architecture
+
+The application uses a highly optimized PowerGrid architecture with reusable components to minimize code duplication.
+
+### Base Components
+
+**`BasePowerGridComponent`** (`app/Livewire/BasePowerGridComponent.php`):
+- Base class for all PowerGrid tables
+- Provides standard configuration:
+  - Default pagination: 100 items per page (10, 25, 50, 100, 250 options)
+  - Default sorting: `created_at DESC`
+  - Export enabled (XLSX, CSV)
+  - Checkboxes enabled
+  - Toast notifications trait
+- All PowerGrid tables should extend this class
+
+**`HasBulkDelete` trait** (`app/Traits/Livewire/HasBulkDelete.php`):
+- Reusable bulk deletion functionality
+- Handles permission checks
+- Shows success message with count
+- Automatically refreshes table and clears checkboxes
+- Required methods to implement:
+  - `getDeletePermission()` - Permission required for deletion
+  - `getModelClass()` - Model class to delete
+
+**`HasDeleteModal` trait** (`app/Traits/Livewire/HasDeleteModal.php`):
+- Reusable single-item deletion with confirmation modal
+- Handles permission checks
+- Optional `canDelete($model)` hook for custom validation
+- Required methods to implement:
+  - `getDeletePermission()` - Permission required
+  - `getModelClass()` - Model class
+  - `getRefreshEvent()` - Event name to refresh table
+  - `getDeleteSuccessMessage()` (optional) - Success message
+
+**`PowerGridHelper`** (`app/Helpers/PowerGridHelper.php`):
+Provides reusable methods for common PowerGrid patterns:
+
+- **Date columns/fields/filters**:
+  - `getDateColumns()` - Returns created_at and updated_at columns (formatted + export versions)
+  - `getDateFields()` - Returns field definitions with DateHelper formatting
+  - `getDateFilters(?string $table)` - Returns date filters (pass table name to qualify columns for JOINs)
+
+- **Creator columns/fields/filters** (for models with created_by):
+  - `getCreatorColumns()` - Returns creator first_name and last_name columns (sortable, searchable)
+  - `getCreatorFields()` - Returns field definitions for creator name
+  - `getCreatorFilters()` - Returns filters for creator names with relation search
+  - `getCreatorRelationSearch()` - Returns relation search config for creator
+
+- **Bulk delete button**:
+  - `getBulkDeleteButton(string $tableName, string $permission)` - Returns bulk delete button for header
+
+### Reusable Blade Components
+
+**`components/powergrid/bulk-delete-button.blade.php`**:
+- Bulk delete button with count badge
+- Automatically disabled when no items selected
+- Requires: `$tableName`, `$permission` props
+
+**`components/powergrid/delete-modal.blade.php`**:
+- Confirmation modal for deletion
+- Customizable title, message, and method
+- Default props: `show='showDeleteModal'`, `deleteMethod='deleteItem'`
+
+### Creating a New PowerGrid Table
+
+**Step 1: Generate PowerGrid component**
+```bash
+php artisan powergrid:create MyTable
+```
+
+**Step 2: Extend BasePowerGridComponent and use traits**
+```php
+use App\Livewire\BasePowerGridComponent;
+use App\Traits\Livewire\HasBulkDelete;
+
+final class MyTable extends BasePowerGridComponent
+{
+    use HasBulkDelete;
+
+    public string $tableName = 'my-table';
+    public string $sortField = 'my_table.created_at'; // Qualify with table name if using JOINs
+
+    protected function getExportFileName(): string
+    {
+        return 'my-export';
+    }
+
+    protected function getDeletePermission(): string
+    {
+        return PermissionEnum::DELETE_MY_ITEMS->value;
+    }
+
+    protected function getModelClass(): string
+    {
+        return MyModel::class;
+    }
+}
+```
+
+**Step 3: Use PowerGridHelper in header(), fields(), columns(), filters()**
+```php
+public function header(): array
+{
+    return [
+        ...PowerGridHelper::getBulkDeleteButton(
+            $this->tableName,
+            $this->getDeletePermission()
+        ),
+    ];
+}
+
+public function datasource(): Builder
+{
+    return MyModel::query()
+        ->select('my_table.*')
+        ->leftJoin('users as creator', 'my_table.created_by', '=', 'creator.id')
+        ->with('creator:id,first_name,last_name');
+}
+
+public function relationSearch(): array
+{
+    return [
+        ...PowerGridHelper::getCreatorRelationSearch(),
+        // Add other relations here
+    ];
+}
+
+public function fields(): PowerGridFields
+{
+    $fields = PowerGrid::fields()
+        ->add('id')
+        ->add('name')
+        // Add custom fields here
+        ;
+
+    // Add creator fields
+    foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
+        $fields->add($key, $callback);
+    }
+
+    // Add date fields
+    foreach (PowerGridHelper::getDateFields() as $key => $callback) {
+        $fields->add($key, $callback);
+    }
+
+    return $fields;
+}
+
+public function columns(): array
+{
+    return [
+        Column::make(__('Name'), 'name')
+            ->sortable()
+            ->searchable(),
+
+        // Add custom columns here
+
+        ...PowerGridHelper::getCreatorColumns(),
+        ...PowerGridHelper::getDateColumns(),
+    ];
+}
+
+public function filters(): array
+{
+    return [
+        Filter::inputText('name')
+            ->placeholder(__('Search by name')),
+
+        ...PowerGridHelper::getCreatorFilters(),
+        ...PowerGridHelper::getDateFilters('my_table'), // Pass table name if using JOINs
+    ];
+}
+```
+
+**Step 4: Create Index component with HasDeleteModal**
+```php
+use App\Traits\Livewire\HasDeleteModal;
+use Livewire\Attributes\On;
+
+class Index extends Component
+{
+    use HasDeleteModal;
+
+    #[On('delete-my-item')]
+    public function handleDelete(string $itemId): void
+    {
+        $this->confirmDelete($itemId);
+    }
+
+    protected function getDeletePermission(): string
+    {
+        return PermissionEnum::DELETE_MY_ITEMS->value;
+    }
+
+    protected function getModelClass(): string
+    {
+        return MyModel::class;
+    }
+
+    protected function getRefreshEvent(): string
+    {
+        return 'pg:eventRefresh-my-table';
+    }
+
+    protected function getDeleteSuccessMessage(): string
+    {
+        return __('Item deleted successfully.');
+    }
+
+    // Optional: Add custom deletion validation
+    protected function canDelete($model): bool
+    {
+        if ($model->hasRelatedData()) {
+            $this->error(__('Cannot delete item with related data.'));
+            return false;
+        }
+        return true;
+    }
+}
+```
+
+**Step 5: Use delete modal in view**
+```blade
+<x-powergrid.delete-modal
+    :title="__('Delete Item')"
+    :message="__('Are you sure? This action cannot be undone.')"
+/>
+```
+
+### PowerGrid Responsive Customization
+
+PowerGrid views are published in `resources/views/vendor/livewire-powergrid/`. Currently customized:
+- `components/frameworks/daisyui/header.blade.php` - Mobile-responsive header with proper stacking
+
+**Important**: Only publish and customize views you need. Keep other views in vendor to receive updates.
+
+### Best Practices
+
+1. **Always qualify column names in filters when using JOINs**: Pass table name to `getDateFilters('my_table')`
+2. **Use spread operator for flexibility**: `...PowerGridHelper::getDateColumns()` allows adding custom columns
+3. **Keep table-specific logic in the table class**: Don't add generic logic that should be in helpers
+4. **Use HasCreator trait on models**: Automatically tracks who created records
+5. **Test bulk delete and single delete**: Ensure permissions and validations work correctly
+
+### Common Patterns
+
+**Custom action column with view**:
+```php
+->add('actions', fn($model) => view('path.to.actions', [
+    'itemId' => $model->id
+])->render())
+```
+
+**Hidden columns for export only**:
+```php
+Column::make(__('Raw Data'), 'raw_data')
+    ->hidden()
+    ->visibleInExport(true)
+```
+
+**Custom field formatting**:
+```php
+->add('amount', fn($model) => number_format($model->amount, 2))
+```
+
+**Relation search**:
+```php
+public function relationSearch(): array
+{
+    return [
+        'relation' => ['field1', 'field2'],
+        ...PowerGridHelper::getCreatorRelationSearch(),
+    ];
+}
+```
+
 ## Quick Reference
 
 **Generate Components**:
