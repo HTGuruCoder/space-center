@@ -2,7 +2,7 @@
 
 <div>
     {{-- Header with Create Button --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
         <div class="min-w-0 flex-1">
             <h1 class="text-2xl font-bold">{{ __('Stores') }}</h1>
             <p class="text-base-content/70 mt-1">{{ __('Manage your store locations') }}</p>
@@ -11,8 +11,7 @@
         @can(PermissionEnum::CREATE_STORES->value)
             <button wire:click="createStore" class="btn btn-primary">
                 <x-icon name="mdi.plus" class="w-5 h-5" />
-                <span class="hidden sm:inline">{{ __('New Store') }}</span>
-                <span class="sm:hidden">{{ __('New') }}</span>
+                <span>{{ __('New Store') }}</span>
             </button>
         @endcan
     </div>
