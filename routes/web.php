@@ -142,7 +142,7 @@ Route::group(
                         ->name('stores');
 
                     // Positions
-                    Route::get('/positions', \App\Livewire\Admin\Settings\Positions::class)
+                    Route::get('/positions', \App\Livewire\Admin\Settings\Positions\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_POSITIONS->value)
                         ->name('positions');
 
