@@ -24,7 +24,6 @@ final class StoresTable extends PowerGridComponent
 
     public string $sortField = 'stores.created_at';
     public string $sortDirection = 'desc';
-    public int $perPage = 100;
 
     public function setUp(): array
     {
@@ -36,7 +35,7 @@ final class StoresTable extends PowerGridComponent
                 ->showToggleColumns(),
 
             PowerGrid::footer()
-                ->showPerPage()
+                ->showPerPage(perPage: 100, perPageValues: [10, 25, 50, 100, 250])
                 ->showRecordCount(),
 
             PowerGrid::exportable(fileName: 'stores-export')
