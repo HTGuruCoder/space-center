@@ -326,7 +326,7 @@ Complete index view structure:
         </div>
 
         @can(PermissionEnum::CREATE_{RESOURCES}->value)
-            <button wire:click="create{Resource}" class="btn btn-primary btn-sm sm:btn-md shrink-0">
+            <button wire:click="create{Resource}" class="btn btn-primary">
                 <x-icon name="mdi.plus" class="w-5 h-5" />
                 <span>{{ __('New {Resource}') }}</span>
             </button>

@@ -9,7 +9,7 @@
         </div>
 
         @can(PermissionEnum::CREATE_POSITIONS->value)
-            <button wire:click="createPosition" class="btn btn-primary btn-sm sm:btn-md shrink-0">
+            <button wire:click="createPosition" class="btn btn-primary">
                 <x-icon name="mdi.plus" class="w-5 h-5" />
                 <span>{{ __('New Position') }}</span>
             </button>
