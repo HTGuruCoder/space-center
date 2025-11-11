@@ -217,25 +217,24 @@ class Index extends Component
 ```blade
 @use(App\Enums\PermissionEnum)
 
-<div class="space-y-6">
+<div>
     {{-- Header with Create Button --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
         <div class="min-w-0 flex-1">
             <h1 class="text-2xl font-bold">{{ __('{Resources}') }}</h1>
             <p class="text-base-content/70 mt-1">{{ __('Manage your {resources}') }}</p>
         </div>
 
         @can(PermissionEnum::CREATE_{RESOURCES}->value)
-            <button wire:click="create{Resource}" class="btn btn-primary btn-sm sm:btn-md shrink-0">
+            <button wire:click="create{Resource}" class="btn btn-primary">
                 <x-icon name="mdi.plus" class="w-5 h-5" />
-                <span class="hidden sm:inline">{{ __('New {Resource}') }}</span>
-                <span class="sm:hidden">{{ __('New') }}</span>
+                <span>{{ __('New {Resource}') }}</span>
             </button>
         @endcan
     </div>
 
     {{-- PowerGrid Table --}}
-    <div class="bg-base-100 shadow-xl rounded-lg">
+    <div class="bg-base-100 shadow-xl rounded-lg px-2 py-4">
         <livewire:{namespace}.{table-name} />
     </div>
 
