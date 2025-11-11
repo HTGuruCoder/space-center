@@ -132,7 +132,7 @@ Route::group(
                 // ============================================
                 Route::prefix('settings')->name('settings.')->group(function () {
                     // Roles
-                    Route::get('/roles', \App\Livewire\Admin\Settings\Roles::class)
+                    Route::get('/roles', \App\Livewire\Admin\Settings\Roles\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_ROLES->value)
                         ->name('roles');
 
