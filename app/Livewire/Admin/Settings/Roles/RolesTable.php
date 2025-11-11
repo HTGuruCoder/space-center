@@ -9,6 +9,7 @@ use App\Livewire\BasePowerGridComponent;
 use App\Models\Role;
 use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\Facades\Rule;
@@ -53,6 +54,7 @@ final class RolesTable extends BasePowerGridComponent
     /**
      * Override bulk delete to protect core roles
      */
+    #[On('bulkDelete.{tableName}')]
     public function bulkDelete(): void
     {
         $this->authorize($this->getDeletePermission());
