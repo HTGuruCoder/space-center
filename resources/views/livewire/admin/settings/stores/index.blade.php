@@ -1,23 +1,24 @@
 @use(App\Enums\PermissionEnum)
 
-<div>
+<div class="space-y-6 -m-4 md:-m-6 lg:-m-8 p-4 md:p-6 lg:p-8">
     {{-- Header with Create Button --}}
-    <div class="flex justify-between items-center mb-6">
-        <div>
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+        <div class="min-w-0 flex-1">
             <h1 class="text-2xl font-bold">{{ __('Stores') }}</h1>
             <p class="text-base-content/70 mt-1">{{ __('Manage your store locations') }}</p>
         </div>
 
         @can(PermissionEnum::CREATE_STORES->value)
-            <button wire:click="createStore" class="btn btn-primary">
+            <button wire:click="createStore" class="btn btn-primary btn-sm sm:btn-md shrink-0">
                 <x-icon name="mdi.plus" class="w-5 h-5" />
-                {{ __('New Store') }}
+                <span class="hidden sm:inline">{{ __('New Store') }}</span>
+                <span class="sm:hidden">{{ __('New') }}</span>
             </button>
         @endcan
     </div>
 
     {{-- PowerGrid Table --}}
-    <div class="bg-base-100 shadow-xl w-[calc(100vw-32px)] md:w-[calc(100vw-48px)] lg:w-[calc(100vw-20rem)] px-2 py-4 rounded-[10px]">
+    <div class="bg-base-100 shadow-xl rounded-lg">
         <livewire:admin.settings.stores.stores-table />
     </div>
 
