@@ -2,11 +2,27 @@
 
 namespace App\Helpers;
 
+use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use App\Helpers\DateHelper;
 
 class PowerGridHelper
 {
+    /**
+     * Get bulk delete button for header.
+     */
+    public static function getBulkDeleteButton(string $tableName, string $deletePermission): array
+    {
+        return [
+            Button::add('bulk-actions')
+                ->slot(view('components.powergrid.bulk-delete-button', [
+                    'tableName' => $tableName,
+                    'permission' => $deletePermission
+                ])->render())
+                ->class(''),
+        ];
+    }
+
     /**
      * Get standard date columns for PowerGrid tables.
      */

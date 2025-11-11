@@ -8,7 +8,6 @@ use App\Livewire\BasePowerGridComponent;
 use App\Models\Store;
 use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -21,7 +20,6 @@ final class StoresTable extends BasePowerGridComponent
     public string $tableName = 'stores-table';
 
     public string $sortField = 'stores.created_at';
-    public string $sortDirection = 'desc';
 
     protected function getExportFileName(): string
     {
@@ -41,12 +39,10 @@ final class StoresTable extends BasePowerGridComponent
     public function header(): array
     {
         return [
-            Button::add('bulk-actions')
-                ->slot(view('components.powergrid.bulk-delete-button', [
-                    'tableName' => $this->tableName,
-                    'permission' => PermissionEnum::DELETE_STORES->value
-                ])->render())
-                ->class(''),
+            ...PowerGridHelper::getBulkDeleteButton(
+                $this->tableName,
+                $this->getDeletePermission()
+            ),
         ];
     }
 
