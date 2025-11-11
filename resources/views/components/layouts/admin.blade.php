@@ -82,7 +82,7 @@
             </aside>
 
             {{-- Main Content Area --}}
-            <div class="flex-1 flex flex-col">
+            <div class="flex flex-col">
                 {{-- Top Header --}}
                 <header class="bg-base-100 border-b border-base-300 sticky top-0 z-30">
                     <div class="flex items-center justify-between px-4 py-3">
@@ -113,8 +113,8 @@
                 </header>
 
                 {{-- Main Content --}}
-                <main class="flex-1 p-4 md:p-6 lg:p-8">
-                    <div class="w-[calc(100vw-2*16px)] md:w-[calc(100vw-2*24px) lg:w-[calc(100vw-2*32px)]]">
+                <main class="p-4 md:p-6 lg:p-8">
+                    <div class="w-[calc(100vw-2*16px)] md:w-[calc(100vw-2*24px)] lg:w-[calc(100vw-256px-2*32px)]">
                         {{ $slot }}
                     </div>
                 </main>
