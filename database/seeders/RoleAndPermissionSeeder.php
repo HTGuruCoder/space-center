@@ -19,19 +19,13 @@ class RoleAndPermissionSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create a super admin user first if doesn't exist
-        $firstUser = \App\Models\User::firstOrCreate(
-            ['email' => 'tchetcheherman@gmail.com'],
-            [
-                'first_name' => 'TCHETCHE',
-                'last_name' => 'Herman',
-                'phone_number' => '+22891504351',
-                'password' => bcrypt('password'),
-                'timezone' => 'UTC',
-                'currency_code' => 'XOF',
-                'country_code' => 'TG',
-            ]
-        );
+        // Get the first user (should be created in DatabaseSeeder)
+        $firstUser = \App\Models\User::first();
+
+        if (!$firstUser) {
+            $this->command->error('No user found! Please create a user first in DatabaseSeeder.');
+            return;
+        }
 
         // Create Super Admin role first (no permissions assigned - bypasses all checks via Gate)
         Role::firstOrCreate([
@@ -41,7 +35,7 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
 
         // Create Employee role
-        $employeeRole = Role::firstOrCreate([
+        Role::firstOrCreate([
             'name' => RoleEnum::EMPLOYEE->value,
             'guard_name' => 'web',
             'created_by' => $firstUser->id,
@@ -56,17 +50,13 @@ class RoleAndPermissionSeeder extends Seeder
             ]);
         }
 
-        // Assign permissions to Employee role
-        $employeeRole->syncPermissions(PermissionEnum::forEmployee());
-
         // Assign super admin role to the first user
         if (!$firstUser->hasRole(RoleEnum::SUPER_ADMIN->value)) {
             $firstUser->assignRole(RoleEnum::SUPER_ADMIN->value);
         }
 
         $this->command->info('Roles and permissions seeded successfully!');
-        $this->command->info('Super Admin user created: admin@example.com / password');
         $this->command->info('Super Admin role created (bypasses all permission checks via Gate)');
-        $this->command->info('Employee role has ' . count(PermissionEnum::forEmployee()) . ' permissions');
+        $this->command->info('Employee role created (no permissions assigned by default)');
     }
 }
