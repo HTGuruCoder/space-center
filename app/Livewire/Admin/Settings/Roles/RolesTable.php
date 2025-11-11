@@ -40,7 +40,7 @@ final class RolesTable extends BasePowerGridComponent
     public function actionRules(): array
     {
         return [
-            // Hide checkbox for core system roles
+            // Disable checkbox for core system roles
             Rule::checkbox()
                 ->when(fn($role) => in_array($role->name, [
                     RoleEnum::SUPER_ADMIN->value,
