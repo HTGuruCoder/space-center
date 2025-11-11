@@ -24,11 +24,11 @@ final class StoresTable extends PowerGridComponent
 
     public string $sortField = 'stores.created_at';
     public string $sortDirection = 'desc';
+    public int $perPage = 100;
 
     public function setUp(): array
     {
         $this->showCheckBox();
-        $this->perPage = 100;
 
         return [
             PowerGrid::header()
