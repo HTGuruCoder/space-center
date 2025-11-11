@@ -20,10 +20,65 @@
 }
 
 
-/** daisyUI - Premium Dark Theme (Professional UI/UX Optimized) */
+/** daisyUI - Light and Dark Themes */
 @plugin "daisyui" {
-    themes: dark --default;
+    themes: light, dark --default --prefersdark;
 };
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: false;
+  color-scheme: "light";
+  prefersdark: false;
+
+  /*
+   * Light theme with same green primary
+   */
+  --color-base-100: oklch(100% 0 0);           /* White background */
+  --color-base-200: oklch(96% 0 0);            /* Light gray background */
+  --color-base-300: oklch(90% 0 0);            /* Border color */
+  --color-base-content: oklch(20% 0 0);        /* Dark text */
+
+  /* Primary: Same vibrant green as dark theme */
+  --color-primary: oklch(70% 0.19 142);
+  --color-primary-content: oklch(15% 0.01 142);
+
+  /* Secondary: Same purple as dark theme */
+  --color-secondary: oklch(68% 0.18 280);
+  --color-secondary-content: oklch(100% 0 0);
+
+  /* Accent: Same cyan as dark theme */
+  --color-accent: oklch(70% 0.15 195);
+  --color-accent-content: oklch(15% 0.01 195);
+
+  /* Neutral colors */
+  --color-neutral: oklch(30% 0.01 260);
+  --color-neutral-content: oklch(95% 0 0);
+
+  /* Semantic colors */
+  --color-info: oklch(65% 0.15 220);
+  --color-info-content: oklch(15% 0.01 220);
+
+  --color-success: oklch(65% 0.15 145);
+  --color-success-content: oklch(15% 0.01 145);
+
+  --color-warning: oklch(75% 0.15 85);
+  --color-warning-content: oklch(15% 0.01 85);
+
+  --color-error: oklch(60% 0.20 25);
+  --color-error-content: oklch(100% 0 0);
+
+  /* Form elements */
+  --rounded-box: 0.75rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 0.5rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-focus-scale: 0.95;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+}
 
 @plugin "daisyui/theme" {
   name: "dark";

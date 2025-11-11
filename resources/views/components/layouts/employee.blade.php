@@ -94,6 +94,9 @@
 
                         {{-- Right Side Actions --}}
                         <div class="flex items-center gap-2">
+                            {{-- Theme Toggle --}}
+                            <x-theme-toggle class="btn btn-circle btn-ghost btn-sm" />
+
                             {{-- Language Switcher --}}
                             <x-layouts.partials.language-switcher />
 
