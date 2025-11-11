@@ -14,10 +14,9 @@ class PositionForm extends Component
 
     public bool $showDrawer = false;
     public ?string $positionId = null;
-    public bool $isEditMode = false;
-
-    // Form fields
     public string $name = '';
+
+    public bool $isEditMode = false;
 
     protected function rules(): array
     {
@@ -34,9 +33,8 @@ class PositionForm extends Component
             return;
         }
 
-        $this->reset(['name']);
+        $this->reset(['name', 'positionId']);
         $this->isEditMode = false;
-        $this->positionId = null;
         $this->showDrawer = true;
     }
 
@@ -57,15 +55,12 @@ class PositionForm extends Component
 
         $this->positionId = $position->id;
         $this->name = $position->name;
-
         $this->isEditMode = true;
         $this->showDrawer = true;
     }
 
     public function save(): void
     {
-        $this->validate();
-
         if ($this->isEditMode) {
             $this->update();
         } else {
@@ -73,11 +68,33 @@ class PositionForm extends Component
         }
     }
 
+    public function saveAndAddAnother(): void
+    {
+        if ($this->isEditMode) {
+            return; // This action is only for create mode
+        }
+
+        $this->authorize(PermissionEnum::CREATE_POSITIONS->value);
+
+        $validated = $this->validate();
+
+        Position::create($validated);
+
+        $this->success(__('Position created successfully.'));
+        $this->reset(['name', 'positionId']);
+        $this->resetValidation();
+        $this->dispatch('pg:eventRefresh-positions-table');
+
+        // Keep drawer open for another entry
+    }
+
     protected function store(): void
     {
-        Position::create([
-            'name' => $this->name,
-        ]);
+        $this->authorize(PermissionEnum::CREATE_POSITIONS->value);
+
+        $validated = $this->validate();
+
+        Position::create($validated);
 
         $this->success(__('Position created successfully.'));
         $this->closeDrawer();
@@ -86,6 +103,10 @@ class PositionForm extends Component
 
     protected function update(): void
     {
+        $this->authorize(PermissionEnum::EDIT_POSITIONS->value);
+
+        $validated = $this->validate();
+
         $position = Position::find($this->positionId);
 
         if (!$position) {
@@ -93,30 +114,17 @@ class PositionForm extends Component
             return;
         }
 
-        $position->update([
-            'name' => $this->name,
-        ]);
+        $position->update($validated);
 
         $this->success(__('Position updated successfully.'));
         $this->closeDrawer();
         $this->dispatch('pg:eventRefresh-positions-table');
     }
 
-    public function saveAndAddAnother(): void
-    {
-        $this->validate();
-        $this->store();
-
-        // Reset form but keep drawer open
-        $this->reset(['name']);
-        $this->positionId = null;
-        $this->isEditMode = false;
-    }
-
     public function closeDrawer(): void
     {
         $this->showDrawer = false;
-        $this->reset();
+        $this->reset(['name', 'positionId', 'isEditMode']);
         $this->resetValidation();
     }
 
