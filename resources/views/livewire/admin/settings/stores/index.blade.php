@@ -18,35 +18,11 @@
 
     {{-- PowerGrid Table --}}
     <div class="bg-base-100 shadow-xl w-[calc(100vw-32px)] md:w-[calc(100vw-48px)] lg:w-[calc(100vw-20rem)] px-2 py-4 rounded-[10px]">
-        <livewire:admin.settings.stores-table />
+        <livewire:admin.settings.stores.stores-table />
     </div>
 
-
-    {{-- Create Modal --}}
-    <x-modal wire:model="showCreateModal" title="{{ __('Create Store') }}" class="backdrop-blur">
-        <div class="space-y-4">
-            <p class="text-base-content/70">{{ __('Create store form will be implemented here') }}</p>
-            {{-- TODO: Implement create form --}}
-        </div>
-
-        <x-slot:actions>
-            <x-button label="{{ __('Cancel') }}" @click="$wire.showCreateModal = false" />
-            <x-button label="{{ __('Create') }}" class="btn-primary" wire:click="save" spinner="save" />
-        </x-slot:actions>
-    </x-modal>
-
-    {{-- Edit Modal --}}
-    <x-modal wire:model="showEditModal" title="{{ __('Edit Store') }}" class="backdrop-blur">
-        <div class="space-y-4">
-            <p class="text-base-content/70">{{ __('Edit store form will be implemented here') }}</p>
-            {{-- TODO: Implement edit form --}}
-        </div>
-
-        <x-slot:actions>
-            <x-button label="{{ __('Cancel') }}" @click="$wire.showEditModal = false" />
-            <x-button label="{{ __('Save') }}" class="btn-primary" wire:click="update" spinner="update" />
-        </x-slot:actions>
-    </x-modal>
+    {{-- Store Form Drawer --}}
+    <livewire:admin.settings.stores.store-form />
 
     {{-- Delete Confirmation Modal --}}
     @if($storeId)

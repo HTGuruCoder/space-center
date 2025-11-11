@@ -1,45 +1,26 @@
 <?php
 
-namespace App\Livewire\Admin\Settings;
+namespace App\Livewire\Admin\Settings\Stores;
 
 use App\Enums\PermissionEnum;
 use App\Models\Store;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
-class Stores extends Component
+class Index extends Component
 {
     use Toast;
 
-    public bool $showCreateModal = false;
-    public bool $showEditModal = false;
     public bool $showDeleteModal = false;
     public ?string $storeId = null;
 
     protected $listeners = [
-        'edit-store' => 'editStore',
         'delete-store' => 'confirmDelete',
     ];
 
     public function createStore()
     {
-        if (!auth()->user()->can(PermissionEnum::CREATE_STORES->value)) {
-            $this->error(__('You do not have permission to create stores.'));
-            return;
-        }
-
-        $this->showCreateModal = true;
-    }
-
-    public function editStore($storeId)
-    {
-        if (!auth()->user()->can(PermissionEnum::EDIT_STORES->value)) {
-            $this->error(__('You do not have permission to edit stores.'));
-            return;
-        }
-
-        $this->storeId = $storeId;
-        $this->showEditModal = true;
+        $this->dispatch('create-store');
     }
 
     public function confirmDelete($storeId)
@@ -84,7 +65,7 @@ class Stores extends Component
 
     public function render()
     {
-        return view('livewire.admin.settings.stores')
+        return view('livewire.admin.settings.stores.index')
             ->layout('components.layouts.admin')
             ->title(__('Stores'));
     }

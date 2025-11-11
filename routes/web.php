@@ -137,7 +137,7 @@ Route::group(
                         ->name('roles');
 
                     // Stores
-                    Route::get('/stores', \App\Livewire\Admin\Settings\Stores::class)
+                    Route::get('/stores', \App\Livewire\Admin\Settings\Stores\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_STORES->value)
                         ->name('stores');
 

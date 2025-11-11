@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Settings;
+namespace App\Livewire\Admin\Settings\Stores;
 
 use App\Enums\PermissionEnum;
 use App\Helpers\DateHelper;
@@ -21,9 +21,13 @@ final class StoresTable extends PowerGridComponent
 
     public string $tableName = 'stores-table';
 
+    public string $sortField = 'stores.created_at';
+    public string $sortDirection = 'desc';
+
     public function setUp(): array
     {
         $this->showCheckBox();
+        $this->perPage = 100;
 
         return [
             PowerGrid::header()
@@ -44,7 +48,7 @@ final class StoresTable extends PowerGridComponent
     {
         return [
             Button::add('bulk-actions')
-                ->slot(view('livewire.admin.settings.stores-table.bulk-actions', [
+                ->slot(view('livewire.admin.settings.stores.stores-table.bulk-actions', [
                     'tableName' => $this->tableName
                 ])->render())
                 ->class(''),
@@ -66,6 +70,8 @@ final class StoresTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Store::query()
+            ->select('stores.*')
+            ->leftJoin('users as creator', 'stores.created_by', '=', 'creator.id')
             ->withCount('employees')
             ->with('creator:id,first_name,last_name');
     }
@@ -80,11 +86,11 @@ final class StoresTable extends PowerGridComponent
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
-            ->add('id', fn(Store $model) => view('livewire.admin.settings.stores-table.actions', [
+            ->add('id', fn(Store $model) => view('livewire.admin.settings.stores.stores-table.actions', [
                 'storeId' => $model->id
             ])->render())
             ->add('name')
-            ->add('location', fn(Store $model) => view('livewire.admin.settings.stores-table.location', [
+            ->add('location', fn(Store $model) => view('livewire.admin.settings.stores.stores-table.location', [
                 'latitude' => $model->latitude,
                 'longitude' => $model->longitude
             ])->render())
@@ -125,8 +131,6 @@ final class StoresTable extends PowerGridComponent
 
             Column::make(__('Location'), 'location')
                 ->visibleInExport(false)
-                ->sortable()
-                ->searchable()
                 ->bodyAttribute('class', 'align-middle'),
 
             Column::make(__('Latitude'), 'latitude')
@@ -140,11 +144,11 @@ final class StoresTable extends PowerGridComponent
             Column::make(__('Employees'), 'employees_count')
                 ->sortable(),
 
-            Column::make(__('Creator First Name'), 'creator_first_name')
+            Column::make(__('Creator First Name'), 'creator_first_name', 'creator.first_name')
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Creator Last Name'), 'creator_last_name')
+            Column::make(__('Creator Last Name'), 'creator_last_name', 'creator.last_name')
                 ->sortable()
                 ->searchable(),
 
@@ -178,9 +182,9 @@ final class StoresTable extends PowerGridComponent
                 ->filterRelation('creator', 'last_name')
                 ->placeholder(__('Creator last name')),
 
-            Filter::datetimepicker('created_at'),
+            Filter::datetimepicker('created_at', 'stores.created_at'),
 
-            Filter::datetimepicker('updated_at'),
+            Filter::datetimepicker('updated_at', 'stores.updated_at'),
         ];
     }
 
