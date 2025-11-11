@@ -166,6 +166,49 @@ class RoleForm extends Component
     }
 
     /**
+     * Select all permissions
+     */
+    public function selectAllPermissions(): void
+    {
+        $this->selectedPermissions = PermissionEnum::values();
+    }
+
+    /**
+     * Deselect all permissions
+     */
+    public function deselectAllPermissions(): void
+    {
+        $this->selectedPermissions = [];
+    }
+
+    /**
+     * Toggle all permissions in a specific category
+     */
+    public function toggleCategoryPermissions(string $category): void
+    {
+        $permissionsGrouped = PermissionEnum::groupedByCategory();
+
+        if (!isset($permissionsGrouped[$category])) {
+            return;
+        }
+
+        $categoryPermissions = collect($permissionsGrouped[$category])
+            ->pluck('value')
+            ->toArray();
+
+        // Check if all permissions in this category are selected
+        $allSelected = empty(array_diff($categoryPermissions, $this->selectedPermissions));
+
+        if ($allSelected) {
+            // Deselect all permissions in this category
+            $this->selectedPermissions = array_values(array_diff($this->selectedPermissions, $categoryPermissions));
+        } else {
+            // Select all permissions in this category
+            $this->selectedPermissions = array_values(array_unique(array_merge($this->selectedPermissions, $categoryPermissions)));
+        }
+    }
+
+    /**
      * Check if a role is a core system role that cannot be modified
      */
     protected function isCoreRole(string $roleName): bool

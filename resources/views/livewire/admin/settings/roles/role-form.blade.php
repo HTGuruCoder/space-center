@@ -19,11 +19,38 @@
 
             {{-- Permissions Selection --}}
             <div class="space-y-4">
-                <h3 class="text-lg font-semibold">{{ __('Permissions') }}</h3>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold">{{ __('Permissions') }}</h3>
+                    <div class="flex gap-2">
+                        <x-button
+                            wire:click="selectAllPermissions"
+                            class="btn-xs btn-primary"
+                            icon="mdi.checkbox-multiple-marked"
+                        >
+                            {{ __('Select All') }}
+                        </x-button>
+                        <x-button
+                            wire:click="deselectAllPermissions"
+                            class="btn-xs btn-ghost"
+                            icon="mdi.checkbox-multiple-blank-outline"
+                        >
+                            {{ __('Deselect All') }}
+                        </x-button>
+                    </div>
+                </div>
 
                 @foreach($permissionsGrouped as $category => $permissions)
-                    <div class="space-y-2">
-                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $category }}</h4>
+                    <div class="space-y-2 border border-base-300 rounded-lg p-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $category }}</h4>
+                            <x-button
+                                wire:click="toggleCategoryPermissions('{{ $category }}')"
+                                class="btn-xs btn-ghost"
+                                icon="mdi.checkbox-multiple-marked-outline"
+                            >
+                                {{ __('Toggle All') }}
+                            </x-button>
+                        </div>
                         <div class="space-y-1 pl-4">
                             @foreach($permissions as $permission)
                                 <x-checkbox
