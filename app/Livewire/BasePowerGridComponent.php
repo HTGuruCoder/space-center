@@ -13,15 +13,20 @@ abstract class BasePowerGridComponent extends PowerGridComponent
 
     public string $sortField = 'created_at';
     public string $sortDirection = 'desc';
+    protected bool $showSearch = true;
 
     public function setUp(): array
     {
         $this->showCheckBox();
 
+        $header = PowerGrid::header()->showToggleColumns();
+
+        if ($this->showSearch) {
+            $header->showSearchInput();
+        }
+
         return [
-            PowerGrid::header()
-                ->showSearchInput()
-                ->showToggleColumns(),
+            $header,
 
             PowerGrid::footer()
                 ->showPerPage(perPage: 100, perPageValues: [10, 25, 50, 100, 250])

@@ -3,13 +3,13 @@
 namespace App\Livewire\Admin\Settings\Roles;
 
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\Role;
 use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
@@ -19,6 +19,7 @@ final class RolesTable extends BasePowerGridComponent
 
     public string $tableName = 'roles-table';
     public string $sortField = 'roles.created_at';
+    protected bool $showSearch = false;
 
     protected function getExportFileName(): string
     {
@@ -70,6 +71,7 @@ final class RolesTable extends BasePowerGridComponent
                 'roleName' => $model->name
             ])->render())
             ->add('name')
+            ->add('name_display', fn(Role $model) => $this->getLocalizedRoleName($model))
             ->add('permissions_count')
             ->add('users_count');
 
@@ -96,9 +98,8 @@ final class RolesTable extends BasePowerGridComponent
                 ->bodyAttribute('class', 'w-16')
                 ->headerAttribute('class', 'w-16'),
 
-            Column::make(__('Name'), 'name')
-                ->sortable()
-                ->searchable(),
+            Column::make(__('Name'), 'name_display', 'name')
+                ->sortable(),
 
             Column::make(__('Permissions'), 'permissions_count')
                 ->sortable(),
@@ -113,12 +114,24 @@ final class RolesTable extends BasePowerGridComponent
 
     public function filters(): array
     {
-        return [
-            Filter::inputText('name')
-                ->placeholder(__('Search by name')),
+        return [];
+    }
 
-            ...PowerGridHelper::getCreatorFilters(),
-            ...PowerGridHelper::getDateFilters('roles'),
-        ];
+    /**
+     * Get localized role name for display
+     */
+    protected function getLocalizedRoleName(Role $model): string
+    {
+        // Try to get the RoleEnum case
+        $roleEnum = collect(RoleEnum::cases())
+            ->firstWhere('value', $model->name);
+
+        // If it's a core role, return localized name
+        if ($roleEnum) {
+            return $roleEnum->label();
+        }
+
+        // Otherwise return the name as-is (custom role)
+        return $model->name;
     }
 }
