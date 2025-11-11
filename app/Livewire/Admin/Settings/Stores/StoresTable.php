@@ -3,72 +3,51 @@
 namespace App\Livewire\Admin\Settings\Stores;
 
 use App\Enums\PermissionEnum;
-use App\Helpers\DateHelper;
+use App\Helpers\PowerGridHelper;
+use App\Livewire\BasePowerGridComponent;
 use App\Models\Store;
+use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\On;
-use Mary\Traits\Toast;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
-use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
-final class StoresTable extends PowerGridComponent
+final class StoresTable extends BasePowerGridComponent
 {
-    use WithExport, Toast;
+    use HasBulkDelete;
 
     public string $tableName = 'stores-table';
 
     public string $sortField = 'stores.created_at';
     public string $sortDirection = 'desc';
 
-    public function setUp(): array
+    protected function getExportFileName(): string
     {
-        $this->showCheckBox();
+        return 'stores-export';
+    }
 
-        return [
-            PowerGrid::header()
-                ->showSearchInput()
-                ->showToggleColumns(),
+    protected function getDeletePermission(): string
+    {
+        return PermissionEnum::DELETE_STORES->value;
+    }
 
-            PowerGrid::footer()
-                ->showPerPage(perPage: 100, perPageValues: [10, 25, 50, 100, 250])
-                ->showRecordCount(),
-
-            PowerGrid::exportable(fileName: 'stores-export')
-                ->type('xlsx', 'csv')
-                ->striped(),
-        ];
+    protected function getModelClass(): string
+    {
+        return Store::class;
     }
 
     public function header(): array
     {
         return [
             Button::add('bulk-actions')
-                ->slot(view('livewire.admin.settings.stores.stores-table.bulk-actions', [
-                    'tableName' => $this->tableName
+                ->slot(view('components.powergrid.bulk-delete-button', [
+                    'tableName' => $this->tableName,
+                    'permission' => PermissionEnum::DELETE_STORES->value
                 ])->render())
                 ->class(''),
         ];
-    }
-
-    #[On('bulkDeleteStores.{tableName}')]
-    public function bulkDeleteStores(): void
-    {
-        $this->authorize(PermissionEnum::DELETE_STORES->value);
-
-        if ($this->checkboxValues) {
-            $count = count($this->checkboxValues);
-            Store::destroy($this->checkboxValues);
-
-            $this->success(__(':count store(s) deleted successfully.', ['count' => $count]));
-
-            $this->js('window.pgBulkActions.clearAll()');
-            $this->dispatch('pg:eventRefresh-' . $this->tableName);
-        }
     }
 
     public function datasource(): Builder
@@ -89,7 +68,7 @@ final class StoresTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
-        return PowerGrid::fields()
+        $fields = PowerGrid::fields()
             ->add('id')
             ->add('actions', fn(Store $model) => view('livewire.admin.settings.stores.stores-table.actions', [
                 'storeId' => $model->id
@@ -107,17 +86,14 @@ final class StoresTable extends PowerGridComponent
             )
             ->add('creator_last_name', fn (Store $model) =>
                 $model->creator ? e($model->creator->last_name) : '-'
-            )
-            ->add('created_at')
-            ->add('created_at_formatted', fn (Store $model) =>
-                DateHelper::formatDateTime($model->created_at)
-            )
-            ->add('created_at_export', fn (Store $model) => $model->created_at?->toIso8601String() ?? '-')
-            ->add('updated_at')
-            ->add('updated_at_formatted', fn (Store $model) =>
-                DateHelper::formatDateTime($model->updated_at)
-            )
-            ->add('updated_at_export', fn (Store $model) => $model->updated_at?->toIso8601String() ?? '-');
+            );
+
+        // Add date fields using helper
+        foreach (PowerGridHelper::getDateFields() as $key => $callback) {
+            $fields->add($key, $callback);
+        }
+
+        return $fields;
     }
 
     public function columns(): array
@@ -157,19 +133,7 @@ final class StoresTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Created At'), 'created_at_formatted', 'created_at')
-                ->sortable(),
-
-            Column::make(__('Created At'), 'created_at_export')
-                ->hidden()
-                ->visibleInExport(true),
-
-            Column::make(__('Updated At'), 'updated_at_formatted', 'updated_at')
-                ->sortable(),
-
-            Column::make(__('Updated At'), 'updated_at_export')
-                ->hidden()
-                ->visibleInExport(true),
+            ...PowerGridHelper::getDateColumns('stores'),
         ];
     }
 
@@ -187,9 +151,7 @@ final class StoresTable extends PowerGridComponent
                 ->filterRelation('creator', 'last_name')
                 ->placeholder(__('Creator last name')),
 
-            Filter::datetimepicker('created_at', 'stores.created_at'),
-
-            Filter::datetimepicker('updated_at', 'stores.updated_at'),
+            ...PowerGridHelper::getDateFilters('stores'),
         ];
     }
 

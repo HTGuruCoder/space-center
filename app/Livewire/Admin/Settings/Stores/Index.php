@@ -4,63 +4,51 @@ namespace App\Livewire\Admin\Settings\Stores;
 
 use App\Enums\PermissionEnum;
 use App\Models\Store;
+use App\Traits\Livewire\HasDeleteModal;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use Toast;
-
-    public bool $showDeleteModal = false;
-    public ?string $storeId = null;
+    use HasDeleteModal;
 
     protected $listeners = [
         'delete-store' => 'confirmDelete',
     ];
 
+    protected function getDeletePermission(): string
+    {
+        return PermissionEnum::DELETE_STORES->value;
+    }
+
+    protected function getModelClass(): string
+    {
+        return Store::class;
+    }
+
+    protected function getRefreshEvent(): string
+    {
+        return 'pg:eventRefresh-stores-table';
+    }
+
+    protected function getDeleteSuccessMessage(): string
+    {
+        return __('Store deleted successfully.');
+    }
+
+    protected function canDelete($model): bool
+    {
+        // Check if store has employees
+        if ($model->employees()->count() > 0) {
+            $this->error(__('Cannot delete store with assigned employees.'));
+            return false;
+        }
+
+        return true;
+    }
+
     public function createStore()
     {
         $this->dispatch('create-store');
-    }
-
-    public function confirmDelete($storeId)
-    {
-        if (!auth()->user()->can(PermissionEnum::DELETE_STORES->value)) {
-            $this->error(__('You do not have permission to delete stores.'));
-            return;
-        }
-
-        $this->storeId = $storeId;
-        $this->showDeleteModal = true;
-    }
-
-    public function deleteStore()
-    {
-        if (!$this->storeId) {
-            return;
-        }
-
-        $store = Store::find($this->storeId);
-
-        if (!$store) {
-            $this->error(__('Store not found.'));
-            return;
-        }
-
-        // Check if store has employees
-        if ($store->employees()->count() > 0) {
-            $this->error(__('Cannot delete store with assigned employees.'));
-            return;
-        }
-
-        $store->delete();
-
-        $this->success(__('Store deleted successfully.'));
-        $this->storeId = null;
-        $this->showDeleteModal = false;
-
-        // Refresh PowerGrid table
-        $this->dispatch('pg:eventRefresh-stores-table');
     }
 
     public function render()
