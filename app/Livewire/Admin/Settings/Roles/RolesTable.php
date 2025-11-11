@@ -50,7 +50,7 @@ final class RolesTable extends BasePowerGridComponent
         return Role::query()
             ->select('roles.*')
             ->leftJoin('users as creator', 'roles.created_by', '=', 'creator.id')
-            ->withCount('users')
+            ->withCount(['users', 'permissions'])
             ->with('creator:id,first_name,last_name');
     }
 
@@ -70,7 +70,7 @@ final class RolesTable extends BasePowerGridComponent
                 'roleName' => $model->name
             ])->render())
             ->add('name')
-            ->add('guard_name')
+            ->add('permissions_count')
             ->add('users_count');
 
         // Add creator fields
@@ -100,9 +100,8 @@ final class RolesTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Guard'), 'guard_name')
-                ->sortable()
-                ->searchable(),
+            Column::make(__('Permissions'), 'permissions_count')
+                ->sortable(),
 
             Column::make(__('Users'), 'users_count')
                 ->sortable(),
@@ -117,9 +116,6 @@ final class RolesTable extends BasePowerGridComponent
         return [
             Filter::inputText('name')
                 ->placeholder(__('Search by name')),
-
-            Filter::inputText('guard_name')
-                ->placeholder(__('Search by guard')),
 
             ...PowerGridHelper::getCreatorFilters(),
             ...PowerGridHelper::getDateFilters('roles'),

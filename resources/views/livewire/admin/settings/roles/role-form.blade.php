@@ -2,12 +2,12 @@
     wire:model="showDrawer"
     :title="$isEditMode ? __('Edit Role') : __('Create Role')"
     right
-    class="w-full sm:w-96 lg:w-1/3 max-w-full"
+    class="w-full sm:w-[500px] lg:w-1/2 max-w-full"
     separator
     with-close-button
 >
     <x-form wire:submit="save">
-        <div class="space-y-4">
+        <div class="space-y-6">
             {{-- Role Name --}}
             <x-input
                 label="{{ __('Role Name') }}"
@@ -16,6 +16,27 @@
                 icon="mdi.shield-account"
                 required
             />
+
+            {{-- Permissions Selection --}}
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold">{{ __('Permissions') }}</h3>
+
+                @foreach($permissionsGrouped as $category => $permissions)
+                    <div class="space-y-2">
+                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $category }}</h4>
+                        <div class="space-y-1 pl-4">
+                            @foreach($permissions as $permission)
+                                <x-checkbox
+                                    label="{{ $permission['label'] }}"
+                                    wire:model="selectedPermissions"
+                                    value="{{ $permission['value'] }}"
+                                    hint="{{ $permission['description'] }}"
+                                />
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
 
         {{-- Action Buttons --}}

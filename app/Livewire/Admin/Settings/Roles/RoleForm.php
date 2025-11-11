@@ -16,6 +16,7 @@ class RoleForm extends Component
     public bool $showDrawer = false;
     public ?string $roleId = null;
     public string $name = '';
+    public array $selectedPermissions = [];
 
     public bool $isEditMode = false;
 
@@ -23,6 +24,8 @@ class RoleForm extends Component
     {
         $rules = [
             'name' => 'required|string|max:255',
+            'selectedPermissions' => 'array',
+            'selectedPermissions.*' => 'exists:permissions,name',
         ];
 
         // Add unique validation for name, except for current role when editing
@@ -43,7 +46,7 @@ class RoleForm extends Component
             return;
         }
 
-        $this->reset(['name', 'roleId']);
+        $this->reset(['name', 'roleId', 'selectedPermissions']);
         $this->isEditMode = false;
         $this->showDrawer = true;
     }
@@ -71,6 +74,7 @@ class RoleForm extends Component
 
         $this->roleId = $role->id;
         $this->name = $role->name;
+        $this->selectedPermissions = $role->permissions->pluck('name')->toArray();
         $this->isEditMode = true;
         $this->showDrawer = true;
     }
@@ -95,10 +99,13 @@ class RoleForm extends Component
         $validated = $this->validate();
         $validated['guard_name'] = 'web'; // Default guard
 
-        Role::create($validated);
+        $role = Role::create($validated);
+
+        // Sync permissions
+        $role->syncPermissions($this->selectedPermissions);
 
         $this->success(__('Role created successfully.'));
-        $this->reset(['name', 'roleId']);
+        $this->reset(['name', 'roleId', 'selectedPermissions']);
         $this->resetValidation();
         $this->dispatch('pg:eventRefresh-roles-table');
 
@@ -112,7 +119,10 @@ class RoleForm extends Component
         $validated = $this->validate();
         $validated['guard_name'] = 'web'; // Default guard
 
-        Role::create($validated);
+        $role = Role::create($validated);
+
+        // Sync permissions
+        $role->syncPermissions($this->selectedPermissions);
 
         $this->success(__('Role created successfully.'));
         $this->closeDrawer();
@@ -140,6 +150,9 @@ class RoleForm extends Component
 
         $role->update($validated);
 
+        // Sync permissions
+        $role->syncPermissions($this->selectedPermissions);
+
         $this->success(__('Role updated successfully.'));
         $this->closeDrawer();
         $this->dispatch('pg:eventRefresh-roles-table');
@@ -148,7 +161,7 @@ class RoleForm extends Component
     public function closeDrawer(): void
     {
         $this->showDrawer = false;
-        $this->reset(['name', 'roleId', 'isEditMode']);
+        $this->reset(['name', 'roleId', 'selectedPermissions', 'isEditMode']);
         $this->resetValidation();
     }
 
@@ -165,6 +178,8 @@ class RoleForm extends Component
 
     public function render()
     {
-        return view('livewire.admin.settings.roles.role-form');
+        return view('livewire.admin.settings.roles.role-form', [
+            'permissionsGrouped' => PermissionEnum::groupedByCategory(),
+        ]);
     }
 }
