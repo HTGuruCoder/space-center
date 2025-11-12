@@ -1,6 +1,11 @@
 @use(App\Enums\ContractTypeEnum)
 
-<div class="min-h-screen flex items-center justify-center py-8 px-4">
+<div class="min-h-screen flex items-center justify-center py-8 px-4 relative">
+    {{-- Language Switcher --}}
+    <div class="absolute top-4 right-4">
+        <x-layouts.partials.language-switcher />
+    </div>
+
     <div class="w-full max-w-6xl">
         <div class="text-center mb-6">
             <h2 class="text-3xl font-bold">{{ __('Employee Registration') }}</h2>
