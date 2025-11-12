@@ -1,6 +1,7 @@
 <div class="min-h-screen flex items-center justify-center relative">
-    {{-- Language Switcher --}}
-    <div class="absolute top-4 right-4">
+    {{-- Theme & Language Switcher --}}
+    <div class="absolute top-4 right-4 flex items-center gap-2">
+        <x-theme-toggle class="btn btn-circle btn-ghost btn-sm" />
         <x-layouts.partials.language-switcher />
     </div>
 

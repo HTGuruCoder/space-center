@@ -19,7 +19,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen antialiased" x-data="{ theme: $persist('light').as('mary-theme') }" :data-theme="theme">
+<body class="min-h-screen antialiased">
     {{-- MAIN --}}
     <x-main>
         {{-- The `$slot` goes here --}}
