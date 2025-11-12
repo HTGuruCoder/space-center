@@ -68,9 +68,12 @@ final class AbsenceTypesTable extends BasePowerGridComponent
                 'absenceTypeId' => $model->id,
             ])->render())
             ->add('name')
-            ->add('is_paid', fn(AbsenceType $model) => $model->is_paid ? __('Yes') : __('No'))
-            ->add('is_break', fn(AbsenceType $model) => $model->is_break ? __('Yes') : __('No'))
-            ->add('max_per_day', fn(AbsenceType $model) => $model->max_per_day ?? __('Unlimited'));
+            ->add('is_paid')
+            ->add('is_paid_display', fn(AbsenceType $model) => $model->is_paid ? __('Yes') : __('No'))
+            ->add('is_break')
+            ->add('is_break_display', fn(AbsenceType $model) => $model->is_break ? __('Yes') : __('No'))
+            ->add('max_per_day')
+            ->add('max_per_day_display', fn(AbsenceType $model) => $model->max_per_day ?? __('Unlimited'));
 
         // Add creator fields
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
@@ -98,13 +101,13 @@ final class AbsenceTypesTable extends BasePowerGridComponent
             Column::make(__('Name'), 'name')
                 ->sortable(),
 
-            Column::make(__('Paid'), 'is_paid')
+            Column::make(__('Paid'), 'is_paid_display', 'is_paid')
                 ->sortable(),
 
-            Column::make(__('Break'), 'is_break')
+            Column::make(__('Break'), 'is_break_display', 'is_break')
                 ->sortable(),
 
-            Column::make(__('Max Per Day'), 'max_per_day')
+            Column::make(__('Max Per Day'), 'max_per_day_display', 'max_per_day')
                 ->sortable(),
 
             ...PowerGridHelper::getCreatorColumns(),
