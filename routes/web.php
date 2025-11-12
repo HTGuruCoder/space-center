@@ -147,7 +147,7 @@ Route::group(
                         ->name('positions');
 
                     // Absence Types
-                    Route::get('/absence-types', \App\Livewire\Admin\Settings\AbsenceTypes::class)
+                    Route::get('/absence-types', \App\Livewire\Admin\Settings\AbsenceTypes\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_ABSENCE_TYPES->value)
                         ->name('absence-types');
                 });
