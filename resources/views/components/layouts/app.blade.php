@@ -11,6 +11,12 @@
     />
     <title>{{ isset($title) ? $title.' - '.config('app.name') : config('app.name') }}</title>
 
+    {{-- Load theme before any rendering to prevent flickering --}}
+    <script>
+        const theme = localStorage.getItem('mary-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen antialiased" x-data="{ theme: $persist('light').as('mary-theme') }" :data-theme="theme">
