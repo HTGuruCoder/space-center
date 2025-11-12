@@ -9,6 +9,12 @@
     <div class="w-full max-w-6xl">
         <div class="text-center mb-6">
             <h2 class="text-3xl font-bold">{{ __('Employee Registration') }}</h2>
+            <div class="mt-4">
+                <span class="text-sm">{{ __('Already have an account?') }}</span>
+                <a href="{{ route('login') }}" class="link link-primary text-sm">
+                    {{ __('Login here') }}
+                </a>
+            </div>
         </div>
 
         <x-card class="shadow-xl">
