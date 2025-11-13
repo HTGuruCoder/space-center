@@ -91,7 +91,7 @@ Route::group(
                     ->name('dashboard');
 
                 // Users
-                Route::get('/users', \App\Livewire\Admin\Users\UsersList::class)
+                Route::get('/users', \App\Livewire\Admin\Users\Index::class)
                     ->middleware('permission:' . PermissionEnum::VIEW_USERS->value)
                     ->name('users');
 
