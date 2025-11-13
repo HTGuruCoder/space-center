@@ -132,6 +132,11 @@ final class UsersTable extends BasePowerGridComponent
             ->add('picture_url', fn(User $model) => $model->picture_url
                 ? asset('storage/' . $model->picture_url)
                 : asset('images/default-avatar.svg'))
+            ->add('picture_display', fn(User $model) => view('livewire.admin.users.users-table.photo', [
+                'picture_url' => $model->picture_url
+                    ? asset('storage/' . $model->picture_url)
+                    : asset('images/default-avatar.svg')
+            ])->render())
             ->add('full_name', fn(User $model) => $model->full_name)
             ->add('first_name')
             ->add('last_name')
@@ -165,20 +170,22 @@ final class UsersTable extends BasePowerGridComponent
     {
         return [
             Column::add()
-                ->title(__('Actions'))
                 ->field('actions')
                 ->visibleInExport(false)
                 ->bodyAttribute('class', 'w-16')
                 ->headerAttribute('class', 'w-16'),
 
             Column::add()
-                ->title(__('Photo'))
-                ->field('picture_url')
+                ->field('picture_display')
                 ->visibleInExport(false)
                 ->bodyAttribute('class', 'w-16')
                 ->headerAttribute('class', 'w-16'),
 
-            Column::make(__('Name'), 'full_name', 'first_name')
+            Column::make(__('First Name'), 'first_name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('Last Name'), 'last_name')
                 ->sortable()
                 ->searchable(),
 
@@ -186,8 +193,7 @@ final class UsersTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Roles'), 'roles_display')
-                ->sortable(false),
+            Column::make(__('Roles'), 'roles_display'),
 
             Column::make(__('Phone'), 'phone_number')
                 ->sortable(),
