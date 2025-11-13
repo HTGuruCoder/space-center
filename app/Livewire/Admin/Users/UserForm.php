@@ -21,6 +21,8 @@ class UserForm extends Component
     use WithFileUploads, Toast;
 
     public bool $showDrawer = false;
+    public bool $showPersonalInfo = true;
+    public bool $showRoles = true;
     public UserManagementForm $form;
 
     #[On('create-user')]

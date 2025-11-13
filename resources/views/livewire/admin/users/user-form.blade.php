@@ -9,10 +9,10 @@
     <x-form wire:submit="save">
         <div class="space-y-4">
             {{-- Collapse 1: Personal Information --}}
-            <x-collapse name="personal-info" class="bg-base-200">
+            <x-collapse wire:model="showPersonalInfo" class="bg-base-200">
                 <x-slot:heading>
                     <div class="flex items-center gap-2">
-                        <x-icon name="mdi.account" class="w-5 h-5" />
+                        <x-icon name="mdi.account-circle" class="w-5 h-5 text-primary" />
                         <span class="font-semibold">{{ __('Personal Information') }}</span>
                     </div>
                 </x-slot:heading>
@@ -144,10 +144,10 @@
             </x-collapse>
 
             {{-- Collapse 2: Roles & Permissions --}}
-            <x-collapse name="roles" class="bg-base-200">
+            <x-collapse wire:model="showRoles" class="bg-base-200">
                 <x-slot:heading>
                     <div class="flex items-center gap-2">
-                        <x-icon name="mdi.shield-account" class="w-5 h-5" />
+                        <x-icon name="mdi.shield-account" class="w-5 h-5 text-secondary" />
                         <span class="font-semibold">{{ __('Roles & Permissions') }}</span>
                         @if(count($form->selectedRoles) > 0)
                             <span class="badge badge-primary badge-sm">{{ count($form->selectedRoles) }} {{ __('selected') }}</span>
