@@ -158,6 +158,9 @@ final class UsersTable extends BasePowerGridComponent
                 ? CurrencyEnum::from($model->currency_code)->label()
                 : '-')
             ->add('timezone')
+            ->add('timezone_display', fn(User $model) => $model->timezone
+                ? Timezone::formatLabel($model->timezone)
+                : '-')
             ->add('roles_display', fn(User $model) => $model->roles
                 ->map(function($role) {
                     // Try to get label from RoleEnum for core roles
@@ -210,19 +213,47 @@ final class UsersTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Roles'), 'roles_display', 'roles.name'),
+            Column::make(__('Roles'), 'roles_display', 'roles.name')
+                ->visibleInExport(false),
+
+            Column::add()
+                ->title(__('Roles'))
+                ->field('roles.name')
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Phone'), 'phone_number')
                 ->sortable(),
 
             Column::make(__('Country'), 'country_display', 'country_code')
-                ->sortable(),
+                ->sortable()
+                ->visibleInExport(false),
+
+            Column::add()
+                ->title(__('Country'))
+                ->field('country_code')
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Currency'), 'currency_display', 'currency_code')
-                ->sortable(),
+                ->sortable()
+                ->visibleInExport(false),
 
-            Column::make(__('Timezone'), 'timezone')
-                ->sortable(),
+            Column::add()
+                ->title(__('Currency'))
+                ->field('currency_code')
+                ->hidden()
+                ->visibleInExport(true),
+
+            Column::make(__('Timezone'), 'timezone_display', 'timezone')
+                ->sortable()
+                ->visibleInExport(false),
+
+            Column::add()
+                ->title(__('Timezone'))
+                ->field('timezone')
+                ->hidden()
+                ->visibleInExport(true),
 
             ...PowerGridHelper::getCreatorColumns(),
             ...PowerGridHelper::getDateColumns(),
@@ -232,7 +263,19 @@ final class UsersTable extends BasePowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::multiSelect('roles.name', 'roles.name')
+            Filter::inputText('first_name', 'users.first_name')
+                ->placeholder(__('Search by first name')),
+
+            Filter::inputText('last_name', 'users.last_name')
+                ->placeholder(__('Search by last name')),
+
+            Filter::inputText('email', 'users.email')
+                ->placeholder(__('Search by email')),
+
+            Filter::inputText('phone_number', 'users.phone_number')
+                ->placeholder(__('Search by phone')),
+
+            Filter::select('roles.name')
                 ->dataSource(Role::all(['id', 'name'])->map(function($role) {
                     // Try to get label from RoleEnum for core roles
                     try {
@@ -249,17 +292,17 @@ final class UsersTable extends BasePowerGridComponent
                 ->optionLabel('name')
                 ->optionValue('id'),
 
-            Filter::select('country_code')
+            Filter::select('country_code', 'users.country_code')
                 ->dataSource(CountryEnum::options())
                 ->optionLabel('name')
                 ->optionValue('id'),
 
-            Filter::select('currency_code')
+            Filter::select('currency_code', 'users.currency_code')
                 ->dataSource(CurrencyEnum::options())
                 ->optionLabel('name')
                 ->optionValue('id'),
 
-            Filter::select('timezone')
+            Filter::select('timezone', 'users.timezone')
                 ->dataSource(Timezone::options())
                 ->optionLabel('name')
                 ->optionValue('id'),

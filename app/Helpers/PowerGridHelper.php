@@ -53,10 +53,10 @@ class PowerGridHelper
         return [
             'created_at' => fn($model) => $model->created_at,
             'created_at_formatted' => fn($model) => DateHelper::formatDateTime($model->created_at),
-            'created_at_export' => fn($model) => $model->created_at?->toIso8601String() ?? '-',
+            'created_at_export' => fn($model) => $model->created_at?->toIso8601String() ?? '',
             'updated_at' => fn($model) => $model->updated_at,
             'updated_at_formatted' => fn($model) => DateHelper::formatDateTime($model->updated_at),
-            'updated_at_export' => fn($model) => $model->updated_at?->toIso8601String() ?? '-',
+            'updated_at_export' => fn($model) => $model->updated_at?->toIso8601String() ?? '',
         ];
     }
 
@@ -66,8 +66,8 @@ class PowerGridHelper
     public static function getCreatorFields(): array
     {
         return [
-            'creator_first_name' => fn($model) => $model->creator ? e($model->creator->first_name) : '-',
-            'creator_last_name' => fn($model) => $model->creator ? e($model->creator->last_name) : '-',
+            'creator_first_name' => fn($model) => $model->creator ? e($model->creator->first_name) : '',
+            'creator_last_name' => fn($model) => $model->creator ? e($model->creator->last_name) : '',
         ];
     }
 
