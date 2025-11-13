@@ -33,7 +33,7 @@
                                 crop-save-text="{{ __('Crop') }}"
                             >
                                 <img
-                                    src="{{ $form->picture ? $form->picture->temporaryUrl() : ($form->currentPictureUrl ? asset('storage/' . $form->currentPictureUrl) : asset('images/default-avatar.svg')) }}"
+                                    src="{{ $form->picture ?? $form->currentPictureUrl ?? asset('images/default-avatar.svg') }}"
                                     class="h-40 w-40 rounded-full object-cover"
                                 />
                             </x-file>
