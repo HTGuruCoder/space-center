@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Users;
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\Role;
@@ -151,7 +152,17 @@ final class UsersTable extends BasePowerGridComponent
                 ? CurrencyEnum::from($model->currency_code)->label()
                 : '-')
             ->add('timezone')
-            ->add('roles_display', fn(User $model) => $model->roles->pluck('name')->join(', '));
+            ->add('roles_display', fn(User $model) => $model->roles
+                ->map(function($role) {
+                    // Try to get label from RoleEnum for core roles
+                    try {
+                        return RoleEnum::from($role->name)->label();
+                    } catch (\ValueError $e) {
+                        // For dynamic roles, just return the name
+                        return $role->name;
+                    }
+                })
+                ->join(', '));
 
         // Add creator fields
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
@@ -216,9 +227,21 @@ final class UsersTable extends BasePowerGridComponent
     {
         return [
             Filter::select('roles')
-                ->dataSource(Role::all(['id', 'name']))
+                ->dataSource(Role::all(['id', 'name'])->map(function($role) {
+                    // Try to get label from RoleEnum for core roles
+                    try {
+                        $label = RoleEnum::from($role->name)->label();
+                    } catch (\ValueError $e) {
+                        // For dynamic roles, just use the name
+                        $label = $role->name;
+                    }
+                    return [
+                        'id' => $role->name,
+                        'name' => $label,
+                    ];
+                })->toArray())
                 ->optionLabel('name')
-                ->optionValue('name'),
+                ->optionValue('id'),
 
             Filter::select('country_code')
                 ->dataSource(CountryEnum::options())
