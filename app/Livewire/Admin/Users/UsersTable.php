@@ -109,10 +109,16 @@ final class UsersTable extends BasePowerGridComponent
         return User::query()
             ->select('users.*')
             ->leftJoin('users as creator', 'users.created_by', '=', 'creator.id')
+            ->leftJoin('model_has_roles', function($join) {
+                $join->on('users.id', '=', 'model_has_roles.model_id')
+                     ->where('model_has_roles.model_type', '=', User::class);
+            })
+            ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
             ->with([
                 'creator:id,first_name,last_name',
                 'roles:id,name'
-            ]);
+            ])
+            ->groupBy('users.id');
     }
 
     public function relationSearch(): array
@@ -204,7 +210,7 @@ final class UsersTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Roles'), 'roles_display'),
+            Column::make(__('Roles'), 'roles_display', 'roles.name'),
 
             Column::make(__('Phone'), 'phone_number')
                 ->sortable(),
@@ -226,7 +232,7 @@ final class UsersTable extends BasePowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::select('roles')
+            Filter::multiSelect('roles.name', 'roles.name')
                 ->dataSource(Role::all(['id', 'name'])->map(function($role) {
                     // Try to get label from RoleEnum for core roles
                     try {
