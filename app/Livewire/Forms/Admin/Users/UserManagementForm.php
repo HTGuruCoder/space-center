@@ -27,7 +27,6 @@ class UserManagementForm extends Form
     public string $phone_number = '';
 
     public $picture = null;
-    public ?string $currentPictureUrl = null;
 
     public string $country_code = '';
 
@@ -83,7 +82,7 @@ class UserManagementForm extends Form
         $this->timezone = $user->timezone;
         $this->birth_date = $user->birth_date?->format('Y-m-d');
         $this->currency_code = $user->currency_code;
-        $this->currentPictureUrl = $user->picture_url;
+        $this->picture = $user->picture_url;
         $this->selectedRoles = $user->roles->pluck('name')->toArray();
         $this->isEditMode = true;
     }

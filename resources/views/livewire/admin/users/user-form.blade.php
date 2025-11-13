@@ -16,10 +16,11 @@
                         <span class="font-semibold">{{ __('Personal Information') }}</span>
                     </div>
                 </x-slot:heading>
-                <x-slot:content>
+s                <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Profile Picture --}}
                         <div>
+                            {{ $form->picture }}
                             <x-file
                                 label="{{ __('Profile Picture') }}"
                                 wire:model="form.picture"
@@ -33,7 +34,7 @@
                                 crop-save-text="{{ __('Crop') }}"
                             >
                                 <img
-                                    src="{{ $form->picture ?? $form->currentPictureUrl ?? asset('images/default-avatar.svg') }}"
+                                    src="{{ $form->picture ?? asset('images/default-avatar.svg') }}"
                                     class="h-40 w-40 rounded-full object-cover"
                                 />
                             </x-file>

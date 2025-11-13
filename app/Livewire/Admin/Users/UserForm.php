@@ -98,8 +98,8 @@ class UserForm extends Component
         $pictureUrl = $user->picture_url;
         if ($this->form->picture) {
             // Delete old picture if exists
-            if ($user->picture_url) {
-                Storage::disk('public')->delete($user->picture_url);
+            if ($pictureUrl) {
+                Storage::disk('public')->delete($pictureUrl);
             }
             $pictureUrl = $this->form->picture->store('profile-pictures', 'public');
         }
