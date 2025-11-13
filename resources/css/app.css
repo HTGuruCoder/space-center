@@ -2,7 +2,7 @@
 @import 'tailwindcss';
 @import "flatpickr/dist/flatpickr.min.css";
 @import 'cropperjs/dist/cropper.css';
-/*@import "~tom-select/dist/scss/tom-select.bootstrap5";*/
+@import "tom-select/dist/css/tom-select.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
