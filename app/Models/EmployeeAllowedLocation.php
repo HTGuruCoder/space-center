@@ -28,6 +28,8 @@ class EmployeeAllowedLocation extends Model
         'longitude' => 'decimal:8',
         'valid_from' => 'date',
         'valid_until' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

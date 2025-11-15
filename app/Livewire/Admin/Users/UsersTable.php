@@ -99,23 +99,21 @@ final class UsersTable extends BasePowerGridComponent
                     ? asset('storage/' . $model->picture_url)
                     : asset('images/default-avatar.svg')
             ])->render())
-            ->add('full_name', fn(User $model) => $model->full_name)
             ->add('first_name')
             ->add('last_name')
             ->add('email')
             ->add('phone_number')
             ->add('country_code')
             ->add('country_display', fn(User $model) => $model->country_code
-                ? CountryEnum::from($model->country_code)->label()
-                : '-')
+                ? CountryEnum::from($model->country_code)->label() : null)
             ->add('currency_code')
             ->add('currency_display', fn(User $model) => $model->currency_code
                 ? CurrencyEnum::from($model->currency_code)->label()
-                : '-')
+                : null)
             ->add('timezone')
             ->add('timezone_display', fn(User $model) => $model->timezone
                 ? Timezone::formatLabel($model->timezone)
-                : '-')
+                : null)
             ->add('roles_display', fn(User $model) => $model->roles
                 ->map(function($role) {
                     // Try to get label from RoleEnum for core roles
@@ -146,15 +144,11 @@ final class UsersTable extends BasePowerGridComponent
         return [
             Column::add()
                 ->field('actions')
-                ->visibleInExport(false)
-                ->bodyAttribute('class', 'w-16')
-                ->headerAttribute('class', 'w-16'),
+                ->visibleInExport(false),
 
             Column::add()
                 ->field('picture_display')
-                ->visibleInExport(false)
-                ->bodyAttribute('class', 'w-16')
-                ->headerAttribute('class', 'w-16'),
+                ->visibleInExport(false),
 
             Column::make(__('First Name'), 'first_name')
                 ->sortable()
@@ -175,7 +169,7 @@ final class UsersTable extends BasePowerGridComponent
                 ->title(__('Roles'))
                 ->field('roles.name')
                 ->hidden()
-                ->visibleInExport(true),
+                ->visibleInExport(false),
 
             Column::make(__('Phone'), 'phone_number')
                 ->sortable(),

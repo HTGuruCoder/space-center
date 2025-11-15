@@ -72,14 +72,19 @@ final class AllowedLocationsTable extends BasePowerGridComponent
             ->add('actions', fn($model) => view('livewire.admin.employees.allowed-locations.allowed-locations-table.actions', [
                 'locationId' => $model->id
             ])->render())
-            ->add('employee_name', fn($model) => $model->employee?->user?->full_name ?? '-')
+            ->add('employee_first_name', fn($model) => $model->employee?->user?->first_name)
+            ->add('employee_last_name', fn($model) => $model->employee?->user?->last_name)
             ->add('name')
-            ->add('latitude')
-            ->add('longitude')
-            ->add('valid_from', fn($model) => $model->valid_from ? DateHelper::formatDate($model->valid_from) : '-')
-            ->add('valid_from_export', fn($model) => $model->valid_from?->format('Y-m-d') ?? '')
-            ->add('valid_until', fn($model) => $model->valid_until ? DateHelper::formatDate($model->valid_until) : '-')
-            ->add('valid_until_export', fn($model) => $model->valid_until?->format('Y-m-d') ?? '');
+            ->add('location', fn($model) => view('livewire.admin.employees.allowed-locations.allowed-locations-table.location', [
+                'latitude' => $model->latitude,
+                'longitude' => $model->longitude
+            ])->render())
+            ->add('latitude', fn($model) => $model->latitude)
+            ->add('longitude', fn($model) => $model->longitude)
+            ->add('valid_from', fn($model) => DateHelper::formatDate($model->valid_from))
+            ->add('valid_from_export', fn($model) => $model->valid_from?->format('Y-m-d'))
+            ->add('valid_until', fn($model) => DateHelper::formatDate($model->valid_until))
+            ->add('valid_until_export', fn($model) => $model->valid_until?->format('Y-m-d'));
 
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
             $fields->add($key, $callback);
@@ -99,7 +104,11 @@ final class AllowedLocationsTable extends BasePowerGridComponent
                 ->field('actions')
                 ->visibleInExport(false),
 
-            Column::make(__('Employee'), 'employee_name', 'employee_user.first_name')
+            Column::make(__('Employee First Name'), 'employee_first_name', 'employee_user.first_name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('Employee Last Name'), 'employee_last_name', 'employee_user.last_name')
                 ->sortable()
                 ->searchable(),
 
@@ -107,11 +116,16 @@ final class AllowedLocationsTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
+            Column::make(__('Location'), 'location')
+                ->visibleInExport(false),
+
             Column::make(__('Latitude'), 'latitude')
-                ->sortable(),
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Longitude'), 'longitude')
-                ->sortable(),
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Valid From'), 'valid_from')
                 ->sortable()
@@ -141,8 +155,11 @@ final class AllowedLocationsTable extends BasePowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('employee_name', 'employee_user.first_name')
-                ->placeholder(__('Search by employee name')),
+            Filter::inputText('employee_first_name', 'employee_user.first_name')
+                ->placeholder(__('Search by employee first name')),
+
+            Filter::inputText('employee_last_name', 'employee_user.last_name')
+                ->placeholder(__('Search by employee last name')),
 
             Filter::inputText('name', 'employee_allowed_locations.name')
                 ->placeholder(__('Search by location name')),
