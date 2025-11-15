@@ -79,6 +79,14 @@
                             required
                         />
 
+                        {{-- Country --}}
+                        <x-select
+                            label="{{ __('Country') }}"
+                            :options="CountryEnum::options()"
+                            wire:model="profileForm.country_code"
+                            placeholder="{{ __('Select a country') }}"
+                        />
+
                         {{-- Phone Number --}}
                         <x-input
                             label="{{ __('Phone Number') }}"
@@ -91,14 +99,6 @@
                             label="{{ __('Birth Date') }}"
                             type="date"
                             wire:model="profileForm.birth_date"
-                        />
-
-                        {{-- Country --}}
-                        <x-select
-                            label="{{ __('Country') }}"
-                            :options="CountryEnum::options()"
-                            wire:model="profileForm.country_code"
-                            placeholder="{{ __('Select a country') }}"
                         />
 
                         {{-- Timezone --}}
