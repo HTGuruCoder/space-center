@@ -64,7 +64,7 @@
                             @endif
 
                             {{-- Country --}}
-                            <x-choices-offline :options="$countries" wire:model="form.country_code" icon="mdi.flag"
+                            <x-choices-offline label="{{ __('Country') }}" :options="$countries" wire:model="form.country_code" icon="mdi.flag"
                                 placeholder="{{ __('Select country') }}" single searchable required />
 
                             {{-- Phone Number --}}
@@ -72,7 +72,7 @@
                                 placeholder="{{ __('+1234567890') }}" required />
 
                             {{-- Timezone --}}
-                            <x-choices-offline :options="$timezones" wire:model="form.timezone" icon="mdi.clock-outline"
+                            <x-choices-offline label="{{ __('Timezone') }}" :options="$timezones" wire:model="form.timezone" icon="mdi.clock-outline"
                                 placeholder="{{ __('Select timezone') }}" single searchable required />
 
                             {{-- Birth Date --}}
@@ -80,7 +80,7 @@
                                 icon="mdi.calendar" placeholder="{{ __('Select birth date') }}" />
 
                             {{-- Currency --}}
-                            <x-choices-offline :options="$currencies" wire:model="form.currency_code" icon="mdi.currency-usd"
+                            <x-choices-offline label="{{ __('Currency') }}" :options="$currencies" wire:model="form.currency_code" icon="mdi.currency-usd"
                                 placeholder="{{ __('Select currency') }}" single searchable required />
                         </div>
                     </div>
