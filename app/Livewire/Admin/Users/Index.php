@@ -14,10 +14,64 @@ class Index extends Component
 {
     use HasDeleteModal, Toast;
 
+    public bool $showBulkDeleteModal = false;
+    public array $selectedIds = [];
+
     #[On('delete-user')]
     public function handleDelete(string $userId): void
     {
         $this->confirmDelete($userId);
+    }
+
+    #[On('confirmBulkDelete')]
+    public function confirmBulkDelete(array $items): void
+    {
+        if (!auth()->user()->can($this->getDeletePermission())) {
+            $this->error(__('You do not have permission to delete these items.'));
+            return;
+        }
+
+        if (empty($items)) {
+            $this->error(__('No items selected.'));
+            return;
+        }
+
+        // Check if trying to delete own account
+        if (in_array(auth()->id(), $items)) {
+            $this->error(__('You cannot delete your own account.'));
+            return;
+        }
+
+        $this->selectedIds = $items;
+        $this->showBulkDeleteModal = true;
+    }
+
+    public function bulkDelete(): void
+    {
+        $this->authorize($this->getDeletePermission());
+
+        if (!empty($this->selectedIds)) {
+            // Double check own account
+            if (in_array(auth()->id(), $this->selectedIds)) {
+                $this->error(__('You cannot delete your own account.'));
+                $this->showBulkDeleteModal = false;
+                return;
+            }
+
+            $count = count($this->selectedIds);
+            User::destroy($this->selectedIds);
+
+            $this->success(__(':count item(s) deleted successfully.', ['count' => $count]));
+            $this->showBulkDeleteModal = false;
+            $this->selectedIds = [];
+            $this->dispatch('pg:eventRefresh-users-table');
+        }
+    }
+
+    public function cancelBulkDelete(): void
+    {
+        $this->showBulkDeleteModal = false;
+        $this->selectedIds = [];
     }
 
     #[On('delete-photo')]

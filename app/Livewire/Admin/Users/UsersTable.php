@@ -10,7 +10,6 @@ use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\Role;
 use App\Models\User;
-use App\Traits\Livewire\HasBulkDelete;
 use App\Utils\Timezone;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
@@ -22,24 +21,22 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class UsersTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'users-table';
     public string $sortField = 'users.created_at';
+
+    #[On('bulkDelete.users-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
 
     protected function getExportFileName(): string
     {
         return 'users-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_USERS->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return User::class;
     }
 
     public function header(): array
@@ -47,7 +44,7 @@ final class UsersTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_USERS->value
             ),
         ];
     }
@@ -60,48 +57,6 @@ final class UsersTable extends BasePowerGridComponent
                 ->when(fn($user) => $user->id === auth()->id())
                 ->hide(),
         ];
-    }
-
-    /**
-     * Override bulk delete to protect current user
-     */
-    #[On('bulkDelete.{tableName}')]
-    public function bulkDelete(): void
-    {
-        $this->authorize($this->getDeletePermission());
-
-        if ($this->checkboxValues) {
-            // Get all selected users
-            $selectedUsers = User::whereIn('id', $this->checkboxValues)->get();
-
-            $currentUserId = auth()->id();
-            $protectedUsers = [];
-            $deletableUserIds = [];
-
-            foreach ($selectedUsers as $user) {
-                // Protect current logged-in user
-                if ($user->id === $currentUserId) {
-                    $protectedUsers[] = $user->full_name;
-                    continue;
-                }
-
-                $deletableUserIds[] = $user->id;
-            }
-
-            // Delete allowed users
-            if (!empty($deletableUserIds)) {
-                User::destroy($deletableUserIds);
-                $this->success(__(':count user(s) deleted successfully.', ['count' => count($deletableUserIds)]));
-            }
-
-            // Show warning for protected users
-            if (!empty($protectedUsers)) {
-                $this->warning(__('Cannot delete your own account: :users', ['users' => implode(', ', $protectedUsers)]));
-            }
-
-            $this->js('window.pgBulkActions.clearAll()');
-            $this->dispatch('pg:eventRefresh-' . $this->tableName);
-        }
     }
 
     public function datasource(): Builder
