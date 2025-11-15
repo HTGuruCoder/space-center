@@ -39,6 +39,83 @@
                             >
                                 <img src="{{ $form->picture ?? asset('images/default-avatar.svg') }}" class="h-40 rounded-lg" />
                             </x-file>
+
+                            {{-- Photo Examples --}}
+                            <div class="mt-6 p-4 bg-base-200 rounded-lg">
+                                <h3 class="font-semibold mb-4 flex items-center gap-2">
+                                    <x-icon name="mdi.information" class="w-5 h-5 text-info" />
+                                    {{ __('Photo Guidelines') }}
+                                </h3>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {{-- Good Photos --}}
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-2 text-success font-medium">
+                                            <x-icon name="mdi.check-circle" class="w-5 h-5" />
+                                            {{ __('Good Photos') }}
+                                        </div>
+                                        <ul class="space-y-2 text-sm">
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Face clearly visible and centered') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Good lighting (avoid shadows)') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Neutral background') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Looking straight at camera') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Passport-style or professional headshot') }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    {{-- Bad Photos --}}
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-2 text-error font-medium">
+                                            <x-icon name="mdi.close-circle" class="w-5 h-5" />
+                                            {{ __('Avoid') }}
+                                        </div>
+                                        <ul class="space-y-2 text-sm">
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Sunglasses or face covered') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Blurry or low quality images') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Group photos or multiple people') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Side angle or profile shots') }}</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                                <span>{{ __('Heavy filters or edited photos') }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 p-3 bg-info/10 border border-info/30 rounded-lg">
+                                    <p class="text-sm flex items-start gap-2">
+                                        <x-icon name="mdi.lightbulb" class="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
+                                        <span>{{ __('Tip: A clear, well-lit photo will ensure accurate face recognition for attendance tracking.') }}</span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <x-input
@@ -46,7 +123,7 @@
                             wire:model="form.first_name"
                             icon="mdi.account"
                             placeholder="{{ __('Herman') }}"
-                            inline
+                            required
                         />
 
                         <x-input
@@ -54,7 +131,7 @@
                             wire:model="form.last_name"
                             icon="mdi.account"
                             placeholder="{{ __('TCHETCHE') }}"
-                            inline
+                            required
                         />
 
                         <x-input
@@ -62,7 +139,7 @@
                             wire:model="form.email"
                             icon="mdi.email"
                             placeholder="{{ __('john.doe@example.com') }}"
-                            inline
+                            required
                             class="md:col-span-2"
                         />
 
@@ -72,7 +149,7 @@
                             icon="mdi.lock"
                             placeholder="{{ __('Minimum 8 characters') }}"
                             right
-                            inline
+                            required
                         />
 
                         <x-password
@@ -81,16 +158,18 @@
                             icon="mdi.lock-check"
                             placeholder="{{ __('Re-enter password') }}"
                             right
-                            inline
+                            required
                         />
 
                         <x-choices-offline
+                            label="{{ __('Country') }}"
                             :options="$countries"
                             wire:model="form.country_code"
                             icon="mdi.flag"
                             placeholder="{{ __('Select country') }}"
                             single
                             searchable
+                            required
                         />
 
                         <x-input
@@ -98,17 +177,18 @@
                             wire:model="form.phone_number"
                             icon="mdi.phone"
                             placeholder="{{ __('+1234567890') }}"
-                            inline
-                            class="md:col-span-2"
+                            required
                         />
 
                         <x-choices-offline
+                            label="{{ __('Timezone') }}"
                             :options="$timezones"
                             wire:model="form.timezone"
                             icon="mdi.clock-outline"
                             placeholder="{{ __('Select timezone') }}"
                             single
                             searchable
+                            required
                         />
 
                         <x-datepicker
@@ -116,17 +196,17 @@
                             wire:model="form.birth_date"
                             icon="mdi.calendar"
                             placeholder="{{ __('Select birth date') }}"
-                            inline
                         />
 
-
                         <x-choices-offline
+                            label="{{ __('Currency') }}"
                             :options="$currencies"
                             wire:model="form.currency_code"
                             icon="mdi.currency-usd"
                             placeholder="{{ __('Select currency') }}"
                             single
                             searchable
+                            required
                         />
                     </div>
 
@@ -146,24 +226,29 @@
                 <x-step step="2" text="{{ __('Store Information') }}">
                     <div class="grid grid-cols-1 gap-6 mt-8">
                         <x-choices-offline
+                            label="{{ __('Store') }}"
                             :options="$stores"
                             wire:model="form.store_id"
                             icon="mdi.store"
                             placeholder="{{ __('Select store') }}"
                             single
                             searchable
+                            required
                         />
 
                         <x-choices-offline
+                            label="{{ __('Position') }}"
                             :options="$positions"
                             wire:model="form.position_id"
                             icon="mdi.briefcase"
                             placeholder="{{ __('Select position') }}"
                             single
                             searchable
+                            required
                         />
 
                         <x-choices-offline
+                            label="{{ __('Manager') }}"
                             :options="$managers"
                             wire:model="form.manager_id"
                             icon="mdi.account-tie"
@@ -198,19 +283,23 @@
                 <x-step step="3" text="{{ __('Contract Information') }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <x-choices-offline
+                            label="{{ __('Contract Type') }}"
                             :options="$contractTypes"
                             wire:model.live="form.type"
                             icon="mdi.file-document"
                             placeholder="{{ __('Select contract type') }}"
                             single
+                            required
                         />
 
                         <x-choices-offline
+                            label="{{ __('Compensation Unit') }}"
                             :options="$compensationUnits"
                             wire:model="form.compensation_unit"
                             icon="mdi.clock-time-four"
                             placeholder="{{ __('Select compensation unit') }}"
                             single
+                            required
                         />
 
                         <x-input
@@ -219,10 +308,10 @@
                             type="number"
                             step="0.01"
                             placeholder="{{ __('0.00') }}"
-                            inline
                             money
                             locale="{{ app()->getLocale() }}"
                             prefix="{{ $form->currency_code ?? 'USD' }}"
+                            required
                         />
 
                         <x-datepicker
@@ -230,7 +319,7 @@
                             wire:model="form.started_at"
                             icon="mdi.calendar-start"
                             placeholder="{{ __('Select start date') }}"
-                            inline
+                            required
                         />
 
                         @if($form->type === ContractTypeEnum::FIXED_TERM->value)
@@ -239,7 +328,7 @@
                                 wire:model="form.ended_at"
                                 icon="mdi.calendar-end"
                                 placeholder="{{ __('Select end date') }}"
-                                inline
+                                required
                             />
                         @endif
 
@@ -249,7 +338,6 @@
                             type="number"
                             icon="mdi.timer-sand"
                             placeholder="{{ __('90') }}"
-                            inline
                         />
 
                         <x-input
@@ -257,7 +345,6 @@
                             wire:model="form.bank_name"
                             icon="mdi.bank"
                             placeholder="{{ __('Bank of America') }}"
-                            inline
                         />
 
                         <x-input
@@ -265,7 +352,6 @@
                             wire:model="form.bank_account_number"
                             icon="mdi.credit-card"
                             placeholder="{{ __('1234567890') }}"
-                            inline
                         />
 
                         <div class="md:col-span-2">

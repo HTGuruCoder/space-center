@@ -12,7 +12,7 @@
                 wire:model="form.email"
                 icon="mdi.email"
                 placeholder="{{ __('Enter your email') }}"
-                inline
+                required
             />
 
             <x-password
@@ -21,7 +21,7 @@
                 icon="mdi.lock"
                 placeholder="{{ __('Enter your password') }}"
                 right
-                inline
+                required
             />
 
             <x-checkbox
