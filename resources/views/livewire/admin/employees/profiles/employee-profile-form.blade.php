@@ -35,7 +35,8 @@
                             {{-- Compensation Amount --}}
                             <x-input label="{{ __('Compensation Amount') }}" wire:model="form.compensation_amount"
                                 type="number" step="0.01" min="0" icon="mdi.currency-usd"
-                                placeholder="{{ __('0.00') }}" required />
+                                placeholder="{{ __('0.00') }}" required
+                                suffix="{{ $user ? \App\Enums\CurrencyEnum::from($user->currency_code)->symbol() : '' }}" />
 
                             {{-- Compensation Unit --}}
                             <x-choices-offline label="{{ __('Compensation Unit') }}" :options="$compensationUnits"
@@ -57,25 +58,6 @@
                                 placeholder="{{ __('0') }}" />
 
                             {{-- Contract File --}}
-                            <div class="md:col-span-2">
-                                <x-file wire:model="form.contract_file"
-                                    accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                    hint="{{ __('Optional. PDF or Word document. Max size: 10MB') }}"
-                                    change-text="{{ __('Change') }}">
-                                    @if ($form->getContractFileUrl())
-                                        <a href="{{ $form->getContractFileUrl() }}" target="_blank"
-                                            class="link link-primary">
-                                            {{ __('View Current Contract') }}
-                                        </a>
-                                    @else
-                                        <span class="text-base-content/70">{{ __('No contract file uploaded') }}</span>
-                                    @endif
-                                </x-file>
-
-
-
-                            </div>
-
                             <div class="md:col-span-2">
                                 <div class="fieldset-legend text-xs mb-0.5">{{ __('Contract File (optional)') }}</div>
 

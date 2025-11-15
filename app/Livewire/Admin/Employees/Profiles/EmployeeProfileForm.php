@@ -26,6 +26,8 @@ class EmployeeProfileForm extends Component
     public bool $showEmploymentInfo = true;
     public bool $showBankDetails = true;
 
+    public ?User $user = null;
+
     #[On('complete-employee-profile')]
     public function handleComplete(string $userId): void
     {
@@ -44,6 +46,7 @@ class EmployeeProfileForm extends Component
             return;
         }
 
+        $this->user = $user;
         $this->form->setUserId($userId);
         $this->openDrawer();
     }
@@ -60,6 +63,7 @@ class EmployeeProfileForm extends Component
             return;
         }
 
+        $this->user = $user;
         $this->form->setEmployee($user->employee);
         $this->openDrawer();
     }
@@ -127,6 +131,7 @@ class EmployeeProfileForm extends Component
     public function closeDrawer(): void
     {
         $this->showDrawer = false;
+        $this->user = null;
         $this->form->resetForm();
         $this->showEmploymentInfo = true;
         $this->showBankDetails = true;
