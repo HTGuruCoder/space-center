@@ -47,6 +47,78 @@
                                     {{ __('Photo Guidelines') }}
                                 </h3>
 
+                                {{-- Visual Examples with Images --}}
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                                    {{-- Good Example 1 --}}
+                                    <div class="text-center">
+                                        <div class="relative">
+                                            <div class="aspect-square bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border-2 border-success flex items-center justify-center">
+                                                <div class="text-center p-4">
+                                                    <x-icon name="mdi.account-circle" class="w-16 h-16 text-success mx-auto mb-2" />
+                                                    <p class="text-xs font-medium text-success">{{ __('Front facing') }}</p>
+                                                    <p class="text-xs text-success/70">{{ __('Clear view') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute -top-2 -right-2 bg-success rounded-full p-1">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-white" />
+                                            </div>
+                                        </div>
+                                        <p class="text-xs mt-2 text-success font-medium">{{ __('Good') }}</p>
+                                    </div>
+
+                                    {{-- Good Example 2 --}}
+                                    <div class="text-center">
+                                        <div class="relative">
+                                            <div class="aspect-square bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border-2 border-success flex items-center justify-center">
+                                                <div class="text-center p-4">
+                                                    <x-icon name="mdi.white-balance-sunny" class="w-16 h-16 text-success mx-auto mb-2" />
+                                                    <p class="text-xs font-medium text-success">{{ __('Well lit') }}</p>
+                                                    <p class="text-xs text-success/70">{{ __('Good lighting') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute -top-2 -right-2 bg-success rounded-full p-1">
+                                                <x-icon name="mdi.check" class="w-4 h-4 text-white" />
+                                            </div>
+                                        </div>
+                                        <p class="text-xs mt-2 text-success font-medium">{{ __('Good') }}</p>
+                                    </div>
+
+                                    {{-- Bad Example 1 --}}
+                                    <div class="text-center">
+                                        <div class="relative">
+                                            <div class="aspect-square bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-lg border-2 border-error flex items-center justify-center">
+                                                <div class="text-center p-4">
+                                                    <x-icon name="mdi.sunglasses" class="w-16 h-16 text-error mx-auto mb-2" />
+                                                    <p class="text-xs font-medium text-error">{{ __('Sunglasses') }}</p>
+                                                    <p class="text-xs text-error/70">{{ __('Face hidden') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute -top-2 -right-2 bg-error rounded-full p-1">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-white" />
+                                            </div>
+                                        </div>
+                                        <p class="text-xs mt-2 text-error font-medium">{{ __('Bad') }}</p>
+                                    </div>
+
+                                    {{-- Bad Example 2 --}}
+                                    <div class="text-center">
+                                        <div class="relative">
+                                            <div class="aspect-square bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-lg border-2 border-error flex items-center justify-center">
+                                                <div class="text-center p-4">
+                                                    <x-icon name="mdi.account-multiple" class="w-16 h-16 text-error mx-auto mb-2" />
+                                                    <p class="text-xs font-medium text-error">{{ __('Group photo') }}</p>
+                                                    <p class="text-xs text-error/70">{{ __('Multiple faces') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute -top-2 -right-2 bg-error rounded-full p-1">
+                                                <x-icon name="mdi.close" class="w-4 h-4 text-white" />
+                                            </div>
+                                        </div>
+                                        <p class="text-xs mt-2 text-error font-medium">{{ __('Bad') }}</p>
+                                    </div>
+                                </div>
+
+                                {{-- Detailed Guidelines --}}
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {{-- Good Photos --}}
                                     <div class="space-y-3">
