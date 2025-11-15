@@ -2,9 +2,6 @@
 
 namespace App\Livewire\Admin\Employees\Profiles;
 
-use App\Enums\CompensationUnitEnum;
-use App\Enums\ContractTypeEnum;
-use App\Enums\CurrencyEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\RoleEnum;
 use App\Helpers\PowerGridHelper;
@@ -13,6 +10,7 @@ use App\Models\Employee;
 use App\Models\User;
 use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Number;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
@@ -107,7 +105,7 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
             ->add('manager_last_name', fn(User $model) => $model->employee?->manager?->user?->last_name ?? '-')
             ->add('contract_type', fn(User $model) => $model->employee?->type?->label() ?? '-')
             ->add('compensation_amount', fn(User $model) => $model->employee
-                ? number_format($model->employee->compensation_amount, 2) . ' ' . CurrencyEnum::from($model->currency_code)->symbol()
+                ? Number::currency($model->employee->compensation_amount, in: $model->currency_code, locale: app()->getLocale())
                 : '-')
             ->add('compensation_unit', fn(User $model) => $model->employee?->compensation_unit?->label() ?? '-')
             ->add('started_at', fn(User $model) => $model->employee?->started_at?->format('Y-m-d') ?? '-')
