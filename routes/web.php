@@ -116,8 +116,8 @@ Route::group(
                         ->middleware('permission:' . PermissionEnum::VIEW_ALLOWED_LOCATIONS->value)
                         ->name('allowed-locations');
 
-                    // Employees list
-                    Route::get('/', \App\Livewire\Admin\Employees\EmployeesList::class)
+                    // Employee Profiles list
+                    Route::get('/', \App\Livewire\Admin\Employees\Profiles\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_EMPLOYEES->value)
                         ->name('list');
 

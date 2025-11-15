@@ -82,6 +82,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the employee profile for this user.
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    /**
+     * Check if user has a complete employee profile.
+     */
+    public function hasCompleteEmployeeProfile(): bool
+    {
+        return $this->employee !== null;
+    }
+
+    /**
      * Get the users created by this user.
      */
     public function createdUsers()
