@@ -31,8 +31,8 @@ class WorkPeriodForm extends Form
         $this->workPeriodId = $workPeriod->id;
         $this->employee_id = $workPeriod->employee_id;
         $this->date = $workPeriod->date;
-        $this->clock_in_time = $workPeriod->clock_in_time;
-        $this->clock_out_time = $workPeriod->clock_out_time;
+        $this->clock_in_time = $workPeriod->clock_in_time?->format('H:i');
+        $this->clock_out_time = $workPeriod->clock_out_time?->format('H:i');
     }
 
     public function resetForm(): void
