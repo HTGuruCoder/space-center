@@ -135,12 +135,11 @@ class EmployeeProfileForm extends Component
     public function render()
     {
         return view('livewire.admin.employees.profiles.employee-profile-form', [
-            'positions' => Position::orderBy('name')->get(['id', 'name'])->map(fn($p) => ['value' => $p->id, 'label' => $p->name])->toArray(),
-            'stores' => Store::orderBy('name')->get(['id', 'name'])->map(fn($s) => ['value' => $s->id, 'label' => $s->name])->toArray(),
+            'positions' => Position::orderBy('name')->get(['id', 'name'])->toArray(),
+            'stores' => Store::orderBy('name')->get(['id', 'name'])->toArray(),
             'managers' => Employee::with('user:id,first_name,last_name')
-                ->whereNull('stopped_at')
                 ->get()
-                ->map(fn($e) => ['value' => $e->id, 'label' => $e->user->full_name])
+                ->map(fn($e) => ['id' => $e->id, 'name' => $e->user->full_name])
                 ->toArray(),
             'contractTypes' => ContractTypeEnum::options(),
             'compensationUnits' => CompensationUnitEnum::options(),

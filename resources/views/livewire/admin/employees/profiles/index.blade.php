@@ -1,15 +1,19 @@
 @use(App\Enums\PermissionEnum)
 
 <div>
-    {{-- Page Header --}}
-    <x-header title="{{ __('Employee Profiles') }}" separator progress-indicator>
-        <x-slot:middle class="!justify-end">
-            {{-- No create button - profiles are completed from the table actions --}}
-        </x-slot:middle>
-    </x-header>
+    {{-- Header --}}
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-2xl font-bold">{{ __('Employee Profiles') }}</h1>
+            <p class="text-base-content/70 mt-1">{{ __('Manage employee profiles and contracts') }}</p>
+        </div>
+        {{-- No create button - profiles are completed from the table actions --}}
+    </div>
 
-    {{-- Employee Profiles Table --}}
-    <livewire:admin.employees.profiles.employee-profiles-table />
+    {{-- PowerGrid Table --}}
+    <div class="bg-base-100 shadow-xl rounded-[10px] px-2 py-4">
+        <livewire:admin.employees.profiles.employee-profiles-table />
+    </div>
 
     {{-- Employee Profile Form Drawer --}}
     <livewire:admin.employees.profiles.employee-profile-form />

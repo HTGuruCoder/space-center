@@ -45,7 +45,7 @@ class EmployeeProfileForm extends Form
             'started_at' => 'required|date',
             'ended_at' => 'nullable|date|after:started_at',
             'probation_period' => 'nullable|integer|min:0',
-            'contract_file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'contract_file' => 'nullable|file|mimes:pdf|max:5120',
             'bank_name' => 'nullable|string|max:255',
             'bank_account_number' => 'nullable|string|max:255',
         ];
@@ -64,8 +64,8 @@ class EmployeeProfileForm extends Form
         $this->type = $employee->type?->value;
         $this->compensation_amount = $employee->compensation_amount;
         $this->compensation_unit = $employee->compensation_unit?->value;
-        $this->started_at = $employee->started_at?->format('Y-m-d');
-        $this->ended_at = $employee->ended_at?->format('Y-m-d');
+        $this->started_at = $employee->started_at;
+        $this->ended_at = $employee->ended_at;
         $this->probation_period = $employee->probation_period;
         $this->contract_file_url = $employee->contract_file_url;
         $this->bank_name = $employee->bank_name;
@@ -86,7 +86,7 @@ class EmployeeProfileForm extends Form
     public function getContractFileUrl()
     {
         if ($this->contract_file instanceof TemporaryUploadedFile) {
-            return $this->contract_file->temporaryUrl();
+            return $this->contract_file;
         }
 
         return $this->contract_file_url ? asset('storage/' . $this->contract_file_url) : null;
