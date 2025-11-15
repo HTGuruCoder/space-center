@@ -23,6 +23,8 @@ class EmployeeWorkPeriod extends Model
 
     protected $casts = [
         'date' => 'date',
+        'clock_in_time' => 'datetime:H:i',
+        'clock_out_time' => 'datetime:H:i',
     ];
 
     /**

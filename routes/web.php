@@ -102,22 +102,22 @@ Route::group(
                     // IMPORTANT: Specific routes BEFORE dynamic routes to avoid conflicts
 
                     // Work Periods (global list)
-                    Route::get('/work-periods', \App\Livewire\Admin\Employees\WorkPeriods::class)
+                    Route::get('/work-periods', \App\Livewire\Admin\Employees\WorkPeriods\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_WORK_PERIODS->value)
                         ->name('work-periods');
 
                     // Absences (global list)
-                    Route::get('/absences', \App\Livewire\Admin\Employees\Absences::class)
+                    Route::get('/absences', \App\Livewire\Admin\Employees\Absences\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_ABSENCES->value)
                         ->name('absences');
 
                     // Allowed Locations (global list)
-                    Route::get('/allowed-locations', \App\Livewire\Admin\Employees\AllowedLocations::class)
+                    Route::get('/allowed-locations', \App\Livewire\Admin\Employees\AllowedLocations\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_ALLOWED_LOCATIONS->value)
                         ->name('allowed-locations');
 
                     // Employee Profiles list
-                    Route::get('/', \App\Livewire\Admin\Employees\Profiles\Index::class)
+                    Route::get('/profiles', \App\Livewire\Admin\Employees\Profiles\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_EMPLOYEES->value)
                         ->name('list');
 

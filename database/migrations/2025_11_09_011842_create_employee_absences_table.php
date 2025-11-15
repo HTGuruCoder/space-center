@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('absence_type_id')->constrained('absence_types')->cascadeOnDelete();
             $table->date('date');
             $table->time('start_time');
-            $table->time('end_time')->nullable();
+            $table->time('end_time');
             $table->text('reason')->nullable();
             $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();

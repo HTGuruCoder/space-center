@@ -25,6 +25,8 @@ class EmployeeAbsence extends Model
 
     protected $casts = [
         'date' => 'date',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
     /**
