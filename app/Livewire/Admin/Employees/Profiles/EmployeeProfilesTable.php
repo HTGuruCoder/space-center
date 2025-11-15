@@ -81,6 +81,10 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
     public function relationSearch(): array
     {
         return [
+            'employee' => ['compensation_amount'],
+            'employee.position' => ['name'],
+            'employee.store' => ['name'],
+            'employee.manager.user' => ['first_name', 'last_name'],
             ...PowerGridHelper::getCreatorRelationSearch(),
         ];
     }
