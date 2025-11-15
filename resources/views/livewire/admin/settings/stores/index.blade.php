@@ -31,7 +31,6 @@
     />
 
     <x-powergrid.bulk-delete-modal
-        target="stores-table"
         :title="__('Delete Selected Stores')"
         :message="__('Are you sure you want to delete the selected stores? This action cannot be undone.')"
     />
