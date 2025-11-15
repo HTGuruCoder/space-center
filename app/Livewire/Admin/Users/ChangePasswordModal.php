@@ -16,6 +16,7 @@ class ChangePasswordModal extends Component
     public bool $showModal = false;
     public ?string $userId = null;
     public string $userName = '';
+    public string $userEmail = '';
     public string $new_password = '';
     public string $new_password_confirmation = '';
 
@@ -28,6 +29,7 @@ class ChangePasswordModal extends Component
 
         $this->userId = $user->id;
         $this->userName = $user->full_name;
+        $this->userEmail = $user->email;
         $this->showModal = true;
     }
 
@@ -56,7 +58,7 @@ class ChangePasswordModal extends Component
     public function closeModal(): void
     {
         $this->showModal = false;
-        $this->reset(['userId', 'userName', 'new_password', 'new_password_confirmation']);
+        $this->reset(['userId', 'userName', 'userEmail', 'new_password', 'new_password_confirmation']);
         $this->resetValidation();
     }
 

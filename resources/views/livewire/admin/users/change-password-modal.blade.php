@@ -1,6 +1,9 @@
 <x-modal wire:model="showModal" title="{{ __('Change Password for :name', ['name' => $userName]) }}" separator>
     <x-form wire:submit="updatePassword">
         <div class="space-y-6">
+            {{-- Hidden email field for accessibility --}}
+            <input type="email" wire:model="userEmail" autocomplete="username" class="hidden" aria-hidden="true" />
+
             {{-- New Password --}}
             <x-password
                 label="{{ __('New Password') }}"
