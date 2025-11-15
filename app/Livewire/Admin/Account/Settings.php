@@ -99,7 +99,11 @@ class Settings extends Component
 
     public function render()
     {
-        return view('livewire.admin.account.settings')
+        return view('livewire.admin.account.settings', [
+            'timezones' => \App\Utils\Timezone::options(),
+            'countries' => \App\Enums\CountryEnum::options(),
+            'currencies' => \App\Enums\CurrencyEnum::options(),
+        ])
             ->layout('components.layouts.admin')
             ->title(__('Account Settings'));
     }

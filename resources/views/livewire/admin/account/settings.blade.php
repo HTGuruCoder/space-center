@@ -1,6 +1,3 @@
-@use(App\Enums\CountryEnum)
-@use(App\Enums\CurrencyEnum)
-@use(App\Utils\Timezone)
 @use(App\Helpers\DateHelper)
 
 <div>
@@ -82,7 +79,7 @@
                         {{-- Country --}}
                         <x-select
                             label="{{ __('Country') }}"
-                            :options="CountryEnum::options()"
+                            :options="$countries"
                             wire:model="profileForm.country_code"
                             placeholder="{{ __('Select a country') }}"
                         />
@@ -104,7 +101,7 @@
                         {{-- Timezone --}}
                         <x-select
                             label="{{ __('Timezone') }}"
-                            :options="Timezone::groupedByRegion()"
+                            :options="$timezones"
                             wire:model="profileForm.timezone"
                             required
                         />
@@ -112,7 +109,7 @@
                         {{-- Currency --}}
                         <x-select
                             label="{{ __('Currency') }}"
-                            :options="CurrencyEnum::options()"
+                            :options="$currencies"
                             wire:model="profileForm.currency_code"
                             required
                         />
