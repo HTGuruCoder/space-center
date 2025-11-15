@@ -87,9 +87,9 @@ final class WorkPeriodsTable extends BasePowerGridComponent
             ->add('date', fn($model) => DateHelper::formatDate($model->date))
             ->add('date_export', fn($model) => DateHelper::formatDate($model->date, null, 'Y-m-d'))
             ->add('clock_in_time', fn($model) => DateHelper::formatTime($model->clock_in_time, null))
-            ->add('clock_in_time_export', fn($model) => DateHelper::formatTime($model->clock_in_time, 'UTC', 'h:i A'))
+            ->add('clock_in_time_export', fn($model) => DateHelper::formatTime($model->clock_in_time, 'UTC', 'H:i'))
             ->add('clock_out_time', fn($model) => DateHelper::formatTime($model->clock_out_time, null))
-            ->add('clock_out_time_export', fn($model) => DateHelper::formatTime($model->clock_out_time, 'UTC', 'h:i A'));
+            ->add('clock_out_time_export', fn($model) => DateHelper::formatTime($model->clock_out_time, 'UTC', 'H:i'));
 
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
             $fields->add($key, $callback);
@@ -125,7 +125,7 @@ final class WorkPeriodsTable extends BasePowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('Date'), 'date')
+            Column::make(__('Date'), 'date', 'employee_work_periods.date')
                 ->sortable()
                 ->visibleInExport(false),
 
@@ -135,7 +135,7 @@ final class WorkPeriodsTable extends BasePowerGridComponent
                 ->hidden()
                 ->visibleInExport(true),
 
-            Column::make(__('Clock In Time'), 'clock_in_time')
+            Column::make(__('Clock In Time'), 'clock_in_time', 'employee_work_periods.clock_in_time')
                 ->sortable()
                 ->visibleInExport(false),
 
@@ -145,7 +145,7 @@ final class WorkPeriodsTable extends BasePowerGridComponent
                 ->hidden()
                 ->visibleInExport(true),
 
-            Column::make(__('Clock Out Time'), 'clock_out_time')
+            Column::make(__('Clock Out Time'), 'clock_out_time', 'employee_work_periods.clock_out_time')
                 ->sortable()
                 ->visibleInExport(false),
 
