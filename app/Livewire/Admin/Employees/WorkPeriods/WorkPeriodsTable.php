@@ -7,6 +7,8 @@ use App\Helpers\DateHelper;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\EmployeeWorkPeriod;
+use App\Models\Position;
+use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -50,9 +52,13 @@ final class WorkPeriodsTable extends BasePowerGridComponent
             ->select('employee_work_periods.*')
             ->leftJoin('employees', 'employee_work_periods.employee_id', '=', 'employees.id')
             ->leftJoin('users as employee_user', 'employees.user_id', '=', 'employee_user.id')
+            ->leftJoin('stores', 'employees.store_id', '=', 'stores.id')
+            ->leftJoin('positions', 'employees.position_id', '=', 'positions.id')
             ->leftJoin('users as creator', 'employee_work_periods.created_by', '=', 'creator.id')
             ->with([
                 'employee.user:id,first_name,last_name',
+                'employee.store:id,name',
+                'employee.position:id,name',
                 'creator:id,first_name,last_name',
             ]);
     }
@@ -61,6 +67,8 @@ final class WorkPeriodsTable extends BasePowerGridComponent
     {
         return [
             'employee.user' => ['first_name', 'last_name'],
+            'employee.store' => ['name'],
+            'employee.position' => ['name'],
             ...PowerGridHelper::getCreatorRelationSearch(),
         ];
     }
@@ -72,14 +80,16 @@ final class WorkPeriodsTable extends BasePowerGridComponent
             ->add('actions', fn($model) => view('livewire.admin.employees.work-periods.work-periods-table.actions', [
                 'workPeriodId' => $model->id
             ])->render())
-            ->add('employee_first_name', fn($model) => $model->employee?->user?->first_name ?? '-')
-            ->add('employee_last_name', fn($model) => $model->employee?->user?->last_name ?? '-')
+            ->add('employee_first_name', fn($model) => $model->employee?->user?->first_name)
+            ->add('employee_last_name', fn($model) => $model->employee?->user?->last_name)
+            ->add('store_name', fn($model) => $model->employee?->store?->name)
+            ->add('position_name', fn($model) => $model->employee?->position?->name)
             ->add('date', fn($model) => DateHelper::formatDate($model->date))
-            ->add('date_export', fn($model) => $model->date?->format('Y-m-d') ?? '')
-            ->add('clock_in_time', fn($model) => $model->clock_in_time ? $model->clock_in_time->format('H:i') : '-')
-            ->add('clock_in_time_export', fn($model) => $model->clock_in_time?->format('H:i') ?? '')
-            ->add('clock_out_time', fn($model) => $model->clock_out_time ? $model->clock_out_time->format('H:i') : '-')
-            ->add('clock_out_time_export', fn($model) => $model->clock_out_time?->format('H:i') ?? '');
+            ->add('date_export', fn($model) => DateHelper::formatDate($model->date, null, 'Y-m-d'))
+            ->add('clock_in_time', fn($model) => DateHelper::formatTime($model->clock_in_time, null))
+            ->add('clock_in_time_export', fn($model) => DateHelper::formatTime($model->clock_in_time, 'UTC', 'h:i A'))
+            ->add('clock_out_time', fn($model) => DateHelper::formatTime($model->clock_out_time, null))
+            ->add('clock_out_time_export', fn($model) => DateHelper::formatTime($model->clock_out_time, 'UTC', 'h:i A'));
 
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
             $fields->add($key, $callback);
@@ -104,6 +114,14 @@ final class WorkPeriodsTable extends BasePowerGridComponent
                 ->searchable(),
 
             Column::make(__('Employee Last Name'), 'employee_last_name', 'employee_user.last_name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('Store'), 'store_name', 'stores.name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('Position'), 'position_name', 'positions.name')
                 ->sortable()
                 ->searchable(),
 
@@ -150,6 +168,16 @@ final class WorkPeriodsTable extends BasePowerGridComponent
 
             Filter::inputText('employee_last_name', 'employee_user.last_name')
                 ->placeholder(__('Search by employee last name')),
+
+            Filter::select('store_name', 'employees.store_id')
+                ->dataSource(Store::orderBy('name')->get())
+                ->optionLabel('name')
+                ->optionValue('id'),
+
+            Filter::select('position_name', 'employees.position_id')
+                ->dataSource(Position::orderBy('name')->get())
+                ->optionLabel('name')
+                ->optionValue('id'),
 
             Filter::datepicker('date', 'employee_work_periods.date'),
 

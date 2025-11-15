@@ -79,4 +79,21 @@ class DateHelper
 
         return $date->timezone($timezone)->format($format);
     }
+
+    /**
+     * Format a time (without date) with user's timezone and locale.
+     */
+    public static function formatTime($time, ?string $timezone = null, ?string $format = null): ?string
+    {
+        if (!$time) {
+            return null;
+        }
+
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+        $timezone = $timezone ?? ($user?->timezone ?? config('app.timezone'));
+        $format = $format ?? self::getTimeFormat();
+
+        return $time->timezone($timezone)->format($format);
+    }
 }
