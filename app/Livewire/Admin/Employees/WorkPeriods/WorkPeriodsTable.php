@@ -72,7 +72,8 @@ final class WorkPeriodsTable extends BasePowerGridComponent
             ->add('actions', fn($model) => view('livewire.admin.employees.work-periods.work-periods-table.actions', [
                 'workPeriodId' => $model->id
             ])->render())
-            ->add('employee_name', fn($model) => $model->employee?->user?->full_name ?? '-')
+            ->add('employee_first_name', fn($model) => $model->employee?->user?->first_name ?? '-')
+            ->add('employee_last_name', fn($model) => $model->employee?->user?->last_name ?? '-')
             ->add('date', fn($model) => DateHelper::formatDate($model->date))
             ->add('date_export', fn($model) => $model->date?->format('Y-m-d') ?? '')
             ->add('clock_in_time', fn($model) => $model->clock_in_time ? $model->clock_in_time->format('H:i') : '-')
@@ -98,7 +99,11 @@ final class WorkPeriodsTable extends BasePowerGridComponent
                 ->field('actions')
                 ->visibleInExport(false),
 
-            Column::make(__('Employee'), 'employee_name', 'employee_user.first_name')
+            Column::make(__('Employee First Name'), 'employee_first_name', 'employee_user.first_name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('Employee Last Name'), 'employee_last_name', 'employee_user.last_name')
                 ->sortable()
                 ->searchable(),
 
@@ -140,8 +145,11 @@ final class WorkPeriodsTable extends BasePowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('employee_name', 'employee_user.first_name')
-                ->placeholder(__('Search by employee name')),
+            Filter::inputText('employee_first_name', 'employee_user.first_name')
+                ->placeholder(__('Search by employee first name')),
+
+            Filter::inputText('employee_last_name', 'employee_user.last_name')
+                ->placeholder(__('Search by employee last name')),
 
             Filter::datepicker('date', 'employee_work_periods.date'),
 
