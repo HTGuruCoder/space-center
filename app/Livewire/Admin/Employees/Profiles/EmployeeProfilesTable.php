@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Employees\Profiles;
 
 use App\Enums\CompensationUnitEnum;
 use App\Enums\ContractTypeEnum;
+use App\Enums\CurrencyEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\RoleEnum;
 use App\Helpers\PowerGridHelper;
@@ -105,7 +106,9 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
             ->add('manager_first_name', fn(User $model) => $model->employee?->manager?->user?->first_name ?? '-')
             ->add('manager_last_name', fn(User $model) => $model->employee?->manager?->user?->last_name ?? '-')
             ->add('contract_type', fn(User $model) => $model->employee?->type?->label() ?? '-')
-            ->add('compensation_amount', fn(User $model) => $model->employee ? number_format($model->employee->compensation_amount, 2) : '-')
+            ->add('compensation_amount', fn(User $model) => $model->employee
+                ? number_format($model->employee->compensation_amount, 2) . ' ' . CurrencyEnum::from($model->currency_code)->symbol()
+                : '-')
             ->add('compensation_unit', fn(User $model) => $model->employee?->compensation_unit?->label() ?? '-')
             ->add('started_at', fn(User $model) => $model->employee?->started_at?->format('Y-m-d') ?? '-')
             ->add('status', fn(User $model) => $this->getEmployeeStatus($model));
