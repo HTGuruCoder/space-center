@@ -6,8 +6,8 @@ use App\Enums\PermissionEnum;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\Position;
-use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -15,24 +15,22 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class PositionsTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'positions-table';
     public string $sortField = 'positions.created_at';
+
+    #[On('bulkDelete.positions-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
 
     protected function getExportFileName(): string
     {
         return 'positions-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_POSITIONS->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return Position::class;
     }
 
     public function header(): array
@@ -40,7 +38,7 @@ final class PositionsTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_POSITIONS->value
             ),
         ];
     }

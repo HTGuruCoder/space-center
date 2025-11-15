@@ -31,7 +31,6 @@
     />
 
     <x-powergrid.bulk-delete-modal
-        target="positions-table"
         :title="__('Delete Selected Positions')"
         :message="__('Are you sure you want to delete the selected positions? This action cannot be undone.')"
     />
