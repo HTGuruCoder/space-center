@@ -18,8 +18,6 @@ class AccountSettingsForm extends Form
     public ?string $country_code = null;
     public ?string $timezone = null;
     public ?string $currency_code = null;
-    public ?string $bank_name = null;
-    public ?string $bank_account_number = null;
 
     public function rules()
     {
@@ -32,8 +30,6 @@ class AccountSettingsForm extends Form
             'country_code' => 'nullable|in:' . implode(',', CountryEnum::values()),
             'timezone' => 'required|in:' . implode(',', Timezone::all()),
             'currency_code' => 'required|in:' . implode(',', CurrencyEnum::values()),
-            'bank_name' => 'nullable|string|max:255',
-            'bank_account_number' => 'nullable|string|max:255',
         ];
     }
 
@@ -47,8 +43,6 @@ class AccountSettingsForm extends Form
         $this->country_code = $user->country_code;
         $this->timezone = $user->timezone;
         $this->currency_code = $user->currency_code;
-        $this->bank_name = $user->bank_name;
-        $this->bank_account_number = $user->bank_account_number;
     }
 
     public function getData(): array
@@ -62,8 +56,6 @@ class AccountSettingsForm extends Form
             'country_code' => $this->country_code,
             'timezone' => $this->timezone,
             'currency_code' => $this->currency_code,
-            'bank_name' => $this->bank_name,
-            'bank_account_number' => $this->bank_account_number,
         ];
     }
 }

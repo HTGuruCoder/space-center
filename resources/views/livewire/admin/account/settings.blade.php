@@ -113,18 +113,6 @@
                             wire:model="profileForm.currency_code"
                             required
                         />
-
-                        {{-- Bank Name --}}
-                        <x-input
-                            label="{{ __('Bank Name') }}"
-                            wire:model="profileForm.bank_name"
-                        />
-
-                        {{-- Bank Account Number --}}
-                        <x-input
-                            label="{{ __('Bank Account Number') }}"
-                            wire:model="profileForm.bank_account_number"
-                        />
                     </div>
 
                     <x-slot:actions>
