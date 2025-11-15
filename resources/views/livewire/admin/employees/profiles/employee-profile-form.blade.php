@@ -29,7 +29,7 @@
 
                             {{-- Contract Type --}}
                             <x-choices-offline label="{{ __('Contract Type') }}" :options="$contractTypes"
-                                wire:model="form.type" icon="mdi.file-document"
+                                wire:model.live="form.type" icon="mdi.file-document"
                                 placeholder="{{ __('Select contract type') }}" single searchable required />
 
                             {{-- Compensation Amount --}}
@@ -48,7 +48,8 @@
 
                             {{-- Ended At --}}
                             <x-datepicker label="{{ __('Ended At') }}" wire:model="form.ended_at"
-                                icon="mdi.calendar-end" placeholder="{{ __('Select end date') }}" />
+                                icon="mdi.calendar-end" placeholder="{{ __('Select end date') }}"
+                                :required="$form->type === 'fixed_term'" />
 
                             {{-- Probation Period (days) --}}
                             <x-input label="{{ __('Probation Period (days)') }}" wire:model="form.probation_period"

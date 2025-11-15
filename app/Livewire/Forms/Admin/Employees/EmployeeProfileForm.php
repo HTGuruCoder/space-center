@@ -43,7 +43,11 @@ class EmployeeProfileForm extends Form
             'compensation_amount' => 'required|numeric|min:0',
             'compensation_unit' => ['required', Rule::in(CompensationUnitEnum::values())],
             'started_at' => 'required|date',
-            'ended_at' => 'nullable|date|after:started_at',
+            'ended_at' => [
+                $this->type === ContractTypeEnum::FIXED_TERM->value ? 'required' : 'nullable',
+                'date',
+                'after:started_at'
+            ],
             'probation_period' => 'nullable|integer|min:0',
             'contract_file' => 'nullable|file|mimes:pdf|max:5120',
             'bank_name' => 'nullable|string|max:255',
