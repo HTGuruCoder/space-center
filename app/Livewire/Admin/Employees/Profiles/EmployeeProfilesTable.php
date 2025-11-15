@@ -121,7 +121,7 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
             ->add('compensation_amount_export', fn(User $model) => $model->employee?->compensation_amount ?? '')
             ->add('compensation_unit', fn(User $model) => $model->employee?->compensation_unit?->label() ?? '')
             ->add('compensation_unit_export', fn(User $model) => $model->employee?->compensation_unit?->value ?? '')
-            ->add('started_at', fn(User $model) => DateHelper::formatDate($model->employee->started_at))
+            ->add('started_at', fn(User $model) => DateHelper::formatDate($model->employee?->started_at))
             ->add('started_at_export', fn(User $model) => $model->employee?->started_at?->format('Y-m-d') ?? '')
             ->add('status', fn(User $model) => $this->getEmployeeStatus($model))
             ->add('status_export', fn(User $model) => $this->getEmployeeStatusRaw($model));
