@@ -20,12 +20,14 @@ const dateFormats = {
     es: {
         dateFormat: 'Y-m-d',      // Format for storage (ISO format)
         altFormat: 'd/m/Y',       // Format for display (DD/MM/YYYY)
-        altInput: true            // Use alternate input for display
+        altInput: true,           // Use alternate input for display
+        allowInput: true          // Allow manual input
     },
     en: {
         dateFormat: 'Y-m-d',      // Format for storage (ISO format)
         altFormat: 'm/d/Y',       // Format for display (MM/DD/YYYY)
-        altInput: true            // Use alternate input for display
+        altInput: true,           // Use alternate input for display
+        allowInput: true          // Allow manual input
     }
 };
 

@@ -4,7 +4,6 @@ namespace App\Livewire\Forms\Admin\Users;
 
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -14,6 +13,7 @@ use Propaganistas\LaravelPhone\Rules\Phone;
 class UserManagementForm extends Form
 {
     public ?string $userId = null;
+
     public bool $isEditMode = false;
 
     // Personal Information
@@ -42,11 +42,14 @@ class UserManagementForm extends Form
 
     // Password (only for creation)
     public string $password = '';
+
     public string $password_confirmation = '';
 
     // Roles
     #[Validate('required|array|min:1')]
     public array $selectedRoles = [];
+
+    public ?string $picture_url = null;
 
     public function rules()
     {
@@ -54,7 +57,7 @@ class UserManagementForm extends Form
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->userId)],
-            'phone_number' => ['required', (new Phone())->countryField('country_code')],
+            'phone_number' => ['required', (new Phone)->countryField('country_code')],
             'country_code' => ['required', Rule::in(CountryEnum::values())],
             'timezone' => 'required|string',
             'birth_date' => 'nullable|date',
@@ -65,7 +68,7 @@ class UserManagementForm extends Form
         ];
 
         // Password required only in create mode
-        if (!$this->isEditMode) {
+        if (! $this->isEditMode) {
             $rules['password'] = 'required|string|min:8|confirmed';
             $rules['password_confirmation'] = 'required';
         }
@@ -73,14 +76,14 @@ class UserManagementForm extends Form
         return $rules;
     }
 
-    public function getPictureUrl() {
-        if($this->picture instanceof TemporaryUploadedFile) {
+    public function getPictureUrl()
+    {
+        if ($this->picture instanceof TemporaryUploadedFile) {
             return $this->picture->temporaryUrl();
         }
 
-        return $this->picture ? asset('storage/' . $this->picture) : asset('images/default-avatar.svg');
+        return $this->picture_url ? asset('storage/'.$this->picture_url) : asset('images/default-avatar.svg');
     }
-
 
     public function setUser($user): void
     {
@@ -91,11 +94,12 @@ class UserManagementForm extends Form
         $this->phone_number = $user->phone_number;
         $this->country_code = $user->country_code;
         $this->timezone = $user->timezone;
-        $this->birth_date = $user->birth_date?->format('Y-m-d');
+        $this->birth_date = $user->birth_date;
+        $this->picture_url = $user->picture_url;
         $this->currency_code = $user->currency_code;
-        $this->picture = $user->picture_url;
         $this->selectedRoles = $user->roles->pluck('name')->toArray();
         $this->isEditMode = true;
+
     }
 
     public function resetForm(): void
