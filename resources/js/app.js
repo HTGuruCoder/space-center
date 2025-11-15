@@ -50,3 +50,6 @@ window.TomSelect = TomSelect
 
 import Cropper from 'cropperjs';
 window.Cropper = Cropper;
+
+import Chart from 'chart.js/auto';
+window.Chart = Chart;
