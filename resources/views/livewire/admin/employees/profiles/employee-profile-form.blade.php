@@ -66,8 +66,7 @@
                                     onclick="this.parentElement.querySelector('input[type=file]').click()" />
 
                                 @if ($form->contract_file_url)
-                                    <a href="{{ $form->getContractFileUrl() }}" target="_blank" class="link"
-                                        onclick="this.parentElement.querySelector('input[type=file]').click()">
+                                    <a href="{{ $form->getContractFileUrl() }}" target="_blank" class="link link-primary">
 
                                         {{ __('View Current Contract') }}
                                     </a>

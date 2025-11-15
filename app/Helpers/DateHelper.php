@@ -49,10 +49,10 @@ class DateHelper
     /**
      * Format a datetime with user's timezone and locale.
      */
-    public static function formatDateTime($datetime, ?string $timezone = null, ?string $format = null): string
+    public static function formatDateTime($datetime, ?string $timezone = null, ?string $format = null): ?string
     {
         if (!$datetime) {
-            return '-';
+            return null;
         }
 
         /** @var \App\Models\User|null $user */
@@ -66,10 +66,10 @@ class DateHelper
     /**
      * Format a date (without time) with user's timezone and locale.
      */
-    public static function formatDate($date, ?string $timezone = null, ?string $format = null): string
+    public static function formatDate($date, ?string $timezone = null, ?string $format = null): ?string
     {
         if (!$date) {
-            return '-';
+            return null;
         }
 
         /** @var \App\Models\User|null $user */
