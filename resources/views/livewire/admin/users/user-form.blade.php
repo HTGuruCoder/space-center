@@ -49,7 +49,7 @@
                             {{-- Email --}}
                             <x-input label="{{ __('Email') }}" wire:model="form.email" type="email"
                                 icon="mdi.email" placeholder="{{ __('john.doe@example.com') }}" inline
-                                @class(['md:col-span-2']) autocomplete="email" />
+                                @class(['md:col-span-2']) :autocomplete="!$form->isEditMode ? 'username' : 'email'" />
 
                             {{-- Password (only in create mode) --}}
                             @if (!$form->isEditMode)
