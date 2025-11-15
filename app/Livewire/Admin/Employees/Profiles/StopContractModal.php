@@ -19,7 +19,7 @@ class StopContractModal extends Component
 
     public function mount()
     {
-        $this->stopped_at = now()->format('Y-m-d');
+        $this->stopped_at = now();
     }
 
     #[On('stop-employee-contract')]
@@ -40,7 +40,7 @@ class StopContractModal extends Component
         }
 
         $this->userId = $userId;
-        $this->stopped_at = now()->format('Y-m-d');
+        $this->stopped_at = now();
         $this->stop_reason = null;
         $this->showModal = true;
     }
@@ -76,7 +76,7 @@ class StopContractModal extends Component
     {
         $this->showModal = false;
         $this->userId = null;
-        $this->stopped_at = now()->format('Y-m-d');
+        $this->stopped_at = now();
         $this->stop_reason = null;
         $this->resetValidation();
     }

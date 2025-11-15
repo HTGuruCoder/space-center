@@ -110,12 +110,17 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
             ->add('manager_first_name', fn(User $model) => $model->employee?->manager?->user?->first_name ?? '')
             ->add('manager_last_name', fn(User $model) => $model->employee?->manager?->user?->last_name ?? '')
             ->add('contract_type', fn(User $model) => $model->employee?->type?->label() ?? '')
+            ->add('contract_type_export', fn(User $model) => $model->employee?->type?->value ?? '')
             ->add('compensation_amount', fn(User $model) => $model->employee
                 ? Number::currency($model->employee->compensation_amount, in: $model->currency_code, locale: app()->getLocale())
                 : '')
+            ->add('compensation_amount_export', fn(User $model) => $model->employee?->compensation_amount ?? '')
             ->add('compensation_unit', fn(User $model) => $model->employee?->compensation_unit?->label() ?? '')
+            ->add('compensation_unit_export', fn(User $model) => $model->employee?->compensation_unit?->value ?? '')
             ->add('started_at', fn(User $model) => DateHelper::formatDate($model->employee->started_at))
-            ->add('status', fn(User $model) => $this->getEmployeeStatus($model));
+            ->add('started_at_export', fn(User $model) => $model->employee?->started_at?->format('Y-m-d') ?? '')
+            ->add('status', fn(User $model) => $this->getEmployeeStatus($model))
+            ->add('status_export', fn(User $model) => $this->getEmployeeStatusRaw($model));
 
         // Add creator fields
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
@@ -130,28 +135,40 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
         return $fields;
     }
 
-    protected function getEmployeeStatus(User $model): string
+    protected function getEmployeeStatusRaw(User $model): string
     {
         if (!$model->employee) {
-            return __('No Profile');
+            return 'no_profile';
         }
 
         if ($model->employee->stopped_at) {
-            return __('Stopped');
+            return 'stopped';
         }
 
         if ($model->employee->probation_period > 0) {
             $probationEnd = $model->employee->started_at->addDays($model->employee->probation_period);
             if (now()->lessThan($probationEnd)) {
-                return __('Probation');
+                return 'probation';
             }
         }
 
         if ($model->employee->ended_at && now()->greaterThan($model->employee->ended_at)) {
-            return __('Contract Ended');
+            return 'contract_ended';
         }
 
-        return __('Active');
+        return 'active';
+    }
+
+    protected function getEmployeeStatus(User $model): string
+    {
+        return match ($this->getEmployeeStatusRaw($model)) {
+            'no_profile' => __('No Profile'),
+            'stopped' => __('Stopped'),
+            'probation' => __('Probation'),
+            'contract_ended' => __('Contract Ended'),
+            'active' => __('Active'),
+            default => '',
+        };
     }
 
     public function columns(): array
@@ -194,20 +211,55 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
                 ->searchable(),
 
             Column::make(__('Contract Type'), 'contract_type', 'employees.type')
-                ->sortable(),
+                ->sortable()
+                ->visibleInExport(false),
+
+            Column::add()
+                ->field('contract_type_export')
+                ->title(__('Contract Type'))
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Compensation Amount'), 'compensation_amount', 'employees.compensation_amount')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->visibleInExport(false),
+
+            Column::add()
+                ->field('compensation_amount_export')
+                ->title(__('Compensation Amount'))
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Compensation Unit'), 'compensation_unit', 'employees.compensation_unit')
-                ->sortable(),
+                ->sortable()
+                ->visibleInExport(false),
+
+            Column::add()
+                ->field('compensation_unit_export')
+                ->title(__('Compensation Unit'))
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Started At'), 'started_at', 'employees.started_at')
-                ->sortable(),
+                ->sortable()
+                ->visibleInExport(false),
+
+            Column::add()
+                ->field('started_at_export')
+                ->title(__('Started At'))
+                ->hidden()
+                ->visibleInExport(true),
 
             Column::make(__('Status'), 'status')
-                ->sortable(false),
+                ->sortable(false)
+                ->visibleInExport(false),
+
+            Column::add()
+                ->field('status_export')
+                ->title(__('Status'))
+                ->hidden()
+                ->visibleInExport(true),
 
             ...PowerGridHelper::getCreatorColumns(),
             ...PowerGridHelper::getDateColumns(),
