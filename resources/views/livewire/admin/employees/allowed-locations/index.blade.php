@@ -16,7 +16,7 @@
 
     {{-- PowerGrid Table --}}
     <div class="bg-base-100 shadow-xl rounded-[10px] px-2 py-4">
-        <livewire:admin.employees.allowed-locations.allowed-locations-table />
+        <livewire:admin.employees.allowed-locations.allowed-locations-table wire:id="allowed-locations-table" />
     </div>
 
     {{-- Allowed Location Form Drawer --}}
@@ -30,7 +30,6 @@
 
     {{-- Bulk Delete Confirmation Modal --}}
     <x-powergrid.bulk-delete-modal
-        target="allowed-locations-table"
         :title="__('Delete Selected Allowed Locations')"
         :message="__('Are you sure you want to delete the selected allowed locations? This action cannot be undone.')"
     />

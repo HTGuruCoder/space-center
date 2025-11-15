@@ -1,27 +1,31 @@
 @props([
-    'target' => null, // Livewire component name to target (e.g., 'employee-profiles-table')
     'show' => 'showBulkDeleteModal',
-    'deleteMethod' => 'bulkDelete',
-    'cancelMethod' => 'cancelBulkDelete',
     'title' => __('Delete Selected Items'),
     'message' => __('Are you sure you want to delete the selected items? This action cannot be undone.'),
+    'deleteMethod' => 'bulkDelete',
+    'cancelMethod' => 'cancelBulkDelete'
 ])
 
-@php
-    $wireTarget = $target ? "this.\$wire.\$parent.{$target}" : 'this.$wire';
-@endphp
-
-<div x-data="{
-    get isOpen() {
-        return {{ $wireTarget }}.{{ $show }};
-    }
-}" x-show="isOpen" x-cloak>
-    <x-modal wire:model="{{ $target }}.{{ $show }}" title="{{ $title }}" persistent>
-        <p class="text-base-content/80">{{ $message }}</p>
+@if($this->{str_replace('$', '', $show)})
+    <x-modal wire:model="{{ $show }}" :title="$title">
+        <div class="space-y-4">
+            <div class="alert alert-warning">
+                <x-icon name="mdi.alert" class="w-6 h-6" />
+                <span>{{ $message }}</span>
+            </div>
+        </div>
 
         <x-slot:actions>
-            <x-button label="{{ __('Cancel') }}" wire:click="{{ $target }}.{{ $cancelMethod }}" />
-            <x-button label="{{ __('Delete') }}" class="btn-error" wire:click="{{ $target }}.{{ $deleteMethod }}" spinner="{{ $deleteMethod }}" />
+            <x-button
+                label="{{ __('Cancel') }}"
+                wire:click="{{ $cancelMethod }}"
+            />
+            <x-button
+                label="{{ __('Delete') }}"
+                class="btn-error"
+                wire:click="{{ $deleteMethod }}"
+                spinner="{{ $deleteMethod }}"
+            />
         </x-slot:actions>
     </x-modal>
-</div>
+@endif

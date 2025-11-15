@@ -7,8 +7,8 @@ use App\Helpers\DateHelper;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\EmployeeWorkPeriod;
-use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -16,24 +16,22 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class WorkPeriodsTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'work-periods-table';
     public string $sortField = 'employee_work_periods.created_at';
+
+    #[On('bulkDelete.work-periods-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
 
     protected function getExportFileName(): string
     {
         return 'work-periods-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_WORK_PERIODS->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return EmployeeWorkPeriod::class;
     }
 
     public function header(): array
@@ -41,7 +39,7 @@ final class WorkPeriodsTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_WORK_PERIODS->value
             ),
         ];
     }

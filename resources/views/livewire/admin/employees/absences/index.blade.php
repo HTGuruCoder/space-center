@@ -16,7 +16,7 @@
 
     {{-- PowerGrid Table --}}
     <div class="bg-base-100 shadow-xl rounded-[10px] px-2 py-4">
-        <livewire:admin.employees.absences.absences-table />
+        <livewire:admin.employees.absences.absences-table wire:id="absences-table" />
     </div>
 
     {{-- Absence Form Drawer --}}
@@ -30,7 +30,6 @@
 
     {{-- Bulk Delete Confirmation Modal --}}
     <x-powergrid.bulk-delete-modal
-        target="absences-table"
         :title="__('Delete Selected Absences')"
         :message="__('Are you sure you want to delete the selected absence records? This action cannot be undone.')"
     />

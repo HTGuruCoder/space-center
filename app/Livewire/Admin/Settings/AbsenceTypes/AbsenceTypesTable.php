@@ -6,33 +6,31 @@ use App\Enums\PermissionEnum;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\AbsenceType;
-use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class AbsenceTypesTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'absence-types-table';
     public string $sortField = 'absence_types.created_at';
     protected bool $showSearch = false;
 
+    #[On('bulkDelete.absence-types-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
+
     protected function getExportFileName(): string
     {
         return 'absence-types-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_ABSENCE_TYPES->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return AbsenceType::class;
     }
 
     public function header(): array
@@ -40,7 +38,7 @@ final class AbsenceTypesTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_ABSENCE_TYPES->value
             ),
         ];
     }

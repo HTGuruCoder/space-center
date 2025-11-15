@@ -8,8 +8,8 @@ use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\AbsenceType;
 use App\Models\EmployeeAbsence;
-use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -17,24 +17,22 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class AbsencesTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'absences-table';
     public string $sortField = 'employee_absences.created_at';
+
+    #[On('bulkDelete.absences-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
 
     protected function getExportFileName(): string
     {
         return 'absences-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_ABSENCES->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return EmployeeAbsence::class;
     }
 
     public function header(): array
@@ -42,7 +40,7 @@ final class AbsencesTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_ABSENCES->value
             ),
         ];
     }

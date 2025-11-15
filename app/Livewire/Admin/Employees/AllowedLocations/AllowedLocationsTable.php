@@ -7,8 +7,8 @@ use App\Helpers\DateHelper;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\EmployeeAllowedLocation;
-use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -16,24 +16,22 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class AllowedLocationsTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'allowed-locations-table';
     public string $sortField = 'employee_allowed_locations.created_at';
+
+    #[On('bulkDelete.allowed-locations-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
 
     protected function getExportFileName(): string
     {
         return 'allowed-locations-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_ALLOWED_LOCATIONS->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return EmployeeAllowedLocation::class;
     }
 
     public function header(): array
@@ -41,7 +39,7 @@ final class AllowedLocationsTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_ALLOWED_LOCATIONS->value
             ),
         ];
     }

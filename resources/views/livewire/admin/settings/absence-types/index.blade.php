@@ -30,8 +30,8 @@
         :message="__('Are you sure you want to delete this absence type? This action cannot be undone.')"
     />
 
+    {{-- Bulk Delete Confirmation Modal --}}
     <x-powergrid.bulk-delete-modal
-        target="absence-types-table"
         :title="__('Delete Selected Absence Types')"
         :message="__('Are you sure you want to delete the selected absence types? This action cannot be undone.')"
     />

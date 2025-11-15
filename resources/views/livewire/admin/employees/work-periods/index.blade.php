@@ -16,7 +16,7 @@
 
     {{-- PowerGrid Table --}}
     <div class="bg-base-100 shadow-xl rounded-[10px] px-2 py-4">
-        <livewire:admin.employees.work-periods.work-periods-table />
+        <livewire:admin.employees.work-periods.work-periods-table wire:id="work-periods-table" />
     </div>
 
     {{-- Work Period Form Drawer --}}
@@ -30,7 +30,6 @@
 
     {{-- Bulk Delete Confirmation Modal --}}
     <x-powergrid.bulk-delete-modal
-        target="work-periods-table"
         :title="__('Delete Selected Work Periods')"
         :message="__('Are you sure you want to delete the selected work periods? This action cannot be undone.')"
     />
