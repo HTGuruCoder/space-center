@@ -109,7 +109,7 @@
                             @foreach ($roles as $role)
                                 <label class="flex items-center gap-3 cursor-pointer">
                                     <input type="checkbox" wire:model.live="form.selectedRoles"
-                                        value="{{ $role['name'] }}" class="checkbox checkbox-primary" />
+                                        value="{{ $role['name'] }}" class="checkbox" />
                                     <span class="label-text">{{ $role['label'] }}</span>
                                 </label>
                             @endforeach
