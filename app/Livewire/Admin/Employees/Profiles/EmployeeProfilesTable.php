@@ -13,9 +13,9 @@ use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Store;
 use App\Models\User;
-use App\Traits\Livewire\HasBulkDelete;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Number;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
@@ -23,24 +23,22 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class EmployeeProfilesTable extends BasePowerGridComponent
 {
-    use HasBulkDelete;
-
     public string $tableName = 'employee-profiles-table';
     public string $sortField = 'users.created_at';
+
+    #[On('bulkDelete.employee-profiles-table')]
+    public function handleBulkDelete(): void
+    {
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            return;
+        }
+
+        $this->dispatch('confirmBulkDelete', items: $this->checkboxValues);
+    }
 
     protected function getExportFileName(): string
     {
         return 'employee-profiles-export';
-    }
-
-    protected function getDeletePermission(): string
-    {
-        return PermissionEnum::DELETE_EMPLOYEES->value;
-    }
-
-    protected function getModelClass(): string
-    {
-        return User::class;
     }
 
     public function header(): array
@@ -48,7 +46,7 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
         return [
             ...PowerGridHelper::getBulkDeleteButton(
                 $this->tableName,
-                $this->getDeletePermission()
+                PermissionEnum::DELETE_EMPLOYEES->value
             ),
         ];
     }
