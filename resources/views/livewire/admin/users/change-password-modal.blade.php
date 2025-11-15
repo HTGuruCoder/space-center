@@ -9,6 +9,7 @@
                 placeholder="{{ __('Minimum 8 characters') }}"
                 right
                 inline
+                autocomplete="new-password"
             />
 
             {{-- Confirm New Password --}}
@@ -19,6 +20,7 @@
                 placeholder="{{ __('Re-enter new password') }}"
                 right
                 inline
+                autocomplete="new-password"
             />
         </div>
 

@@ -2,7 +2,7 @@
     <x-form wire:submit="save">
         <div @class(['space-y-4'])>
             {{-- Collapse 1: Personal Information --}}
-            <x-collapse wire:model="showPersonalInfo" @class(['bg-base-200'])>
+            <x-collapse id="personal-info" wire:model="showPersonalInfo" @class(['bg-base-200'])>
                 <x-slot:heading>
                     <div @class(['flex', 'items-center', 'gap-2'])>
                         <x-icon name="mdi.account-circle" @class(['w-5', 'h-5', 'text-primary']) />
@@ -49,16 +49,18 @@
                             {{-- Email --}}
                             <x-input label="{{ __('Email') }}" wire:model="form.email" type="email"
                                 icon="mdi.email" placeholder="{{ __('john.doe@example.com') }}" inline
-                                @class(['md:col-span-2']) />
+                                @class(['md:col-span-2']) autocomplete="email" />
 
                             {{-- Password (only in create mode) --}}
                             @if (!$form->isEditMode)
                                 <x-password label="{{ __('Password') }}" wire:model="form.password" icon="mdi.lock"
-                                    placeholder="{{ __('Minimum 8 characters') }}" right inline />
+                                    placeholder="{{ __('Minimum 8 characters') }}" right inline
+                                    autocomplete="new-password" />
 
                                 <x-password label="{{ __('Confirm Password') }}"
                                     wire:model="form.password_confirmation" icon="mdi.lock-check"
-                                    placeholder="{{ __('Re-enter password') }}" right inline />
+                                    placeholder="{{ __('Re-enter password') }}" right inline
+                                    autocomplete="new-password" />
                             @endif
 
                             {{-- Phone Number --}}
@@ -86,7 +88,7 @@
             </x-collapse>
 
             {{-- Collapse 2: Roles & Permissions --}}
-            <x-collapse wire:model="showRoles" @class(['bg-base-200'])>
+            <x-collapse id="roles-permissions" wire:model="showRoles" @class(['bg-base-200'])>
                 <x-slot:heading>
                     <div @class(['flex', 'items-center', 'gap-2'])>
                         <x-icon name="mdi.shield-account" @class(['w-5', 'h-5', 'text-secondary']) />
