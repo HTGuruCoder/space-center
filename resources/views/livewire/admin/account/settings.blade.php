@@ -15,50 +15,39 @@
         <div class="lg:col-span-1">
             <x-card title="{{ __('Profile Picture') }}">
                 <div class="flex flex-col items-center gap-4">
-                    {{-- Current Picture --}}
-                    <div class="avatar">
-                        <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                            @if(auth()->user()->picture_url)
-                                <img src="{{ asset('storage/' . auth()->user()->picture_url) }}" alt="{{ auth()->user()->full_name }}" />
-                            @else
-                                <div class="bg-primary text-primary-content flex items-center justify-center w-full h-full text-4xl font-bold">
-                                    {{ auth()->user()->initials }}
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+                    {{-- Profile Picture --}}
+                   <img src="{{ $this->getPictureUrl() }}"
+                            class="h-40 w-40 rounded-full object-cover cursor-pointer hover:scale-110 transition-[scale]"
+                            onclick="this.parentElement.querySelector('input[type=file]').click()" />
 
-                    {{-- Upload New Picture --}}
-                    <div class="w-full">
-                        <x-file wire:model="picture" accept="image/*">
-                            <x-slot:label>
-                                <span class="text-sm">{{ __('Upload New Picture') }}</span>
-                            </x-slot:label>
+                        <x-file wire:model="picture" accept="image/jpeg,image/jpg,image/png"
+                            hint="{{ __('Click on image to upload. Max size: 2MB') }}" crop-after-change
+                            change-text="{{ __('Change') }}" crop-text="{{ __('Crop') }}"
+                            crop-title-text="{{ __('Crop image') }}" crop-cancel-text="{{ __('Cancel') }}"
+                            crop-save-text="{{ __('Crop') }}">
+                            <img src="{{ $this->getPictureUrl() }}" class="hidden" />
                         </x-file>
-                        @if($picture)
-                            <div class="mt-2 flex gap-2">
-                                <x-button wire:click="updatePicture" class="btn-primary btn-sm" spinner="updatePicture">
-                                    <x-icon name="mdi.upload" class="w-4 h-4" />
-                                    {{ __('Save Picture') }}
-                                </x-button>
-                                <x-button wire:click="$set('picture', null)" class="btn-ghost btn-sm">
-                                    {{ __('Cancel') }}
-                                </x-button>
-                            </div>
-                        @endif
-                    </div>
+
+                    {{-- Action Buttons --}}
+                    @if($picture)
+                        <div class="flex gap-2 w-full">
+                            <x-button wire:click="updatePicture" class="btn-primary btn-sm flex-1" spinner="updatePicture">
+                                <x-icon name="mdi.upload" class="w-4 h-4" />
+                                {{ __('Save Picture') }}
+                            </x-button>
+                            <x-button wire:click="$set('picture', null)" class="btn-ghost btn-sm flex-1">
+                                {{ __('Cancel') }}
+                            </x-button>
+                        </div>
+                    @endif
 
                     {{-- Remove Picture Button --}}
-                    @if(auth()->user()->picture_url)
+                    @if(auth()->user()->picture_url && !$picture)
                         <x-button wire:click="removePicture" class="btn-error btn-outline btn-sm w-full" spinner="removePicture">
                             <x-icon name="mdi.delete" class="w-4 h-4" />
                             {{ __('Remove Picture') }}
                         </x-button>
                     @endif
-
-                    <p class="text-xs text-base-content/60 text-center">
-                        {{ __('Recommended: Square image, at least 400x400px') }}
-                    </p>
                 </div>
             </x-card>
         </div>

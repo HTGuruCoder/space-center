@@ -25,6 +25,19 @@ class Settings extends Component
         $this->profileForm->setUser(auth()->user());
     }
 
+    public function getPictureUrl(): string
+    {
+        if ($this->picture) {
+            return $this->picture->temporaryUrl();
+        }
+
+        if (auth()->user()->picture_url) {
+            return asset('storage/' . auth()->user()->picture_url);
+        }
+
+        return asset('images/default-avatar.svg');
+    }
+
     public function updateProfile(): void
     {
         $this->profileForm->validate();
