@@ -6,6 +6,7 @@ use App\Enums\CompensationUnitEnum;
 use App\Enums\ContractTypeEnum;
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
+use App\Utils\Timezone;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
@@ -33,7 +34,6 @@ class EmployeeRegistrationForm extends Form
 
     public $picture;
 
-    #[Validate('required|string')]
     public string $timezone = '';
 
     #[Validate('required|date|before:today')]
@@ -86,6 +86,7 @@ class EmployeeRegistrationForm extends Form
             'contract_file' => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
             'country_code' => ['required', Rule::in(CountryEnum::values())],
             'currency_code' => ['required', Rule::in(CurrencyEnum::values())],
+            'timezone' => ['required', Rule::in(Timezone::all())],
             'type' => ['required', Rule::in(ContractTypeEnum::values())],
             'compensation_unit' => ['required', Rule::in(CompensationUnitEnum::values())],
         ];

@@ -4,6 +4,7 @@ namespace App\Livewire\Forms\Admin\Users;
 
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
+use App\Utils\Timezone;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -31,7 +32,6 @@ class UserManagementForm extends Form
 
     public string $country_code = '';
 
-    #[Validate('required|string')]
     public string $timezone = 'UTC';
 
     #[Validate('nullable|date')]
@@ -45,7 +45,6 @@ class UserManagementForm extends Form
     public string $password_confirmation = '';
 
     // Roles
-    #[Validate('required|array|min:1')]
     public array $selectedRoles = [];
 
     public ?string $picture_url = null;
@@ -58,7 +57,7 @@ class UserManagementForm extends Form
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->userId)],
             'phone_number' => ['required', (new Phone)->countryField('country_code')],
             'country_code' => ['required', Rule::in(CountryEnum::values())],
-            'timezone' => 'required|string',
+            'timezone' => ['required', Rule::in(Timezone::all())],
             'birth_date' => 'nullable|date',
             'currency_code' => ['required', Rule::in(CurrencyEnum::values())],
             'selectedRoles' => 'required|array|min:1',

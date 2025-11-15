@@ -101,21 +101,21 @@
                 </x-slot:heading>
                 <x-slot:content>
                     <div @class(['space-y-4', 'p-4'])>
-                        @if ($errors->has('selectedRoles'))
-                            <div @class(['alert', 'alert-error'])>
-                                <x-icon name="mdi.alert-circle" @class(['w-5', 'h-5']) />
-                                <span>{{ $errors->first('selectedRoles') }}</span>
-                            </div>
-                        @endif
-
                         <div @class(['text-sm', 'text-base-content/70', 'mb-4'])>
                             {{ __('Select at least one role. Employee details can be completed in the Employees section.') }}
                         </div>
 
+                        @error('form.selectedRoles')
+                            <div @class(['alert', 'alert-error', 'mb-4'])>
+                                <x-icon name="mdi.alert-circle" @class(['w-5', 'h-5']) />
+                                <span>{{ $message }}</span>
+                            </div>
+                        @enderror
+
                         <div @class(['space-y-2'])>
                             @foreach ($roles as $role)
-                                <x-checkbox label="{{ $role['label'] }}" wire:model="form.selectedRoles"
-                                    value="{{ $role['name'] }}" />
+                                <x-checkbox label="{{ $role['label'] }}" wire:model.live="form.selectedRoles"
+                                    value="{{ $role['name'] }}" :error="false" />
                             @endforeach
                         </div>
                     </div>
