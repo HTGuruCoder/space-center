@@ -40,48 +40,48 @@
                         <div @class(['grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-6'])>
                             {{-- First Name --}}
                             <x-input label="{{ __('First Name') }}" wire:model="form.first_name" icon="mdi.account"
-                                placeholder="{{ __('John') }}" inline />
+                                placeholder="{{ __('John') }}" required />
 
                             {{-- Last Name --}}
                             <x-input label="{{ __('Last Name') }}" wire:model="form.last_name" icon="mdi.account"
-                                placeholder="{{ __('Doe') }}" inline />
+                                placeholder="{{ __('Doe') }}" required />
 
                             {{-- Email --}}
                             <x-input label="{{ __('Email') }}" wire:model="form.email" type="email"
-                                icon="mdi.email" placeholder="{{ __('john.doe@example.com') }}" inline
-                                @class(['md:col-span-2']) :autocomplete="!$form->isEditMode ? 'username' : 'email'" />
+                                icon="mdi.email" placeholder="{{ __('john.doe@example.com') }}"
+                                @class(['md:col-span-2']) :autocomplete="!$form->isEditMode ? 'username' : 'email'" required />
 
                             {{-- Password (only in create mode) --}}
                             @if (!$form->isEditMode)
                                 <x-password label="{{ __('Password') }}" wire:model="form.password" icon="mdi.lock"
-                                    placeholder="{{ __('Minimum 8 characters') }}" right inline
-                                    autocomplete="new-password" />
+                                    placeholder="{{ __('Minimum 8 characters') }}" right
+                                    autocomplete="new-password" required />
 
                                 <x-password label="{{ __('Confirm Password') }}"
                                     wire:model="form.password_confirmation" icon="mdi.lock-check"
-                                    placeholder="{{ __('Re-enter password') }}" right inline
-                                    autocomplete="new-password" />
+                                    placeholder="{{ __('Re-enter password') }}" right
+                                    autocomplete="new-password" required />
                             @endif
-
-                            {{-- Phone Number --}}
-                            <x-input label="{{ __('Phone Number') }}" wire:model="form.phone_number" icon="mdi.phone"
-                                placeholder="{{ __('+1234567890') }}" inline @class(['md:col-span-2']) />
 
                             {{-- Country --}}
                             <x-choices-offline :options="$countries" wire:model="form.country_code" icon="mdi.flag"
-                                placeholder="{{ __('Select country') }}" single searchable />
+                                placeholder="{{ __('Select country') }}" single searchable required />
+
+                            {{-- Phone Number --}}
+                            <x-input label="{{ __('Phone Number') }}" wire:model="form.phone_number" icon="mdi.phone"
+                                placeholder="{{ __('+1234567890') }}" required />
 
                             {{-- Timezone --}}
                             <x-choices-offline :options="$timezones" wire:model="form.timezone" icon="mdi.clock-outline"
-                                placeholder="{{ __('Select timezone') }}" single searchable />
+                                placeholder="{{ __('Select timezone') }}" single searchable required />
 
                             {{-- Birth Date --}}
                             <x-datepicker label="{{ __('Birth Date') }}" wire:model="form.birth_date"
-                                icon="mdi.calendar" placeholder="{{ __('Select birth date') }}" inline />
+                                icon="mdi.calendar" placeholder="{{ __('Select birth date') }}" />
 
                             {{-- Currency --}}
                             <x-choices-offline :options="$currencies" wire:model="form.currency_code" icon="mdi.currency-usd"
-                                placeholder="{{ __('Select currency') }}" single searchable />
+                                placeholder="{{ __('Select currency') }}" single searchable required />
                         </div>
                     </div>
                 </x-slot:content>
@@ -125,21 +125,34 @@
         </div>
         {{-- Action Buttons --}}
         <x-slot:actions>
-            <div @class([
-                'flex',
-                'flex-col',
-                'sm:flex-row',
-                'justify-between',
-                'items-stretch',
-                'sm:items-center',
-                'w-full',
-                'gap-3',
-            ])>
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center w-full gap-3">
                 {{-- Cancel Button --}}
-                <x-button label="{{ __('Cancel') }}" wire:click="closeDrawer" @class(['order-last', 'sm:order-first']) />
+                <x-button
+                    label="{{ __('Cancel') }}"
+                    @click="$wire.closeDrawer()"
+                    class="order-last sm:order-first"
+                />
 
-                {{-- Primary Action Button --}}
-                <x-button :label="$form->isEditMode ? __('Update') : __('Create')" type="submit" spinner="save" @class(['btn-primary']) />
+                <div class="flex flex-col sm:flex-row gap-2">
+                    {{-- Add and Add Another Button (only in create mode) --}}
+                    @if(!$form->isEditMode)
+                        <x-button
+                            wire:click="saveAndAddAnother"
+                            spinner="saveAndAddAnother"
+                            class="btn-secondary"
+                        >
+                            {{ __('Add & Add Another') }}
+                        </x-button>
+                    @endif
+
+                    {{-- Primary Action Button --}}
+                    <x-button
+                        :label="$form->isEditMode ? __('Update') : __('Add')"
+                        type="submit"
+                        spinner="save"
+                        class="btn-primary"
+                    />
+                </div>
             </div>
         </x-slot:actions>
     </x-form>

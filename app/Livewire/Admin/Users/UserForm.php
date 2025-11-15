@@ -52,7 +52,15 @@ class UserForm extends Component
         }
     }
 
-    protected function store(): void
+    public function saveAndAddAnother(): void
+    {
+        $this->store(false);
+        $this->form->resetForm();
+        $this->showPersonalInfo = true;
+        $this->showRoles = true;
+    }
+
+    protected function store(bool $closeDrawer = true): void
     {
         $this->authorize(PermissionEnum::CREATE_USERS->value);
 
@@ -82,8 +90,11 @@ class UserForm extends Component
         $user->syncRoles($this->form->selectedRoles);
 
         $this->success(__('User created successfully.'));
-        $this->closeDrawer();
         $this->dispatch('pg:eventRefresh-users-table');
+
+        if ($closeDrawer) {
+            $this->closeDrawer();
+        }
     }
 
     protected function update(): void
