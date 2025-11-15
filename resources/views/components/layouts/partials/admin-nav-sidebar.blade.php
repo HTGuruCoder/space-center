@@ -18,7 +18,7 @@ $currentRoute = request()->route()->getName();
     {{-- Employees Section --}}
     @can(PermissionEnum::VIEW_EMPLOYEES->value)
         <x-menu-sub title="{{ __('Employees') }}" icon="mdi.account-hard-hat">
-            <x-menu-item title="{{ __('List') }}" icon="mdi.format-list-bulleted" link="{{ route('admins.employees.list') }}" />
+            <x-menu-item title="{{ __('Profiles') }}" icon="mdi.badge-account" link="{{ route('admins.employees.list') }}" />
 
             @can(PermissionEnum::VIEW_WORK_PERIODS->value)
                 <x-menu-item title="{{ __('Work Periods') }}" icon="mdi.calendar-clock" link="{{ route('admins.employees.work-periods') }}" />
