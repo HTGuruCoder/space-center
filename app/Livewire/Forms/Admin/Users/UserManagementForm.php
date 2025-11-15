@@ -4,8 +4,10 @@ namespace App\Livewire\Forms\Admin\Users;
 
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Form;
 use Propaganistas\LaravelPhone\Rules\Phone;
 
@@ -70,6 +72,15 @@ class UserManagementForm extends Form
 
         return $rules;
     }
+
+    public function getPictureUrl() {
+        if($this->picture instanceof TemporaryUploadedFile) {
+            return $this->picture->temporaryUrl();
+        }
+
+        return $this->picture ? asset('storage/' . $this->picture) : asset('images/default-avatar.svg');
+    }
+
 
     public function setUser($user): void
     {
