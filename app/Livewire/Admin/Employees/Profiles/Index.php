@@ -3,7 +3,6 @@
 namespace App\Livewire\Admin\Employees\Profiles;
 
 use App\Enums\PermissionEnum;
-use App\Models\Employee;
 use App\Traits\Livewire\HasDeleteModal;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -25,7 +24,7 @@ class Index extends Component
 
     protected function getModelClass(): string
     {
-        return Employee::class;
+        return \App\Models\User::class;
     }
 
     protected function getRefreshEvent(): string

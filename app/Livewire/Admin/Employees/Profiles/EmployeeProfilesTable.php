@@ -40,7 +40,7 @@ final class EmployeeProfilesTable extends BasePowerGridComponent
 
     protected function getModelClass(): string
     {
-        return Employee::class;
+        return User::class;
     }
 
     public function header(): array
