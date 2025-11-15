@@ -3,10 +3,30 @@
 namespace App\Traits\Livewire;
 
 use Livewire\Attributes\On;
+use Mary\Traits\Toast;
 
 trait HasBulkDelete
 {
+    use Toast;
+
+    public bool $showBulkDeleteModal = false;
+
     #[On('bulkDelete.{tableName}')]
+    public function confirmBulkDelete(): void
+    {
+        if (!auth()->user()->can($this->getDeletePermission())) {
+            $this->error(__('You do not have permission to delete these items.'));
+            return;
+        }
+
+        if (!$this->checkboxValues || count($this->checkboxValues) === 0) {
+            $this->error(__('No items selected.'));
+            return;
+        }
+
+        $this->showBulkDeleteModal = true;
+    }
+
     public function bulkDelete(): void
     {
         $this->authorize($this->getDeletePermission());
@@ -18,9 +38,15 @@ trait HasBulkDelete
 
             $this->success(__(':count item(s) deleted successfully.', ['count' => $count]));
 
+            $this->showBulkDeleteModal = false;
             $this->js('window.pgBulkActions.clearAll()');
             $this->dispatch('pg:eventRefresh-' . $this->tableName);
         }
+    }
+
+    public function cancelBulkDelete(): void
+    {
+        $this->showBulkDeleteModal = false;
     }
 
     /**

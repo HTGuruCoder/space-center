@@ -26,4 +26,10 @@
         :title="__('Delete User')"
         :message="__('Are you sure you want to delete this user? This action cannot be undone.')"
     />
+
+    <x-powergrid.bulk-delete-modal
+        target="users-table"
+        :title="__('Delete Selected Users')"
+        :message="__('Are you sure you want to delete the selected users? This action cannot be undone.')"
+    />
 </div>

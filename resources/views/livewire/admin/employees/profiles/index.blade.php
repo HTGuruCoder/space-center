@@ -26,4 +26,11 @@
         :title="__('Delete Employee Profile')"
         :message="__('Are you sure you want to delete this employee profile? This action cannot be undone.')"
     />
+
+    {{-- Bulk Delete Confirmation Modal --}}
+    <x-powergrid.bulk-delete-modal
+        target="employee-profiles-table"
+        :title="__('Delete Selected Employee Profiles')"
+        :message="__('Are you sure you want to delete the selected employee profiles? This action cannot be undone.')"
+    />
 </div>
