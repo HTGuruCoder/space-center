@@ -36,8 +36,8 @@ class AbsenceForm extends Form
         $this->employee_id = $absence->employee_id;
         $this->absence_type_id = $absence->absence_type_id;
         $this->date = $absence->date;
-        $this->start_time = $absence->start_time;
-        $this->end_time = $absence->end_time;
+        $this->start_time = $absence->start_time?->format('H:i');
+        $this->end_time = $absence->end_time?->format('H:i');
         $this->reason = $absence->reason;
     }
 

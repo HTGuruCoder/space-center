@@ -81,10 +81,12 @@ final class AllowedLocationsTable extends BasePowerGridComponent
             ])->render())
             ->add('latitude', fn($model) => $model->latitude)
             ->add('longitude', fn($model) => $model->longitude)
-            ->add('valid_from', fn($model) => DateHelper::formatDate($model->valid_from))
-            ->add('valid_from_export', fn($model) => $model->valid_from?->format('Y-m-d'))
-            ->add('valid_until', fn($model) => DateHelper::formatDate($model->valid_until))
-            ->add('valid_until_export', fn($model) => $model->valid_until?->format('Y-m-d'));
+            ->add('valid_from')
+            ->add('valid_from_formatted', fn($model) => DateHelper::formatDate($model->valid_from))
+            ->add('valid_from_export', fn($model) => DateHelper::formatDate($model->valid_from, 'UTC', 'Y-m-d'))
+            ->add('valid_until')
+            ->add('valid_until_formatted', fn($model) => DateHelper::formatDate($model->valid_until))
+            ->add('valid_until_export', fn($model) => DateHelper::formatDate($model->valid_until, 'UTC', 'Y-m-d'));
 
         foreach (PowerGridHelper::getCreatorFields() as $key => $callback) {
             $fields->add($key, $callback);
@@ -127,7 +129,7 @@ final class AllowedLocationsTable extends BasePowerGridComponent
                 ->hidden()
                 ->visibleInExport(true),
 
-            Column::make(__('Valid From'), 'valid_from')
+            Column::make(__('Valid From'), 'valid_from_formatted', 'employee_allowed_locations.valid_from')
                 ->sortable()
                 ->visibleInExport(false),
 
@@ -137,7 +139,7 @@ final class AllowedLocationsTable extends BasePowerGridComponent
                 ->hidden()
                 ->visibleInExport(true),
 
-            Column::make(__('Valid Until'), 'valid_until')
+            Column::make(__('Valid Until'), 'valid_until_formatted', 'employee_allowed_locations.valid_until')
                 ->sortable()
                 ->visibleInExport(false),
 
