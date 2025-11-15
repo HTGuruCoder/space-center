@@ -130,7 +130,7 @@ final class RolesTable extends BasePowerGridComponent
         return Role::query()
             ->select('roles.*')
             ->leftJoin('users as creator', 'roles.created_by', '=', 'creator.id')
-            ->withCount(['users', 'permissions'])
+            ->withCount(['users'])
             ->with('creator:id,first_name,last_name');
     }
 
@@ -151,7 +151,6 @@ final class RolesTable extends BasePowerGridComponent
             ])->render())
             ->add('name')
             ->add('name_display', fn(Role $model) => $this->getLocalizedRoleName($model))
-            ->add('permissions_count')
             ->add('users_count');
 
         // Add creator fields
@@ -178,9 +177,6 @@ final class RolesTable extends BasePowerGridComponent
                 ->headerAttribute('class', 'w-16'),
 
             Column::make(__('Name'), 'name_display', 'name')
-                ->sortable(),
-
-            Column::make(__('Permissions'), 'permissions_count')
                 ->sortable(),
 
             Column::make(__('Users'), 'users_count')

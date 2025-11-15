@@ -115,8 +115,7 @@
                         <div @class(['space-y-2'])>
                             @foreach ($roles as $role)
                                 <x-checkbox label="{{ $role['label'] }}" wire:model="form.selectedRoles"
-                                    value="{{ $role['name'] }}"
-                                    hint="{{ trans_choice('{1} :count permission|[2,*] :count permissions', $role['permissions_count'], ['count' => $role['permissions_count']]) }}" />
+                                    value="{{ $role['name'] }}" />
                             @endforeach
                         </div>
                     </div>

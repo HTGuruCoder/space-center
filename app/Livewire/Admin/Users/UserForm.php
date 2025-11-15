@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Users;
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Livewire\Forms\Admin\Users\UserManagementForm;
 use App\Models\Role;
 use App\Models\User;
@@ -145,11 +146,19 @@ class UserForm extends Component
     public function render()
     {
         return view('livewire.admin.users.user-form', [
-            'roles' => Role::all(['id', 'name'])->map(fn($role) => [
-                'name' => $role->name,
-                'label' => $role->name,
-                'permissions_count' => $role->permissions()->count(),
-            ])->toArray(),
+            'roles' => Role::all(['id', 'name'])->map(function($role) {
+                // Try to get label from RoleEnum for core roles
+                try {
+                    $label = RoleEnum::from($role->name)->label();
+                } catch (\ValueError $e) {
+                    // For dynamic roles, just use the name
+                    $label = $role->name;
+                }
+                return [
+                    'name' => $role->name,
+                    'label' => $label,
+                ];
+            })->toArray(),
             'countries' => CountryEnum::options(),
             'currencies' => CurrencyEnum::options(),
             'timezones' => Timezone::options(),
