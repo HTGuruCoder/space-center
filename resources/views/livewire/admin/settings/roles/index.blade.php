@@ -31,7 +31,6 @@
     />
 
     <x-powergrid.bulk-delete-modal
-        target="roles-table"
         :title="__('Delete Selected Roles')"
         :message="__('Are you sure you want to delete the selected roles? This action cannot be undone.')"
     />
