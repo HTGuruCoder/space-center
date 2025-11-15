@@ -187,16 +187,16 @@
     @apply cursor-pointer
 }
 
-.input, .select, .file-input {
+.input, .select, .file-input, .textarea {
     border-color: #d9d9d933;
 }
 
-.input:hover, .select:hover, .file-input:hover {
+.input:hover, .select:hover, .file-input:hover, .textarea:hover {
     @apply border-info;
 }
 
 .input:focus,
-  .input:focus-within, .select:focus, .select:focus-within, .file-input:focus, .file-input:focus-within {
+  .input:focus-within, .select:focus, .select:focus-within, .file-input:focus, .file-input:focus-within, .textarea:focus, .textarea:focus-within {
     @apply border-info;
     box-shadow: 0 0 0 2px var(--fallback-p,oklch(var(--p)/0.2));
     outline: 0;

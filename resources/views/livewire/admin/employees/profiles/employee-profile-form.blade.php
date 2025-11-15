@@ -47,10 +47,11 @@
                             <x-datepicker label="{{ __('Started At') }}" wire:model="form.started_at"
                                 icon="mdi.calendar-start" placeholder="{{ __('Select start date') }}" required />
 
-                            {{-- Ended At --}}
-                            <x-datepicker label="{{ __('Ended At') }}" wire:model="form.ended_at"
-                                icon="mdi.calendar-end" placeholder="{{ __('Select end date') }}"
-                                :required="$form->type === 'fixed_term'" />
+                            {{-- Ended At - only for fixed term contracts --}}
+                            @if($form->type === 'fixed_term')
+                                <x-datepicker label="{{ __('Ended At') }}" wire:model="form.ended_at"
+                                    icon="mdi.calendar-end" placeholder="{{ __('Select end date') }}" required />
+                            @endif
 
                             {{-- Probation Period (days) --}}
                             <x-input label="{{ __('Probation Period (days)') }}" wire:model="form.probation_period"
