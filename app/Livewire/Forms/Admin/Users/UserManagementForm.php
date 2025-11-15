@@ -23,7 +23,6 @@ class UserManagementForm extends Form
     #[Validate('required|string|max:255')]
     public string $last_name = '';
 
-    #[Validate('required|email')]
     public string $email = '';
 
     public string $phone_number = '';
