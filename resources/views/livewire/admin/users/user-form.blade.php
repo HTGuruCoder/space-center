@@ -105,19 +105,19 @@
                             {{ __('Select at least one role. Employee details can be completed in the Employees section.') }}
                         </div>
 
-                        @error('form.selectedRoles')
-                            <div @class(['alert', 'alert-error', 'mb-4'])>
-                                <x-icon name="mdi.alert-circle" @class(['w-5', 'h-5']) />
-                                <span>{{ $message }}</span>
-                            </div>
-                        @enderror
-
                         <div @class(['space-y-2'])>
                             @foreach ($roles as $role)
-                                <x-checkbox label="{{ $role['label'] }}" wire:model.live="form.selectedRoles"
-                                    value="{{ $role['name'] }}" :error="false" />
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" wire:model.live="form.selectedRoles"
+                                        value="{{ $role['name'] }}" class="checkbox checkbox-primary" />
+                                    <span class="label-text">{{ $role['label'] }}</span>
+                                </label>
                             @endforeach
                         </div>
+
+                        @error('form.selectedRoles')
+                            <div class="text-error text-sm mt-2">{{ $message }}</div>
+                        @enderror
                     </div>
                 </x-slot:content>
             </x-collapse>
