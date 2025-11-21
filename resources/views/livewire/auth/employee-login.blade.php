@@ -26,13 +26,13 @@
             {{-- Progress Steps --}}
             <div class="mb-8">
                 <ul class="steps steps-horizontal w-full">
-                    <li class="step" :class="{ 'step-primary': $wire.form.currentStep >= 1 }">
+                    <li class="step @if($form->currentStep >= 1) step-primary @endif">
                         {{ __('Email') }}
                     </li>
-                    <li class="step" :class="{ 'step-primary': $wire.form.currentStep >= 2 }">
-                        {{ __('Face') }}
+                    <li class="step @if($form->currentStep >= 2) step-primary @endif">
+                        {{ __('Facial Recognition') }}
                     </li>
-                    <li class="step" :class="{ 'step-primary': $wire.form.currentStep >= 3 }">
+                    <li class="step @if($form->currentStep >= 3) step-primary @endif">
                         {{ __('PIN') }}
                     </li>
                 </ul>

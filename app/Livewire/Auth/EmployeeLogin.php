@@ -50,7 +50,15 @@ class EmployeeLogin extends Component
 
     public function verifyFace(FaceRecognitionService $faceService)
     {
-        $this->form->validatePhoto();
+        try {
+            $this->form->validatePhoto();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            foreach ($errors as $error) {
+                $this->error($error);
+            }
+            throw $e;
+        }
 
         if (!$this->user) {
             $this->error(__('Session expired. Please start over.'));
