@@ -93,7 +93,24 @@ class EmployeeProfileForm extends Form
             return $this->contract_file;
         }
 
-        return $this->contract_file_url ? asset('storage/' . $this->contract_file_url) : null;
+        if (empty($this->contract_file_url)) {
+            return null;
+        }
+
+        // If stored in public disk, return public URL
+        if (\Storage::disk('public')->exists($this->contract_file_url)) {
+            return \Storage::disk('public')->url($this->contract_file_url);
+        }
+
+        // If stored in local disk, generate temporary URL
+        if (\Storage::disk('local')->exists($this->contract_file_url)) {
+            return \Storage::disk('local')->temporaryUrl(
+                $this->contract_file_url,
+                now()->addMinutes(60)
+            );
+        }
+
+        return null;
     }
 
     public function getData(): array

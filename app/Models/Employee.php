@@ -108,4 +108,29 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeAllowedLocation::class);
     }
+
+    /**
+     * Get temporary URL for employee's contract file.
+     */
+    public function getContractFileUrl(?int $expiresInMinutes = 60): ?string
+    {
+        if (empty($this->contract_file_url)) {
+            return null;
+        }
+
+        // If stored in public disk, return public URL
+        if (\Storage::disk('public')->exists($this->contract_file_url)) {
+            return \Storage::disk('public')->url($this->contract_file_url);
+        }
+
+        // If stored in local disk, generate temporary URL
+        if (\Storage::disk('local')->exists($this->contract_file_url)) {
+            return \Storage::disk('local')->temporaryUrl(
+                $this->contract_file_url,
+                now()->addMinutes($expiresInMinutes)
+            );
+        }
+
+        return null;
+    }
 }

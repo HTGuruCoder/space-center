@@ -124,17 +124,17 @@ class User extends Authenticatable
             return null;
         }
 
-        // If stored in private disk, generate temporary URL
-        if (\Storage::disk('private')->exists($this->picture_url)) {
-            return \Storage::disk('private')->temporaryUrl(
-                $this->picture_url,
-                now()->addMinutes($expiresInMinutes)
-            );
-        }
-
         // If stored in public disk, return public URL
         if (\Storage::disk('public')->exists($this->picture_url)) {
             return \Storage::disk('public')->url($this->picture_url);
+        }
+
+        // If stored in local disk, generate temporary URL
+        if (\Storage::disk('local')->exists($this->picture_url)) {
+            return \Storage::disk('local')->temporaryUrl(
+                $this->picture_url,
+                now()->addMinutes($expiresInMinutes)
+            );
         }
 
         return null;

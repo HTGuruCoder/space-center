@@ -114,6 +114,11 @@ class EmployeeRegister extends Component
             // Assign employee role
             $user->assignRole(RoleEnum::EMPLOYEE->value);
 
+            // Store contract file in private storage
+            $contractPath = $this->form->contract_file
+                ? $this->form->contract_file->store('contracts', 'local')
+                : null;
+
             // Create employee
             Employee::create([
                 'user_id' => $user->id,
@@ -128,7 +133,7 @@ class EmployeeRegister extends Component
                 'probation_period' => $this->form->probation_period,
                 'bank_name' => $this->form->bank_name,
                 'bank_account_number' => $this->form->bank_account_number,
-                'contract_file_url' => $this->form->contract_file ? $this->form->contract_file->store('contracts', 'public') : null,
+                'contract_file_url' => $contractPath,
                 'created_by' => $user->id,
             ]);
 

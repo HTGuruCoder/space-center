@@ -191,6 +191,7 @@
                             wire:click="nextStep"
                             class="btn-primary"
                             spinner="nextStep"
+                            :disabled="!$form->photo"
                         >
                             {{ __('Next') }}
                             <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />

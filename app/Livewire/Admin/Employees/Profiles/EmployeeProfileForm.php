@@ -85,9 +85,9 @@ class EmployeeProfileForm extends Component
 
         $data = $this->form->getData();
 
-        // Handle contract file upload
+        // Handle contract file upload (store in private storage)
         if ($this->form->contract_file) {
-            $data['contract_file_url'] = $this->form->contract_file->store('contracts', 'public');
+            $data['contract_file_url'] = $this->form->contract_file->store('contracts', 'local');
         }
 
         Employee::create($data);
@@ -107,13 +107,18 @@ class EmployeeProfileForm extends Component
 
         $data = $this->form->getData();
 
-        // Handle contract file upload
+        // Handle contract file upload (store in private storage)
         if ($this->form->contract_file) {
             // Delete old file if exists
             if ($employee->contract_file_url) {
-                \Storage::disk('public')->delete($employee->contract_file_url);
+                // Try both disks to delete old file
+                if (\Storage::disk('local')->exists($employee->contract_file_url)) {
+                    \Storage::disk('local')->delete($employee->contract_file_url);
+                } elseif (\Storage::disk('public')->exists($employee->contract_file_url)) {
+                    \Storage::disk('public')->delete($employee->contract_file_url);
+                }
             }
-            $data['contract_file_url'] = $this->form->contract_file->store('contracts', 'public');
+            $data['contract_file_url'] = $this->form->contract_file->store('contracts', 'local');
         }
 
         $employee->update($data);

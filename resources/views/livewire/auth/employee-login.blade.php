@@ -92,6 +92,7 @@
                             wire:click="verifyFace"
                             class="btn-primary"
                             spinner="verifyFace"
+                            :disabled="!$form->photo"
                         >
                             {{ __('Verify Face') }}
                             <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />

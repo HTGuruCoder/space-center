@@ -6,8 +6,8 @@ $isEmployeeSpace = request()->routeIs('employees.*');
 <div class="dropdown dropdown-end">
     <label tabindex="0" class="btn btn-ghost btn-circle avatar">
         <div class="w-10 rounded-full">
-            @if($user->picture_url)
-                <img src="{{ asset('storage/' . $user->picture_url) }}" alt="{{ $user->full_name }}" />
+            @if($user->getProfilePictureUrl())
+                <img src="{{ $user->getProfilePictureUrl() }}" alt="{{ $user->full_name }}" class="object-cover w-full h-full" />
             @else
                 <div class="bg-primary text-primary-content flex items-center justify-center w-full h-full text-sm font-bold">
                     {{ $user->initials }}

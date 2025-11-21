@@ -72,10 +72,10 @@
                 <span class="font-semibold">{{ __('Bank Account') }}:</span>
                 {{ $employee->bank_account_number ?? '-' }}
             </div>
-            @if($employee->contract_file_url)
+            @if($employee->getContractFileUrl())
                 <div>
                     <span class="font-semibold">{{ __('Contract File') }}:</span>
-                    <a href="{{ asset('storage/' . $employee->contract_file_url) }}" target="_blank" class="link link-primary">
+                    <a href="{{ $employee->getContractFileUrl() }}" target="_blank" class="link link-primary">
                         {{ __('View Contract') }}
                     </a>
                 </div>
