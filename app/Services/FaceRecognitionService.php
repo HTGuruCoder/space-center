@@ -450,15 +450,23 @@ class FaceRecognitionService
             }
         }
 
-        // Check for sunglasses
+        // Check eyestatus attributes
+        // According to Face++ API documentation:
+        // - Values are floating-point numbers between [0,100]
+        // - The sum of all values for each eye = 100 (probability distribution)
+        // - dark_glasses: confidence that the eye wears dark glasses
+        // - no_glass_eye_open/normal_glass_eye_open: confidence that eye is open
         if (isset($attributes['eyestatus'])) {
             $leftEye = $attributes['eyestatus']['left_eye_status'] ?? [];
             $rightEye = $attributes['eyestatus']['right_eye_status'] ?? [];
 
-            if (
-                ($leftEye['dark_glasses'] ?? 0) > 50 ||
-                ($rightEye['dark_glasses'] ?? 0) > 50
-            ) {
+            // 1. Check for dark glasses
+            // Since sum = 100, dark_glasses > 60 means it's the dominant state
+            // We require BOTH eyes to show dark glasses to avoid false positives
+            $leftDarkGlasses = $leftEye['dark_glasses'] ?? 0;
+            $rightDarkGlasses = $rightEye['dark_glasses'] ?? 0;
+
+            if ($leftDarkGlasses > 60 && $rightDarkGlasses > 60) {
                 return [
                     'success' => false,
                     'error' => 'sunglasses_detected',
@@ -466,19 +474,23 @@ class FaceRecognitionService
                 ];
             }
 
-            // Check if eyes are open (check both eyes)
-            $leftEyeOpen = max(
-                $leftEye['normal_glass_eye_open'] ?? 0,
-                $leftEye['no_glass_eye_open'] ?? 0
-            );
+            // 2. Check if eyes are open
+            // Sum all "eye open" states for each eye
+            $leftEyeOpen = ($leftEye['no_glass_eye_open'] ?? 0) +
+                          ($leftEye['normal_glass_eye_open'] ?? 0);
 
-            $rightEyeOpen = max(
-                $rightEye['normal_glass_eye_open'] ?? 0,
-                $rightEye['no_glass_eye_open'] ?? 0
-            );
+            $rightEyeOpen = ($rightEye['no_glass_eye_open'] ?? 0) +
+                           ($rightEye['normal_glass_eye_open'] ?? 0);
 
-            // Only fail if BOTH eyes appear closed (confidence < 30)
-            if ($leftEyeOpen < 30 && $rightEyeOpen < 30) {
+            // Calculate total "closed" probability for each eye
+            $leftEyeClosed = ($leftEye['no_glass_eye_close'] ?? 0) +
+                            ($leftEye['normal_glass_eye_close'] ?? 0);
+
+            $rightEyeClosed = ($rightEye['no_glass_eye_close'] ?? 0) +
+                             ($rightEye['normal_glass_eye_close'] ?? 0);
+
+            // Only fail if BOTH eyes show closed state is dominant (>60)
+            if ($leftEyeClosed > 60 && $rightEyeClosed > 60) {
                 return [
                     'success' => false,
                     'error' => 'eyes_closed',

@@ -109,8 +109,6 @@ class EmployeeRegister extends Component
                 'currency_code' => $this->form->currency_code,
                 'picture_url' => $photoPath,
                 'face_token' => $faceToken,
-                'bank_name' => $this->form->bank_name,
-                'bank_account_number' => $this->form->bank_account_number,
             ]);
 
             // Assign employee role
