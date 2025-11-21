@@ -34,15 +34,27 @@ class EmployeeRegister extends Component
 
     public function nextStep()
     {
-        match ($this->currentStep) {
-            1 => $this->form->validateStep1(),
-            2 => $this->form->validateStep2(),
-            3 => $this->form->validateStep3(),
-            4 => $this->form->validateStep4(),
-            default => null,
-        };
+        try {
+            match ($this->currentStep) {
+                1 => $this->form->validateStep1(),
+                2 => $this->form->validateStep2(),
+                3 => $this->form->validateStep3(),
+                4 => $this->form->validateStep4(),
+                default => null,
+            };
 
-        $this->currentStep++;
+            $this->currentStep++;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Show toast for Step 1 (face capture) and Step 2 (PIN) since they don't have inline validation
+            // Steps 3, 4, 5 have inline validation at the input field level
+            if ($this->currentStep === 1 || $this->currentStep === 2) {
+                $errors = $e->validator->errors()->all();
+                foreach ($errors as $error) {
+                    $this->error($error);
+                }
+            }
+            throw $e;
+        }
     }
 
     public function previousStep()

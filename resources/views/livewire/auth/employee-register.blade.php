@@ -292,6 +292,7 @@
                             wire:model="form.birth_date"
                             icon="mdi.calendar"
                             placeholder="{{ __('Select birth date') }}"
+                            required
                         />
 
                         <x-choices-offline
