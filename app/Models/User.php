@@ -29,6 +29,7 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'picture_url',
+        'face_token',
         'timezone',
         'birth_date',
         'country_code',
@@ -46,6 +47,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'face_token',
     ];
 
     /**
@@ -103,5 +105,38 @@ class User extends Authenticatable
     public function createdUsers()
     {
         return $this->hasMany(User::class, 'created_by');
+    }
+
+    /**
+     * Check if user has facial recognition enabled.
+     */
+    public function hasFaceAuthEnabled(): bool
+    {
+        return !empty($this->face_token);
+    }
+
+    /**
+     * Get temporary URL for user's profile picture.
+     */
+    public function getProfilePictureUrl(?int $expiresInMinutes = 60): ?string
+    {
+        if (empty($this->picture_url)) {
+            return null;
+        }
+
+        // If stored in private disk, generate temporary URL
+        if (\Storage::disk('private')->exists($this->picture_url)) {
+            return \Storage::disk('private')->temporaryUrl(
+                $this->picture_url,
+                now()->addMinutes($expiresInMinutes)
+            );
+        }
+
+        // If stored in public disk, return public URL
+        if (\Storage::disk('public')->exists($this->picture_url)) {
+            return \Storage::disk('public')->url($this->picture_url);
+        }
+
+        return null;
     }
 }

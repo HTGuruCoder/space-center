@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone_number');
             $table->string('picture_url')->nullable();
+            $table->string('face_token')->nullable()->comment('Face++ face token for facial recognition');
             $table->string('timezone');
             $table->date('birth_date')->nullable();
             $table->string('country_code', 2);

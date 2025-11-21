@@ -12,8 +12,10 @@ use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Store;
 use App\Models\User;
+use App\Services\FaceRecognitionService;
 use App\Utils\Timezone;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
@@ -28,11 +30,15 @@ class EmployeeRegister extends Component
 
     public int $currentStep = 1;
 
+    public bool $showPinPad = false;
+
     public function nextStep()
     {
         match ($this->currentStep) {
             1 => $this->form->validateStep1(),
             2 => $this->form->validateStep2(),
+            3 => $this->form->validateStep3(),
+            4 => $this->form->validateStep4(),
             default => null,
         };
 
@@ -44,23 +50,48 @@ class EmployeeRegister extends Component
         $this->currentStep--;
     }
 
-    public function register()
+    public function register(FaceRecognitionService $faceService)
     {
-        $this->form->validateStep3();
+        $this->form->validateStep5();
 
-        DB::transaction(function () {
+        DB::transaction(function () use ($faceService) {
+            // Detect face and get face_token
+            $detectResult = $faceService->detectFace($this->form->photo);
+
+            if (!$detectResult['success']) {
+                $this->error($detectResult['message']);
+                throw new \Exception($detectResult['message']);
+            }
+
+            $faceToken = $detectResult['face_token'];
+
+            // Add face_token to FaceSet (makes it permanent)
+            $facesetToken = Cache::get('facepp_faceset_token');
+            if ($facesetToken) {
+                $addResult = $faceService->addToFaceSet($facesetToken, $faceToken);
+                if (!$addResult['success']) {
+                    $this->warning(__('Face token could not be added to FaceSet. It will expire in 72 hours.'));
+                }
+            }
+
+            // Store photo in private storage
+            $photoPath = $this->form->photo->store('profile-pictures', 'local');
+
             // Create user
             $user = User::create([
                 'first_name' => $this->form->first_name,
                 'last_name' => $this->form->last_name,
                 'email' => $this->form->email,
-                'password' => Hash::make($this->form->password),
+                'password' => Hash::make($this->form->pin),
                 'phone_number' => $this->form->phone_number,
                 'timezone' => $this->form->timezone,
                 'birth_date' => $this->form->birth_date,
                 'country_code' => $this->form->country_code,
                 'currency_code' => $this->form->currency_code,
-                'picture_url' => $this->form->picture->store('profile-pictures', 'public'),
+                'picture_url' => $photoPath,
+                'face_token' => $faceToken,
+                'bank_name' => $this->form->bank_name,
+                'bank_account_number' => $this->form->bank_account_number,
             ]);
 
             // Assign employee role
@@ -84,8 +115,8 @@ class EmployeeRegister extends Component
                 'created_by' => $user->id,
             ]);
 
-            // Log in the user
-            Auth::login($user);
+            // Log in the user (without remember token)
+            Auth::login($user, false);
         });
 
         $this->success(

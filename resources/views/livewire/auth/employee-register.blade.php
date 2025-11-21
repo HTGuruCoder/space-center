@@ -20,176 +20,218 @@
 
         <x-card class="shadow-xl">
             <x-steps wire:model="currentStep" class="mb-10 -mx-6 -mt-6 px-6 pt-6" stepper-classes="w-full" steps-color="step-primary" >
-                {{-- Step 1: Personal Information --}}
-                <x-step step="1" text="{{ __('Personal Information') }}">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                {{-- Step 1: Face Capture --}}
+                <x-step step="1" text="{{ __('Face Capture') }}">
+                    <div class="mt-8">
+                        <label class="label">
+                            <span class="label-text font-semibold">{{ __('Facial Recognition Photo') }}</span>
+                        </label>
+                        <x-face-capture-component wire-model="form.photo" />
 
-                        <div class="md:col-span-2">
-                            <x-file
-                                label="{{ __('Profile Picture') }}"
-                                wire:model="form.picture"
-                                accept="image/jpeg,image/jpg,image/png"
-                                hint="{{ __('Please upload a passport-style photo where your face is clearly visible. This photo will be used for face recognition. Max size: 2MB') }}"
-                                crop-after-change
-                                change-text="{{ __('Change') }}"
-                                crop-text="{{ __('Crop') }}"
-                                crop-title-text="{{ __('Crop image') }}"
-                                crop-cancel-text="{{ __('Cancel') }}"
-                                crop-save-text="{{ __('Crop') }}"
-                            >
-                                <img src="{{ $form->picture ?? asset('images/default-avatar.svg') }}" class="h-40 rounded-lg" />
-                            </x-file>
+                        {{-- Photo Examples --}}
+                        <div class="mt-6 p-4 bg-base-200 rounded-lg">
+                            <h3 class="font-semibold mb-4 flex items-center gap-2">
+                                <x-icon name="mdi.information" class="w-5 h-5 text-info" />
+                                {{ __('Photo Guidelines') }}
+                            </h3>
 
-                            {{-- Photo Examples --}}
-                            <div class="mt-6 p-4 bg-base-200 rounded-lg">
-                                <h3 class="font-semibold mb-4 flex items-center gap-2">
-                                    <x-icon name="mdi.information" class="w-5 h-5 text-info" />
-                                    {{ __('Photo Guidelines') }}
-                                </h3>
-
-                                {{-- Visual Examples with Images --}}
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                                    {{-- Good Example 1 --}}
-                                    <div class="text-center">
-                                        <div class="relative">
-                                            <div class="aspect-square bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border-2 border-success flex items-center justify-center">
-                                                <div class="text-center p-4">
-                                                    <x-icon name="mdi.account-circle" class="w-16 h-16 text-success mx-auto mb-2" />
-                                                    <p class="text-xs font-medium text-success">{{ __('Front facing') }}</p>
-                                                    <p class="text-xs text-success/70">{{ __('Clear view') }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="absolute -top-2 -right-2 bg-success rounded-full p-1">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-white" />
-                                            </div>
+                            {{-- Visual Examples with Real Photos --}}
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                                {{-- Good Example 1: Front Facing --}}
+                                <div class="text-center">
+                                    <div class="relative">
+                                        <img
+                                            src="{{ asset('images/photo-examples/good-front-facing.jpg') }}"
+                                            alt="{{ __('Good example: Front facing') }}"
+                                            class="aspect-square w-full object-contain rounded-lg border-2 border-success bg-base-200"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.svg') }}';"
+                                        />
+                                        <div class="absolute -top-2 -right-2 bg-success rounded-full p-1.5 shadow-lg">
+                                            <x-icon name="mdi.check" class="w-5 h-5 text-white" />
                                         </div>
-                                        <p class="text-xs mt-2 text-success font-medium">{{ __('Good') }}</p>
-                                    </div>
-
-                                    {{-- Good Example 2 --}}
-                                    <div class="text-center">
-                                        <div class="relative">
-                                            <div class="aspect-square bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border-2 border-success flex items-center justify-center">
-                                                <div class="text-center p-4">
-                                                    <x-icon name="mdi.white-balance-sunny" class="w-16 h-16 text-success mx-auto mb-2" />
-                                                    <p class="text-xs font-medium text-success">{{ __('Well lit') }}</p>
-                                                    <p class="text-xs text-success/70">{{ __('Good lighting') }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="absolute -top-2 -right-2 bg-success rounded-full p-1">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-white" />
-                                            </div>
+                                        <div class="absolute bottom-0 left-0 right-0 bg-success/90 text-white px-2 py-1 rounded-b-lg">
+                                            <p class="text-xs font-medium">{{ __('Front facing') }}</p>
                                         </div>
-                                        <p class="text-xs mt-2 text-success font-medium">{{ __('Good') }}</p>
                                     </div>
-
-                                    {{-- Bad Example 1 --}}
-                                    <div class="text-center">
-                                        <div class="relative">
-                                            <div class="aspect-square bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-lg border-2 border-error flex items-center justify-center">
-                                                <div class="text-center p-4">
-                                                    <x-icon name="mdi.sunglasses" class="w-16 h-16 text-error mx-auto mb-2" />
-                                                    <p class="text-xs font-medium text-error">{{ __('Sunglasses') }}</p>
-                                                    <p class="text-xs text-error/70">{{ __('Face hidden') }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="absolute -top-2 -right-2 bg-error rounded-full p-1">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-white" />
-                                            </div>
-                                        </div>
-                                        <p class="text-xs mt-2 text-error font-medium">{{ __('Bad') }}</p>
-                                    </div>
-
-                                    {{-- Bad Example 2 --}}
-                                    <div class="text-center">
-                                        <div class="relative">
-                                            <div class="aspect-square bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-lg border-2 border-error flex items-center justify-center">
-                                                <div class="text-center p-4">
-                                                    <x-icon name="mdi.account-multiple" class="w-16 h-16 text-error mx-auto mb-2" />
-                                                    <p class="text-xs font-medium text-error">{{ __('Group photo') }}</p>
-                                                    <p class="text-xs text-error/70">{{ __('Multiple faces') }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="absolute -top-2 -right-2 bg-error rounded-full p-1">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-white" />
-                                            </div>
-                                        </div>
-                                        <p class="text-xs mt-2 text-error font-medium">{{ __('Bad') }}</p>
-                                    </div>
+                                    <p class="text-xs mt-2 text-success font-semibold">✓ {{ __('Good') }}</p>
                                 </div>
 
-                                {{-- Detailed Guidelines --}}
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {{-- Good Photos --}}
-                                    <div class="space-y-3">
-                                        <div class="flex items-center gap-2 text-success font-medium">
-                                            <x-icon name="mdi.check-circle" class="w-5 h-5" />
-                                            {{ __('Good Photos') }}
+                                {{-- Good Example 2: Well Lit --}}
+                                <div class="text-center">
+                                    <div class="relative">
+                                        <img
+                                            src="{{ asset('images/photo-examples/good-lighting.jpg') }}"
+                                            alt="{{ __('Good example: Well lit') }}"
+                                            class="aspect-square w-full object-contain rounded-lg border-2 border-success bg-base-200"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.svg') }}';"
+                                        />
+                                        <div class="absolute -top-2 -right-2 bg-success rounded-full p-1.5 shadow-lg">
+                                            <x-icon name="mdi.check" class="w-5 h-5 text-white" />
                                         </div>
-                                        <ul class="space-y-2 text-sm">
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Face clearly visible and centered') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Good lighting (avoid shadows)') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Neutral background') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Looking straight at camera') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Passport-style or professional headshot') }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    {{-- Bad Photos --}}
-                                    <div class="space-y-3">
-                                        <div class="flex items-center gap-2 text-error font-medium">
-                                            <x-icon name="mdi.close-circle" class="w-5 h-5" />
-                                            {{ __('Avoid') }}
+                                        <div class="absolute bottom-0 left-0 right-0 bg-success/90 text-white px-2 py-1 rounded-b-lg">
+                                            <p class="text-xs font-medium">{{ __('Good lighting') }}</p>
                                         </div>
-                                        <ul class="space-y-2 text-sm">
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Sunglasses or face covered') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Blurry or low quality images') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Group photos or multiple people') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Side angle or profile shots') }}</span>
-                                            </li>
-                                            <li class="flex items-start gap-2">
-                                                <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
-                                                <span>{{ __('Heavy filters or edited photos') }}</span>
-                                            </li>
-                                        </ul>
                                     </div>
+                                    <p class="text-xs mt-2 text-success font-semibold">✓ {{ __('Good') }}</p>
                                 </div>
 
-                                <div class="mt-4 p-3 bg-info/10 border border-info/30 rounded-lg">
-                                    <p class="text-sm flex items-start gap-2">
-                                        <x-icon name="mdi.lightbulb" class="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
-                                        <span>{{ __('Tip: A clear, well-lit photo will ensure accurate face recognition for attendance tracking.') }}</span>
-                                    </p>
+                                {{-- Bad Example 1: Sunglasses --}}
+                                <div class="text-center">
+                                    <div class="relative">
+                                        <img
+                                            src="{{ asset('images/photo-examples/bad-sunglasses.jpg') }}"
+                                            alt="{{ __('Bad example: Sunglasses') }}"
+                                            class="aspect-square w-full object-contain rounded-lg border-2 border-error bg-base-200"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.svg') }}';"
+                                        />
+                                        <div class="absolute -top-2 -right-2 bg-error rounded-full p-1.5 shadow-lg">
+                                            <x-icon name="mdi.close" class="w-5 h-5 text-white" />
+                                        </div>
+                                        <div class="absolute bottom-0 left-0 right-0 bg-error/90 text-white px-2 py-1 rounded-b-lg">
+                                            <p class="text-xs font-medium">{{ __('Sunglasses') }}</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs mt-2 text-error font-semibold">✗ {{ __('Bad') }}</p>
+                                </div>
+
+                                {{-- Bad Example 2: Group Photo --}}
+                                <div class="text-center">
+                                    <div class="relative">
+                                        <img
+                                            src="{{ asset('images/photo-examples/bad-group.jpg') }}"
+                                            alt="{{ __('Bad example: Group photo') }}"
+                                            class="aspect-square w-full object-contain rounded-lg border-2 border-error bg-base-200"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.svg') }}';"
+                                        />
+                                        <div class="absolute -top-2 -right-2 bg-error rounded-full p-1.5 shadow-lg">
+                                            <x-icon name="mdi.close" class="w-5 h-5 text-white" />
+                                        </div>
+                                        <div class="absolute bottom-0 left-0 right-0 bg-error/90 text-white px-2 py-1 rounded-b-lg">
+                                            <p class="text-xs font-medium">{{ __('Group photo') }}</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs mt-2 text-error font-semibold">✗ {{ __('Bad') }}</p>
                                 </div>
                             </div>
-                        </div>
 
+                            {{-- Detailed Guidelines --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {{-- Good Photos --}}
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-2 text-success font-medium">
+                                        <x-icon name="mdi.check-circle" class="w-5 h-5" />
+                                        {{ __('Good Photos') }}
+                                    </div>
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Face clearly visible and centered') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Good lighting (avoid shadows)') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Neutral background') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Looking straight at camera') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.check" class="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Passport-style or professional headshot') }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                {{-- Bad Photos --}}
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-2 text-error font-medium">
+                                        <x-icon name="mdi.close-circle" class="w-5 h-5" />
+                                        {{ __('Avoid') }}
+                                    </div>
+                                    <ul class="space-y-2 text-sm">
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Sunglasses or face covered') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Blurry or low quality images') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Group photos or multiple people') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Side angle or profile shots') }}</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <x-icon name="mdi.close" class="w-4 h-4 text-error mt-0.5 flex-shrink-0" />
+                                            <span>{{ __('Heavy filters or edited photos') }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-info/10 border border-info/30 rounded-lg">
+                                <p class="text-sm flex items-start gap-2">
+                                    <x-icon name="mdi.lightbulb" class="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
+                                    <span>{{ __('Tip: A clear, well-lit photo will ensure accurate face recognition for attendance tracking.') }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-8 pt-6 border-t border-base-300">
+                        <x-button
+                            wire:click="nextStep"
+                            class="btn-primary"
+                            spinner="nextStep"
+                        >
+                            {{ __('Next') }}
+                            <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
+                        </x-button>
+                    </div>
+                </x-step>
+
+                {{-- Step 2: PIN --}}
+                <x-step step="2" text="{{ __('PIN Code') }}">
+                    <div class="mt-8">
+                        <x-pin-pad-component
+                            wire-model="form.pin"
+                            :min-length="4"
+                            :max-length="6"
+                            :label="__('Create PIN Code (4-6 digits)')"
+                        />
+                    </div>
+
+                    <div class="flex justify-between mt-8 pt-6 border-t border-base-300">
+                        <x-button
+                            wire:click="previousStep"
+                            class="btn-outline"
+                        >
+                            <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
+                            {{ __('Previous') }}
+                        </x-button>
+
+                        <x-button
+                            wire:click="nextStep"
+                            class="btn-primary"
+                            spinner="nextStep"
+                        >
+                            {{ __('Next') }}
+                            <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
+                        </x-button>
+                    </div>
+                </x-step>
+
+                {{-- Step 3: Personal Information --}}
+                <x-step step="3" text="{{ __('Personal Information') }}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <x-input
                             label="{{ __('First Name') }}"
                             wire:model="form.first_name"
@@ -213,24 +255,6 @@
                             placeholder="{{ __('john.doe@example.com') }}"
                             required
                             class="md:col-span-2"
-                        />
-
-                        <x-password
-                            label="{{ __('Password') }}"
-                            wire:model="form.password"
-                            icon="mdi.lock"
-                            placeholder="{{ __('Minimum 8 characters') }}"
-                            right
-                            required
-                        />
-
-                        <x-password
-                            label="{{ __('Confirm Password') }}"
-                            wire:model="form.password_confirmation"
-                            icon="mdi.lock-check"
-                            placeholder="{{ __('Re-enter password') }}"
-                            right
-                            required
                         />
 
                         <x-choices-offline
@@ -282,7 +306,15 @@
                         />
                     </div>
 
-                    <div class="flex justify-end mt-8 pt-6 border-t border-base-300">
+                    <div class="flex justify-between mt-8 pt-6 border-t border-base-300">
+                        <x-button
+                            wire:click="previousStep"
+                            class="btn-outline"
+                        >
+                            <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
+                            {{ __('Previous') }}
+                        </x-button>
+
                         <x-button
                             wire:click="nextStep"
                             class="btn-primary"
@@ -294,8 +326,8 @@
                     </div>
                 </x-step>
 
-                {{-- Step 2: Store Information --}}
-                <x-step step="2" text="{{ __('Store Information') }}">
+                {{-- Step 4: Store Information --}}
+                <x-step step="4" text="{{ __('Store Information') }}">
                     <div class="grid grid-cols-1 gap-6 mt-8">
                         <x-choices-offline
                             label="{{ __('Store') }}"
@@ -351,8 +383,8 @@
                     </div>
                 </x-step>
 
-                {{-- Step 3: Contract Information --}}
-                <x-step step="3" text="{{ __('Contract Information') }}">
+                {{-- Step 5: Contract Information --}}
+                <x-step step="5" text="{{ __('Contract Information') }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <x-choices-offline
                             label="{{ __('Contract Type') }}"
@@ -410,6 +442,7 @@
                             type="number"
                             icon="mdi.timer-sand"
                             placeholder="{{ __('90') }}"
+                            required
                         />
 
                         <x-input
@@ -417,6 +450,7 @@
                             wire:model="form.bank_name"
                             icon="mdi.bank"
                             placeholder="{{ __('Bank of America') }}"
+                            required
                         />
 
                         <x-input
@@ -424,6 +458,7 @@
                             wire:model="form.bank_account_number"
                             icon="mdi.credit-card"
                             placeholder="{{ __('1234567890') }}"
+                            required
                         />
 
                         <div class="md:col-span-2">

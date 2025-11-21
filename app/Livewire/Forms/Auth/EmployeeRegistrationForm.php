@@ -14,7 +14,14 @@ use Propaganistas\LaravelPhone\Rules\Phone;
 
 class EmployeeRegistrationForm extends Form
 {
-    // Step 1: Personal Information
+    // Step 1: Face Capture
+    public $photo;
+
+    // Step 2: PIN
+    #[Validate('required|string|min:4|max:6|regex:/^[0-9]+$/')]
+    public string $pin = '';
+
+    // Step 3: Personal Information
     #[Validate('required|string|max:255')]
     public string $first_name = '';
 
@@ -24,15 +31,7 @@ class EmployeeRegistrationForm extends Form
     #[Validate('required|email|unique:users,email')]
     public string $email = '';
 
-    #[Validate('required|string|min:8|confirmed')]
-    public string $password = '';
-
-    #[Validate('required')]
-    public string $password_confirmation = '';
-
     public string $phone_number = '';
-
-    public $picture;
 
     public string $timezone = '';
 
@@ -43,7 +42,7 @@ class EmployeeRegistrationForm extends Form
 
     public string $currency_code = '';
 
-    // Step 2: Store Information
+    // Step 4: Store Information
     #[Validate('required|exists:stores,id')]
     public string $store_id = '';
 
@@ -53,13 +52,13 @@ class EmployeeRegistrationForm extends Form
     #[Validate('nullable|exists:employees,id')]
     public ?string $manager_id = null;
 
-    // Step 3: Contract Information
+    // Step 5: Contract Information
     public string $type = '';
 
     public string $compensation_unit = '';
 
     #[Validate('required|numeric|min:0')]
-    public string $compensation_amount = '';
+    public int $compensation_amount = 0;
 
     #[Validate('required|date')]
     public string $started_at = '';
@@ -82,7 +81,7 @@ class EmployeeRegistrationForm extends Form
     {
         return [
             'phone_number' => ['required', (new Phone())->country('country_code')],
-            'picture' => ['required', 'image', 'max:2048'],
+            'photo' => ['required', 'image', 'max:2048'],
             'contract_file' => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
             'country_code' => ['required', Rule::in(CountryEnum::values())],
             'currency_code' => ['required', Rule::in(CurrencyEnum::values())],
@@ -95,13 +94,24 @@ class EmployeeRegistrationForm extends Form
     public function validateStep1()
     {
         $this->validate([
+            'photo' => ['required', 'image', 'max:2048'],
+        ]);
+    }
+
+    public function validateStep2()
+    {
+        $this->validate([
+            'pin' => 'required|string|min:4|max:6|regex:/^[0-9]+$/',
+        ]);
+    }
+
+    public function validateStep3()
+    {
+        $this->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required',
             'phone_number' => ['required', (new Phone())->countryField('country_code')],
-            'picture' => ['required', 'image', 'max:2048'],
             'timezone' => 'required|string',
             'birth_date' => 'required|date|before:today',
             'country_code' => ['required', Rule::in(CountryEnum::values())],
@@ -109,7 +119,7 @@ class EmployeeRegistrationForm extends Form
         ]);
     }
 
-    public function validateStep2()
+    public function validateStep4()
     {
         $this->validate([
             'store_id' => 'required|exists:stores,id',
@@ -118,7 +128,7 @@ class EmployeeRegistrationForm extends Form
         ]);
     }
 
-    public function validateStep3()
+    public function validateStep5()
     {
         $this->validate([
             'type' => ['required', Rule::in(ContractTypeEnum::values())],

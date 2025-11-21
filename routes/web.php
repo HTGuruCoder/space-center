@@ -22,8 +22,12 @@ Route::group(
 
         // Auth routes (guest only - redirects to home if already authenticated)
         Route::prefix('auth')->middleware('guest')->group(function () {
-            Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
-            Route::get('/register', \App\Livewire\Auth\EmployeeRegister::class)->name('register');
+            // Employee routes
+            Route::get('/login', \App\Livewire\Auth\EmployeeLogin::class)->name('login');
+            Route::get('/employee/register', \App\Livewire\Auth\EmployeeRegister::class)->name('employee.register');
+
+            // Admin route
+            Route::get('/admin/login', \App\Livewire\Auth\Login::class)->name('admin.login');
         });
 
         // Logout

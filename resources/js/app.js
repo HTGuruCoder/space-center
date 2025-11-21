@@ -53,3 +53,10 @@ window.Cropper = Cropper;
 
 import Chart from 'chart.js/auto';
 window.Chart = Chart;
+
+// Face recognition components
+import faceCapture from './components/face-capture';
+import pinPad from './components/pin-pad';
+
+window.faceCapture = faceCapture;
+window.pinPad = pinPad;
