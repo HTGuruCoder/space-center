@@ -67,10 +67,10 @@ class UserForm extends Component
 
         $validated = $this->form->validate();
 
-        // Handle picture upload
+        // Handle picture upload (store in private storage)
         $pictureUrl = null;
         if ($this->form->picture) {
-            $pictureUrl = $this->form->picture->store('profile-pictures', 'public');
+            $pictureUrl = $this->form->picture->store('profile-pictures', 'local');
         }
 
         // Create user
@@ -117,7 +117,7 @@ class UserForm extends Component
                     Storage::disk('public')->delete($pictureUrl);
                 }
             }
-            $pictureUrl = $this->form->picture->store('profile-pictures', 'public');
+            $pictureUrl = $this->form->picture->store('profile-pictures', 'local');
         }
 
         // Update user

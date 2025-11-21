@@ -4,7 +4,9 @@ namespace App\Livewire\Admin\Account;
 
 use App\Livewire\Forms\Account\AccountSettingsForm;
 use App\Livewire\Forms\Account\PasswordChangeForm;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
@@ -31,11 +33,11 @@ class Settings extends Component
             return $this->picture->temporaryUrl();
         }
 
-        if (auth()->user()->picture_url) {
-            return asset('storage/' . auth()->user()->picture_url);
-        }
+        /** @var User $user */
+        $user = auth()->user();
 
-        return asset('images/default-avatar.svg');
+        return $user->getProfilePictureUrl()
+            ?: asset('images/default-avatar.svg');
     }
 
     public function updateProfile(): void
@@ -56,13 +58,17 @@ class Settings extends Component
 
         $user = auth()->user();
 
-        // Delete old picture if exists
+        // Delete old picture if exists (try both disks)
         if ($user->picture_url) {
-            \Storage::disk('public')->delete($user->picture_url);
+            if (Storage::disk('local')->exists($user->picture_url)) {
+                Storage::disk('local')->delete($user->picture_url);
+            } elseif (Storage::disk('public')->exists($user->picture_url)) {
+                Storage::disk('public')->delete($user->picture_url);
+            }
         }
 
-        // Store new picture
-        $path = $this->picture->store('profile-pictures', 'public');
+        // Store new picture in private storage
+        $path = $this->picture->store('profile-pictures', 'local');
 
         $user->update(['picture_url' => $path]);
 
@@ -75,7 +81,13 @@ class Settings extends Component
         $user = auth()->user();
 
         if ($user->picture_url) {
-            \Storage::disk('public')->delete($user->picture_url);
+            // Delete from both disks if exists
+            if (Storage::disk('local')->exists($user->picture_url)) {
+                Storage::disk('local')->delete($user->picture_url);
+            } elseif (Storage::disk('public')->exists($user->picture_url)) {
+                Storage::disk('public')->delete($user->picture_url);
+            }
+
             $user->update(['picture_url' => null]);
 
             $this->success(__('Profile picture removed successfully.'));

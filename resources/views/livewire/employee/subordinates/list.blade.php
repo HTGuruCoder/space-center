@@ -11,8 +11,8 @@
                     {{-- Avatar --}}
                     <div class="avatar">
                         <div class="w-16 h-16 rounded-lg">
-                            @if($subordinate->user->picture_url)
-                                <img src="{{ asset('storage/' . $subordinate->user->picture_url) }}" alt="{{ $subordinate->user->full_name }}">
+                            @if($subordinate->user->getProfilePictureUrl())
+                                <img src="{{ $subordinate->user->getProfilePictureUrl() }}" alt="{{ $subordinate->user->full_name }}" class="object-cover w-full h-full">
                             @else
                                 <div class="bg-primary text-primary-content flex items-center justify-center w-full h-full text-lg font-bold">
                                     {{ $subordinate->user->initials }}

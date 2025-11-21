@@ -80,7 +80,24 @@ class UserManagementForm extends Form
             return $this->picture->temporaryUrl();
         }
 
-        return $this->picture_url ? asset('storage/'.$this->picture_url) : asset('images/default-avatar.svg');
+        if (empty($this->picture_url)) {
+            return asset('images/default-avatar.svg');
+        }
+
+        // If stored in public disk, return public URL
+        if (\Storage::disk('public')->exists($this->picture_url)) {
+            return \Storage::disk('public')->url($this->picture_url);
+        }
+
+        // If stored in local disk, generate temporary URL
+        if (\Storage::disk('local')->exists($this->picture_url)) {
+            return \Storage::disk('local')->temporaryUrl(
+                $this->picture_url,
+                now()->addMinutes(60)
+            );
+        }
+
+        return asset('images/default-avatar.svg');
     }
 
     public function setUser($user): void

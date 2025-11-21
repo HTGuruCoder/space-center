@@ -16,8 +16,8 @@
                 <div class="flex items-start gap-4">
                     <div class="avatar">
                         <div class="w-16 h-16 rounded-lg">
-                            @if($employee->user->picture_url)
-                                <img src="{{ asset('storage/' . $employee->user->picture_url) }}" alt="{{ $employee->user->full_name }}">
+                            @if($employee->user->getProfilePictureUrl())
+                                <img src="{{ $employee->user->getProfilePictureUrl() }}" alt="{{ $employee->user->full_name }}" class="object-cover w-full h-full">
                             @else
                                 <div class="bg-primary text-primary-content flex items-center justify-center w-full h-full text-lg font-bold">
                                     {{ $employee->user->initials }}
