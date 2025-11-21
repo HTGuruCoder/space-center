@@ -30,7 +30,7 @@
     </div>
 
     {{-- Quality Warning (advisory feedback) --}}
-    <div x-show="faceQuality === 'poor' && !error && !isLoading && !capturedImage" class="alert alert-warning mb-4" x-cloak>
+    <div x-show="showQualityWarning && !error && !isLoading && !capturedImage" class="alert alert-warning mb-4" x-cloak>
         <x-icon name="mdi.alert" class="w-5 h-5" />
         <div>
             <span class="font-semibold">{{ __('Photo quality can be improved') }}</span>

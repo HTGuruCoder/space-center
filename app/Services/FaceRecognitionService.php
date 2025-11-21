@@ -466,11 +466,19 @@ class FaceRecognitionService
                 ];
             }
 
-            // Check if eyes are open
-            if (
-                ($leftEye['normal_glass_eye_open'] ?? 0) < 50 &&
-                ($leftEye['no_glass_eye_open'] ?? 0) < 50
-            ) {
+            // Check if eyes are open (check both eyes)
+            $leftEyeOpen = max(
+                $leftEye['normal_glass_eye_open'] ?? 0,
+                $leftEye['no_glass_eye_open'] ?? 0
+            );
+
+            $rightEyeOpen = max(
+                $rightEye['normal_glass_eye_open'] ?? 0,
+                $rightEye['no_glass_eye_open'] ?? 0
+            );
+
+            // Only fail if BOTH eyes appear closed (confidence < 30)
+            if ($leftEyeOpen < 30 && $rightEyeOpen < 30) {
                 return [
                     'success' => false,
                     'error' => 'eyes_closed',

@@ -7,6 +7,8 @@ export default (wireModel = 'photo') => ({
     faceDetected: false,
     faceQuality: null, // Track face quality: null, 'poor', 'good'
     qualityIssues: [], // Array of quality issues detected
+    showQualityWarning: false, // Only show warning after stable poor quality
+    qualityCheckCount: 0, // Count consecutive poor quality detections
     error: null,
     canvas: null,
     video: null,
@@ -96,11 +98,15 @@ export default (wireModel = 'photo') => ({
                 this.faceDetected = false;
                 this.faceQuality = null;
                 this.qualityIssues = [];
+                this.showQualityWarning = false;
+                this.qualityCheckCount = 0;
                 this.error = null;
             } else if (detections.length > 1) {
                 this.faceDetected = false;
                 this.faceQuality = null;
                 this.qualityIssues = [];
+                this.showQualityWarning = false;
+                this.qualityCheckCount = 0;
                 this.error = 'multiple_faces';
                 this.drawDetections(detections, 'red');
             } else {
@@ -112,6 +118,17 @@ export default (wireModel = 'photo') => ({
                 this.faceQuality = quality.isGood ? 'good' : 'poor';
                 this.qualityIssues = quality.issues;
                 this.error = null;
+
+                // Only show quality warning after 10 consecutive poor detections (1 second)
+                if (!quality.isGood) {
+                    this.qualityCheckCount++;
+                    if (this.qualityCheckCount >= 10) {
+                        this.showQualityWarning = true;
+                    }
+                } else {
+                    this.qualityCheckCount = 0;
+                    this.showQualityWarning = false;
+                }
 
                 // Draw with color based on quality
                 const color = quality.isGood ? 'green' : 'orange';

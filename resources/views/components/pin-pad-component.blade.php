@@ -3,7 +3,8 @@
 <div
     x-data="pinPad('{{ $wireModel }}', {{ $minLength }}, {{ $maxLength }})"
     x-init="init()"
-    @keydown.window="handleKeyPress($event)"
+    x-show="true"
+    @keydown.window="$el.offsetParent !== null && handleKeyPress($event)"
     class="w-full max-w-sm mx-auto"
 >
     {{-- Label --}}
