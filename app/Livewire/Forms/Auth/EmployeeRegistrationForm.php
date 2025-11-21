@@ -16,6 +16,7 @@ class EmployeeRegistrationForm extends Form
 {
     // Step 1: Face Capture
     public $photo;
+    public ?string $face_token = null;
 
     // Step 2: PIN
     #[Validate('required|string|min:4|max:6|regex:/^[0-9]+$/')]

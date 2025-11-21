@@ -32,7 +32,7 @@ class EmployeeRegister extends Component
 
     public bool $showPinPad = false;
 
-    public function nextStep()
+    public function nextStep(FaceRecognitionService $faceService)
     {
         try {
             match ($this->currentStep) {
@@ -42,6 +42,20 @@ class EmployeeRegister extends Component
                 4 => $this->form->validateStep4(),
                 default => null,
             };
+
+            // Step 1: Verify photo with Face++ API before allowing progression
+            if ($this->currentStep === 1) {
+                $detectResult = $faceService->detectFace($this->form->photo);
+
+                if (!$detectResult['success']) {
+                    $this->error($detectResult['message']);
+                    // Don't throw exception - toast is already shown, just return to prevent step progression
+                    return;
+                }
+
+                // Store face_token temporarily for final registration
+                $this->form->face_token = $detectResult['face_token'];
+            }
 
             $this->currentStep++;
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -67,22 +81,15 @@ class EmployeeRegister extends Component
         $this->form->validateStep5();
 
         DB::transaction(function () use ($faceService) {
-            // Detect face and get face_token
-            $detectResult = $faceService->detectFace($this->form->photo);
-
-            if (!$detectResult['success']) {
-                $this->error($detectResult['message']);
-                throw new \Exception($detectResult['message']);
-            }
-
-            $faceToken = $detectResult['face_token'];
+            // Use face_token from Step 1 (already verified by Face++ API)
+            $faceToken = $this->form->face_token;
 
             // Add face_token to FaceSet (makes it permanent)
             $facesetToken = Cache::get('facepp_faceset_token');
             if ($facesetToken) {
                 $addResult = $faceService->addToFaceSet($facesetToken, $faceToken);
                 if (!$addResult['success']) {
-                    $this->warning(__('Face token could not be added to FaceSet. It will expire in 72 hours.'));
+                    $this->warning(__('face.faceset_add_warning'));
                 }
             }
 

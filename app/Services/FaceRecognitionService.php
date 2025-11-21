@@ -43,7 +43,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'file_not_found',
-                    'message' => __('Image file not found.'),
+                    'message' => __('face.file_not_found'),
                 ];
             }
 
@@ -81,7 +81,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('An error occurred with the face recognition service.'),
+                    'message' => __('face.api_error'),
                 ];
             }
 
@@ -89,7 +89,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'no_face_detected',
-                    'message' => __('No face detected in the image.'),
+                    'message' => __('face.no_face_detected'),
                 ];
             }
 
@@ -97,7 +97,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'multiple_faces',
-                    'message' => __('Multiple faces detected. Please ensure only one face is visible.'),
+                    'message' => __('face.multiple_faces'),
                 ];
             }
 
@@ -124,7 +124,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'exception',
-                'message' => __('An error occurred while detecting face.'),
+                'message' => __('face.exception'),
             ];
         }
     }
@@ -153,7 +153,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('An error occurred with the face recognition service.'),
+                    'message' => __('face.compare_error'),
                 ];
             }
 
@@ -179,7 +179,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'exception',
-                'message' => __('An error occurred while comparing faces.'),
+                'message' => __('face.compare_exception'),
             ];
         }
     }
@@ -218,7 +218,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('An error occurred while creating FaceSet.'),
+                    'message' => __('face.faceset_create_error'),
                 ];
             }
 
@@ -237,7 +237,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'exception',
-                'message' => __('An error occurred while creating FaceSet.'),
+                'message' => __('face.faceset_create_error'),
             ];
         }
     }
@@ -266,7 +266,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('An error occurred while adding face to FaceSet.'),
+                    'message' => __('face.faceset_add_error'),
                 ];
             }
 
@@ -285,7 +285,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'exception',
-                'message' => __('An error occurred while adding face to FaceSet.'),
+                'message' => __('face.faceset_add_error'),
             ];
         }
     }
@@ -312,7 +312,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('An error occurred while getting FaceSet details.'),
+                    'message' => __('face.faceset_get_error'),
                 ];
             }
 
@@ -330,7 +330,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'exception',
-                'message' => __('An error occurred while getting FaceSet details.'),
+                'message' => __('face.faceset_get_error'),
             ];
         }
     }
@@ -381,7 +381,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'file_too_large',
-                'message' => __('Image file size must be less than 2MB.'),
+                'message' => __('face.file_too_large'),
             ];
         }
 
@@ -391,7 +391,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'invalid_image',
-                'message' => __('Invalid image file.'),
+                'message' => __('face.invalid_image'),
             ];
         }
 
@@ -402,7 +402,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'invalid_format',
-                'message' => __('Image must be in JPG or PNG format.'),
+                'message' => __('face.invalid_format'),
             ];
         }
 
@@ -411,7 +411,7 @@ class FaceRecognitionService
             return [
                 'success' => false,
                 'error' => 'invalid_dimensions',
-                'message' => __('Image dimensions must be between 48x48 and 4096x4096 pixels.'),
+                'message' => __('face.invalid_dimensions'),
             ];
         }
 
@@ -433,7 +433,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'poor_quality',
-                    'message' => __('Face quality is too low. Please ensure good lighting and face the camera directly.'),
+                    'message' => __('face.poor_quality'),
                 ];
             }
         }
@@ -445,7 +445,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'too_blurry',
-                    'message' => __('Image is too blurry. Please hold the camera steady.'),
+                    'message' => __('face.too_blurry'),
                 ];
             }
         }
@@ -462,7 +462,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'sunglasses_detected',
-                    'message' => __('Please remove sunglasses.'),
+                    'message' => __('face.sunglasses_detected'),
                 ];
             }
 
@@ -474,7 +474,7 @@ class FaceRecognitionService
                 return [
                     'success' => false,
                     'error' => 'eyes_closed',
-                    'message' => __('Please keep your eyes open.'),
+                    'message' => __('face.eyes_closed'),
                 ];
             }
         }
