@@ -82,8 +82,12 @@ class Index extends Component
         $user = User::findOrFail($userId);
 
         if ($user->picture_url) {
-            // Delete file from storage
-            Storage::disk('public')->delete($user->picture_url);
+            // Delete file from storage (try both disks)
+            if (Storage::disk('local')->exists($user->picture_url)) {
+                Storage::disk('local')->delete($user->picture_url);
+            } elseif (Storage::disk('public')->exists($user->picture_url)) {
+                Storage::disk('public')->delete($user->picture_url);
+            }
 
             // Set picture_url to null
             $user->update(['picture_url' => null]);

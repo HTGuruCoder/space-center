@@ -109,9 +109,13 @@ class UserForm extends Component
         // Handle picture upload
         $pictureUrl = $user->picture_url;
         if ($this->form->picture) {
-            // Delete old picture if exists
+            // Delete old picture if exists (try both disks)
             if ($pictureUrl) {
-                Storage::disk('public')->delete($pictureUrl);
+                if (Storage::disk('local')->exists($pictureUrl)) {
+                    Storage::disk('local')->delete($pictureUrl);
+                } elseif (Storage::disk('public')->exists($pictureUrl)) {
+                    Storage::disk('public')->delete($pictureUrl);
+                }
             }
             $pictureUrl = $this->form->picture->store('profile-pictures', 'public');
         }

@@ -91,13 +91,11 @@ final class UsersTable extends BasePowerGridComponent
                 'userId' => $model->id,
                 'hasPhoto' => !empty($model->picture_url),
             ])->render())
-            ->add('picture_url', fn(User $model) => $model->picture_url
-                ? asset('storage/' . $model->picture_url)
-                : asset('images/default-avatar.svg'))
+            ->add('picture_url', fn(User $model) => $model->getProfilePictureUrl()
+                ?: asset('images/default-avatar.svg'))
             ->add('picture_display', fn(User $model) => view('livewire.admin.users.users-table.photo', [
-                'picture_url' => $model->picture_url
-                    ? asset('storage/' . $model->picture_url)
-                    : asset('images/default-avatar.svg')
+                'picture_url' => $model->getProfilePictureUrl()
+                    ?: asset('images/default-avatar.svg')
             ])->render())
             ->add('first_name')
             ->add('last_name')
