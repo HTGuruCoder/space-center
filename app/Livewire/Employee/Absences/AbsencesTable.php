@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee\Absences;
 
 use App\Helpers\DateHelper;
+use App\Helpers\DurationHelper;
 use App\Helpers\PowerGridHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\EmployeeAbsence;
@@ -65,7 +66,7 @@ final class AbsencesTable extends BasePowerGridComponent
             ->add('absence_type_name', fn($model) => $model->absenceType?->name)
             ->add('start_datetime_formatted', fn($model) => DateHelper::formatDateTime($model->start_datetime))
             ->add('end_datetime_formatted', fn($model) => DateHelper::formatDateTime($model->end_datetime))
-            ->add('duration_formatted', fn($model) => $this->formatDuration($model->start_datetime, $model->end_datetime))
+            ->add('duration_formatted', fn($model) => DurationHelper::between($model->start_datetime, $model->end_datetime))
             ->add('status_badge', fn($model) => view('livewire.employee.absences.absences-table.status-badge', [
                 'status' => $model->status
             ])->render())
@@ -73,40 +74,6 @@ final class AbsencesTable extends BasePowerGridComponent
                 'absenceId' => $model->id,
                 'status' => $model->status
             ])->render());
-    }
-
-    private function formatDuration($start, $end): string
-    {
-        $diffInMinutes = $start->diffInMinutes($end);
-
-        // Less than 1 hour - show in minutes
-        if ($diffInMinutes < 60) {
-            return "{$diffInMinutes} min";
-        }
-
-        // Less than 24 hours - show in hours and minutes
-        if ($diffInMinutes < 1440) {
-            $hours = floor($diffInMinutes / 60);
-            $minutes = $diffInMinutes % 60;
-
-            if ($minutes > 0) {
-                return "{$hours}h {$minutes}min";
-            }
-            return "{$hours}h";
-        }
-
-        // 24 hours or more - show in days and hours
-        $days = floor($diffInMinutes / 1440);
-        $remainingMinutes = $diffInMinutes % 1440;
-        $hours = floor($remainingMinutes / 60);
-
-        if ($hours > 0) {
-            $dayLabel = $days > 1 ? 'days' : 'day';
-            return "{$days} {$dayLabel} {$hours}h";
-        }
-
-        $dayLabel = $days > 1 ? 'days' : 'day';
-        return "{$days} {$dayLabel}";
     }
 
     public function columns(): array

@@ -35,16 +35,6 @@ $isEmployeeSpace = request()->routeIs('employees.*');
             </a>
         </li>
 
-        {{-- Allowed Locations (Employee space only) --}}
-        @if($isEmployeeSpace)
-            <li>
-                <a href="{{ route('employees.allowed-locations') }}">
-                    <x-icon name="mdi.map-marker" class="w-5 h-5" />
-                    {{ __('Allowed Locations') }}
-                </a>
-            </li>
-        @endif
-
         <li><hr class="my-2" /></li>
 
         {{-- Logout --}}

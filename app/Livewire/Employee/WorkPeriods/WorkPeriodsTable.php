@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee\WorkPeriods;
 
 use App\Helpers\DateHelper;
+use App\Helpers\DurationHelper;
 use App\Livewire\BasePowerGridComponent;
 use App\Models\EmployeeWorkPeriod;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,7 +52,7 @@ final class WorkPeriodsTable extends BasePowerGridComponent
                 ? DateHelper::formatDateTime($model->clock_out_datetime)
                 : '<span class="badge badge-success">' . __('In Progress') . '</span>')
             ->add('duration', fn($model) => $model->clock_out_datetime
-                ? $this->formatDuration($model->clock_in_datetime->diffInMinutes($model->clock_out_datetime))
+                ? DurationHelper::between($model->clock_in_datetime, $model->clock_out_datetime)
                 : '-')
             ->add('clock_in_location', fn($model) => $this->renderLocationLink(
                 $model->clock_in_latitude,
@@ -90,18 +91,6 @@ final class WorkPeriodsTable extends BasePowerGridComponent
     public function filters(): array
     {
         return [];
-    }
-
-    private function formatDuration(int $minutes): string
-    {
-        $hours = floor($minutes / 60);
-        $mins = $minutes % 60;
-
-        if ($hours > 0) {
-            return "{$hours}h {$mins}m";
-        }
-
-        return "{$mins}m";
     }
 
     private function renderLocationLink(?float $lat, ?float $lng, string $label): string

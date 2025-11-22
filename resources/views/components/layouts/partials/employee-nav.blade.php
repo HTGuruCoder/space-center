@@ -14,13 +14,6 @@
     </li>
 
     <li>
-        <a href="{{ route('employees.weekly-schedule') }}" @class(['active' => request()->routeIs('employees.weekly-schedule')])>
-            <x-icon name="mdi.calendar-week" class="w-5 h-5" />
-            <span class="hidden lg:inline">{{ __('Weekly Schedule') }}</span>
-        </a>
-    </li>
-
-    <li>
         <a href="{{ route('employees.calendar') }}" @class(['active' => request()->routeIs('employees.calendar')])>
             <x-icon name="mdi.calendar" class="w-5 h-5" />
             <span class="hidden lg:inline">{{ __('Calendar') }}</span>
