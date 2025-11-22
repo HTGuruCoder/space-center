@@ -14,34 +14,27 @@ class StoreSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::first();
+        $firstUser = User::first();
+
+        if (!$firstUser) {
+            $this->command->error('No users found. Please create a user first.');
+            return;
+        }
 
         $stores = [
-            [
-                'name' => 'Main Store - Downtown',
-                'latitude' => 40.7128,
-                'longitude' => -74.0060,
-            ],
-            [
-                'name' => 'North Branch',
-                'latitude' => 40.7589,
-                'longitude' => -73.9851,
-            ],
-            [
-                'name' => 'East Side Location',
-                'latitude' => 40.7614,
-                'longitude' => -73.9776,
-            ],
-            [
-                'name' => 'West End Store',
-                'latitude' => 40.7794,
-                'longitude' => -73.9632,
-            ],
-            [
-                'name' => 'South Branch',
-                'latitude' => 40.7061,
-                'longitude' => -74.0087,
-            ],
+            ['name' => 'Centro Logistico Tegucigalpa', 'latitude' => 14.0723, 'longitude' => -87.1921],
+            ['name' => 'Gondola Mall', 'latitude' => 14.10075, 'longitude' => -87.17283],
+            ['name' => 'Gondola Palmira', 'latitude' => 14.08386, 'longitude' => -87.23155],
+            ['name' => 'Gondola Altamira', 'latitude' => 14.10664, 'longitude' => -87.16832],
+            ['name' => 'Gondola Comayaguela', 'latitude' => 14.08386, 'longitude' => -87.23155],
+            ['name' => 'Gondola Olancho Shopping Center', 'latitude' => 14.63976, 'longitude' => -86.18758],
+            ['name' => 'Gondola Juticalpa Bodega', 'latitude' => 14.62797, 'longitude' => -86.18972],
+            ['name' => 'Gondola La Ceiba', 'latitude' => 15.77259, 'longitude' => -86.79626],
+            ['name' => 'Gondola SPS', 'latitude' => 15.50417, 'longitude' => -88.02527],
+            ['name' => 'Gondola SPS Bodega', 'latitude' => 15.50974, 'longitude' => -88.02193],
+            ['name' => 'Gondola SPS Circunvalacion', 'latitude' => 15.48058, 'longitude' => -88.02025],
+            ['name' => 'Gondola Tutule', 'latitude' => 13.31807, 'longitude' => -87.18262],
+            ['name' => 'Venta por Internet', 'latitude' => 14.08386, 'longitude' => -87.23155],
         ];
 
         foreach ($stores as $store) {
@@ -49,8 +42,10 @@ class StoreSeeder extends Seeder
                 'name' => $store['name'],
                 'latitude' => $store['latitude'],
                 'longitude' => $store['longitude'],
-                'created_by' => $admin->id,
+                'created_by' => $firstUser->id,
             ]);
         }
+
+        $this->command->info('Successfully seeded ' . count($stores) . ' stores.');
     }
 }
