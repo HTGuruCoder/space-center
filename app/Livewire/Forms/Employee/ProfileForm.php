@@ -4,31 +4,18 @@ namespace App\Livewire\Forms\Employee;
 
 use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
-use Livewire\Attributes\Validate;
+use Illuminate\Validation\Rule;
 use Livewire\Form;
 use Propaganistas\LaravelPhone\Rules\Phone;
 
 class ProfileForm extends Form
 {
-    #[Validate('required|string|max:255')]
     public string $first_name = '';
-
-    #[Validate('required|string|max:255')]
     public string $last_name = '';
-
-    #[Validate('required')]
     public string $phone_number = '';
-
-    #[Validate('nullable|date|before:today')]
     public ?string $birth_date = null;
-
-    #[Validate('nullable|string')]
     public ?string $country_code = null;
-
-    #[Validate('required|timezone')]
     public string $timezone = '';
-
-    #[Validate('required|string|size:3')]
     public string $currency_code = '';
 
     public function rules()
@@ -36,11 +23,11 @@ class ProfileForm extends Form
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'phone_number' => ['required', new Phone()],
+            'phone_number' => ['required', (new Phone())->country($this->country_code)],
             'birth_date' => 'nullable|date|before:today',
-            'country_code' => 'nullable|in:' . implode(',', CountryEnum::values()),
-            'timezone' => 'required|timezone',
-            'currency_code' => 'required|in:' . implode(',', CurrencyEnum::values()),
+            'country_code' => ['required', Rule::in(CountryEnum::values())],
+            'timezone' => ['required', 'timezone'],
+            'currency_code' => ['required', Rule::in(CurrencyEnum::values())],
         ];
     }
 
