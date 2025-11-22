@@ -22,19 +22,19 @@ class StoreSeeder extends Seeder
         }
 
         $stores = [
-            ['name' => 'Centro Logistico Tegucigalpa', 'latitude' => 14.0723, 'longitude' => -87.1921],
-            ['name' => 'Gondola Mall', 'latitude' => 14.10075, 'longitude' => -87.17283],
-            ['name' => 'Gondola Palmira', 'latitude' => 14.08386, 'longitude' => -87.23155],
-            ['name' => 'Gondola Altamira', 'latitude' => 14.10664, 'longitude' => -87.16832],
-            ['name' => 'Gondola Comayaguela', 'latitude' => 14.08386, 'longitude' => -87.23155],
-            ['name' => 'Gondola Olancho Shopping Center', 'latitude' => 14.63976, 'longitude' => -86.18758],
-            ['name' => 'Gondola Juticalpa Bodega', 'latitude' => 14.62797, 'longitude' => -86.18972],
-            ['name' => 'Gondola La Ceiba', 'latitude' => 15.77259, 'longitude' => -86.79626],
-            ['name' => 'Gondola SPS', 'latitude' => 15.50417, 'longitude' => -88.02527],
-            ['name' => 'Gondola SPS Bodega', 'latitude' => 15.50974, 'longitude' => -88.02193],
-            ['name' => 'Gondola SPS Circunvalacion', 'latitude' => 15.48058, 'longitude' => -88.02025],
-            ['name' => 'Gondola Tutule', 'latitude' => 13.31807, 'longitude' => -87.18262],
-            ['name' => 'Venta por Internet', 'latitude' => 14.08386, 'longitude' => -87.23155],
+            ['name' => 'Offer Shop', 'latitude' => 9.8955799, 'longitude' => -84.0863509],
+            ['name' => 'El Cañonazo', 'latitude' => 9.9252075, 'longitude' => -84.0567476],
+            ['name' => 'Promo Outlet', 'latitude' => 9.9021001, 'longitude' => -83.9969266],
+            ['name' => 'Bodega 506', 'latitude' => 9.9783488, 'longitude' => -84.190116],
+            ['name' => 'Amazing Gangas', 'latitude' => 9.9411265, 'longitude' => -84.0474482],
+            ['name' => 'Hot Outlet', 'latitude' => 9.9706051, 'longitude' => -84.2211524],
+            ['name' => 'Amazing Outlet', 'latitude' => 9.9348793, 'longitude' => -84.0776757],
+            ['name' => 'Space center', 'latitude' => 9.92633409134571, 'longitude' => -84.0510240197182],
+            ['name' => 'Bodega Principal', 'latitude' => 9.97924822525601, 'longitude' => -84.1827392578125],
+            ['name' => 'Recursos Humanos/Financiero', 'latitude' => 9.9262548296296, 'longitude' => -84.0510910749436],
+            ['name' => 'Marketing Space Center', 'latitude' => 9.92623633522641, 'longitude' => -84.0510588884354],
+            ['name' => 'Amazing Offers', 'latitude' => 9.9416474, 'longitude' => -84.1238607],
+            ['name' => 'Offer Store', 'latitude' => 9.9301982, 'longitude' => -84.1385628],
         ];
 
         foreach ($stores as $store) {
