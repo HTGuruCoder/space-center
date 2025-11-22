@@ -50,22 +50,20 @@ class Dashboard extends Component
 
         // Absences Today
         $today = Carbon::today();
-        $this->absencesToday = EmployeeAbsence::whereDate('date', $today)->count();
+        $this->absencesToday = EmployeeAbsence::whereDate('start_datetime', $today)->count();
 
         // Hours Worked This Week
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
 
-        $workPeriods = EmployeeWorkPeriod::whereBetween('date', [$startOfWeek, $endOfWeek])
-            ->whereNotNull('clock_in_time')
-            ->whereNotNull('clock_out_time')
+        $workPeriods = EmployeeWorkPeriod::whereBetween('clock_in_datetime', [$startOfWeek, $endOfWeek])
+            ->whereNotNull('clock_in_datetime')
+            ->whereNotNull('clock_out_datetime')
             ->get();
 
         $totalMinutes = 0;
         foreach ($workPeriods as $period) {
-            $clockIn = Carbon::parse($period->clock_in_time);
-            $clockOut = Carbon::parse($period->clock_out_time);
-            $totalMinutes += $clockIn->diffInMinutes($clockOut);
+            $totalMinutes += $period->clock_in_datetime->diffInMinutes($period->clock_out_datetime);
         }
         $this->hoursWorkedThisWeek = round($totalMinutes / 60, 1);
 
@@ -101,25 +99,23 @@ class Dashboard extends Component
         $storesData = Store::select('stores.id', 'stores.name')
             ->leftJoin('employees', 'stores.id', '=', 'employees.store_id')
             ->leftJoin('employee_work_periods', 'employees.id', '=', 'employee_work_periods.employee_id')
-            ->whereBetween('employee_work_periods.date', [$startOfMonth, $endOfMonth])
-            ->whereNotNull('employee_work_periods.clock_in_time')
-            ->whereNotNull('employee_work_periods.clock_out_time')
+            ->whereBetween('employee_work_periods.clock_in_datetime', [$startOfMonth, $endOfMonth])
+            ->whereNotNull('employee_work_periods.clock_in_datetime')
+            ->whereNotNull('employee_work_periods.clock_out_datetime')
             ->groupBy('stores.id', 'stores.name')
             ->get()
             ->map(function ($store) use ($startOfMonth, $endOfMonth) {
                 $workPeriods = EmployeeWorkPeriod::whereHas('employee', function ($query) use ($store) {
                     $query->where('store_id', $store->id);
                 })
-                ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                ->whereNotNull('clock_in_time')
-                ->whereNotNull('clock_out_time')
+                ->whereBetween('clock_in_datetime', [$startOfMonth, $endOfMonth])
+                ->whereNotNull('clock_in_datetime')
+                ->whereNotNull('clock_out_datetime')
                 ->get();
 
                 $totalMinutes = 0;
                 foreach ($workPeriods as $period) {
-                    $clockIn = Carbon::parse($period->clock_in_time);
-                    $clockOut = Carbon::parse($period->clock_out_time);
-                    $totalMinutes += $clockIn->diffInMinutes($clockOut);
+                    $totalMinutes += $period->clock_in_datetime->diffInMinutes($period->clock_out_datetime);
                 }
 
                 return [
@@ -211,8 +207,8 @@ class Dashboard extends Component
             $date = Carbon::now()->subMonths($i);
             $months[] = $date->translatedFormat('M Y');
 
-            $count = EmployeeAbsence::whereYear('date', $date->year)
-                ->whereMonth('date', $date->month)
+            $count = EmployeeAbsence::whereYear('start_datetime', $date->year)
+                ->whereMonth('start_datetime', $date->month)
                 ->count();
 
             $counts[] = $count;
