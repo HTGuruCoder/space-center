@@ -9,10 +9,10 @@ $manager = $employee?->manager;
     <x-menu-item title="{{ __('Dashboard') }}" icon="mdi.view-dashboard" link="{{ route('employees.dashboard') }}" />
 
     {{-- Subordinates --}}
-    <x-menu-sub title="{{ __('Subordinates') }}" icon="mdi.account-group">
+    {{-- <x-menu-sub title="{{ __('Subordinates') }}" icon="mdi.account-group">
         <x-menu-item title="{{ __('List') }}" icon="mdi.format-list-bulleted" link="{{ route('employees.subordinates.list') }}" />
         <x-menu-item title="{{ __('Organization Chart') }}" icon="mdi.sitemap" link="{{ route('employees.subordinates.organization-chart') }}" />
-    </x-menu-sub>
+    </x-menu-sub>--}}
 
     {{-- Calendar --}}
     <x-menu-item title="{{ __('Calendar') }}" icon="mdi.calendar" link="{{ route('employees.calendar') }}" />

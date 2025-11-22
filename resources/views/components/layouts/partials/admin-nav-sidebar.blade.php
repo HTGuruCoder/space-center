@@ -57,9 +57,9 @@ $currentRoute = request()->route()->getName();
                 <x-menu-item title="{{ __('Positions') }}" icon="mdi.briefcase" link="{{ route('admins.settings.positions') }}" />
             @endcan
 
-            @can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
+             {{-- @can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
                 <x-menu-item title="{{ __('Position Schedules') }}" icon="mdi.calendar-clock" link="{{ route('admins.settings.position-schedules') }}" />
-            @endcan
+            @endcan --}}
 
             @can(PermissionEnum::VIEW_ABSENCE_TYPES->value)
                 <x-menu-item title="{{ __('Absence Types') }}" icon="mdi.calendar-alert" link="{{ route('admins.settings.absence-types') }}" />
