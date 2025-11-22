@@ -99,14 +99,14 @@
             </div>
         </x-card>
 
-        {{-- Days Present This Month --}}
+        {{-- Days Worked This Month --}}
         <x-card class="bg-success/10">
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-success/20 rounded-lg">
                     <x-icon name="mdi.calendar-check" class="w-8 h-8 text-success" />
                 </div>
                 <div>
-                    <p class="text-sm text-base-content/70">{{ __('Days This Month') }}</p>
+                    <p class="text-sm text-base-content/70">{{ __('Days Worked This Month') }}</p>
                     <p class="text-2xl font-bold">{{ $daysThisMonth }}</p>
                 </div>
             </div>
