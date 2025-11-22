@@ -6,6 +6,45 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import frLocale from '@fullcalendar/core/locales/fr';
 
+/**
+ * Format duration in minutes to human-readable format.
+ * Matches DurationHelper.php logic.
+ */
+function formatDuration(minutes) {
+    if (!minutes || minutes === 0) {
+        return '-';
+    }
+
+    // Less than 1 hour - show in minutes
+    if (minutes < 60) {
+        return `${minutes}min`;
+    }
+
+    // Less than 24 hours - show in hours and minutes
+    if (minutes < 1440) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+
+        if (mins > 0) {
+            return `${hours}h ${mins}min`;
+        }
+        return `${hours}h`;
+    }
+
+    // 24 hours or more - show in days and hours
+    const days = Math.floor(minutes / 1440);
+    const remainingMinutes = minutes % 1440;
+    const hours = Math.floor(remainingMinutes / 60);
+
+    if (hours > 0) {
+        const dayLabel = days > 1 ? 'days' : 'day';
+        return `${days} ${dayLabel} ${hours}h`;
+    }
+
+    const dayLabel = days > 1 ? 'days' : 'day';
+    return `${days} ${dayLabel}`;
+}
+
 export function initializeCalendar(calendarEl, livewireComponent) {
     // Get locale from HTML lang attribute
     const locale = document.documentElement.lang || 'en';
@@ -55,7 +94,7 @@ export function initializeCalendar(calendarEl, livewireComponent) {
 
             if (props.type === 'work') {
                 const duration = props.duration
-                    ? `${Math.floor(props.duration / 60)}h ${props.duration % 60}m`
+                    ? formatDuration(props.duration)
                     : 'In progress';
 
                 content = `
@@ -67,12 +106,19 @@ export function initializeCalendar(calendarEl, livewireComponent) {
                     </div>
                 `;
             } else if (props.type === 'absence') {
+                // Calculate duration for absence
+                const startDate = new Date(event.start);
+                const endDate = new Date(event.end);
+                const durationMinutes = Math.floor((endDate - startDate) / (1000 * 60));
+                const duration = formatDuration(durationMinutes);
+
                 content = `
                     <div class="p-4">
                         <h3 class="text-lg font-bold mb-2">${event.title}</h3>
                         <p><strong>Status:</strong> <span class="badge badge-${props.status === 'approved' ? 'success' : props.status === 'pending' ? 'warning' : 'error'}">${props.statusLabel}</span></p>
                         <p><strong>Start:</strong> ${new Date(event.start).toLocaleString(locale)}</p>
                         <p><strong>End:</strong> ${new Date(event.end).toLocaleString(locale)}</p>
+                        <p><strong>Duration:</strong> ${duration}</p>
                         ${props.isBreak ? '<p class="text-info">🍽 Break</p>' : ''}
                         ${props.reason ? `<p class="mt-2"><strong>Reason:</strong> ${props.reason}</p>` : ''}
                     </div>
