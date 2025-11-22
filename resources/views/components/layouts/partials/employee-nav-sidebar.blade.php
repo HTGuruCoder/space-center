@@ -11,9 +11,6 @@ $currentRoute = request()->route()->getName();
         <x-menu-item title="{{ __('List') }}" icon="mdi.format-list-bulleted" link="{{ route('employees.subordinates.list') }}" />
     </x-menu-sub>
 
-    {{-- Weekly Schedule --}}
-    <x-menu-item title="{{ __('Weekly Schedule') }}" icon="mdi.calendar-week" link="{{ route('employees.weekly-schedule') }}" />
-
     {{-- Calendar --}}
     <x-menu-item title="{{ __('Calendar') }}" icon="mdi.calendar" link="{{ route('employees.calendar') }}" />
 
@@ -28,7 +25,4 @@ $currentRoute = request()->route()->getName();
 
     {{-- Settings --}}
     <x-menu-item title="{{ __('Settings') }}" icon="mdi.cog" link="{{ route('employees.settings') }}" />
-
-    {{-- Allowed Locations --}}
-    <x-menu-item title="{{ __('Allowed Locations') }}" icon="mdi.map-marker" link="{{ route('employees.allowed-locations') }}" />
 </x-menu>
