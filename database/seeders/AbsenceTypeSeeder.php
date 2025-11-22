@@ -23,24 +23,37 @@ class AbsenceTypeSeeder extends Seeder
         }
 
         $absenceTypes = [
+            // Breaks
             [
-                'name' => 'Lunch Break',
+                'name' => 'Almuerzo',
                 'is_paid' => true,
                 'is_break' => true,
                 'requires_validation' => false,
-                'max_per_day' => 2, // Max 2 lunch breaks per day
+                'max_per_day' => 1,
                 'created_by' => $superAdmin->id,
             ],
             [
-                'name' => 'Sick Leave',
+                'name' => 'Descanso',
+                'is_paid' => true,
+                'is_break' => true,
+                'requires_validation' => false,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+
+            // Vacaciones (Annual Paid Vacation - 2 weeks per year minimum)
+            [
+                'name' => 'Vacaciones',
                 'is_paid' => true,
                 'is_break' => false,
                 'requires_validation' => true,
-                'max_per_day' => null, // No daily limit
+                'max_per_day' => null,
                 'created_by' => $superAdmin->id,
             ],
+
+            // Incapacidad (Sick Leave - CCSS covered)
             [
-                'name' => 'Vacation',
+                'name' => 'Incapacidad por Enfermedad',
                 'is_paid' => true,
                 'is_break' => false,
                 'requires_validation' => true,
@@ -48,7 +61,7 @@ class AbsenceTypeSeeder extends Seeder
                 'created_by' => $superAdmin->id,
             ],
             [
-                'name' => 'Personal Day',
+                'name' => 'Incapacidad por Maternidad',
                 'is_paid' => true,
                 'is_break' => false,
                 'requires_validation' => true,
@@ -56,7 +69,77 @@ class AbsenceTypeSeeder extends Seeder
                 'created_by' => $superAdmin->id,
             ],
             [
-                'name' => 'Unpaid Leave',
+                'name' => 'Incapacidad por Riesgo Laboral',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+
+            // Licencias Especiales (Special Paid Leaves)
+            [
+                'name' => 'Licencia por Matrimonio',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+            [
+                'name' => 'Licencia por Paternidad',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+            [
+                'name' => 'Licencia por Duelo',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+            [
+                'name' => 'Licencia por Adopción',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+
+            // Permisos (Permissions)
+            [
+                'name' => 'Permiso Médico',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+            [
+                'name' => 'Permiso Personal',
+                'is_paid' => false,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+            [
+                'name' => 'Permiso por Estudio',
+                'is_paid' => true,
+                'is_break' => false,
+                'requires_validation' => true,
+                'max_per_day' => null,
+                'created_by' => $superAdmin->id,
+            ],
+
+            // Ausencias sin goce de salario
+            [
+                'name' => 'Ausencia sin Goce de Salario',
                 'is_paid' => false,
                 'is_break' => false,
                 'requires_validation' => true,
