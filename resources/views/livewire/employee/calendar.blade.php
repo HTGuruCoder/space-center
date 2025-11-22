@@ -2,7 +2,19 @@
     calendar: null,
     init() {
         const calendarEl = document.getElementById('calendar');
-        this.calendar = window.initializeCalendar(calendarEl, $wire);
+        const translations = {
+            start: '{{ __('Start') }}',
+            end: '{{ __('End') }}',
+            duration: '{{ __('Duration') }}',
+            status: '{{ __('Status') }}',
+            reason: '{{ __('Reason') }}',
+            currentlyClocked: '{{ __('Currently clocked in') }}',
+            inProgress: '{{ __('In progress') }}',
+            close: '{{ __('Close') }}',
+            day: '{{ __('day') }}',
+            days: '{{ __('days ') }}'
+        };
+        this.calendar = window.initializeCalendar(calendarEl, $wire, translations);
 
         // Listen for Livewire events to refresh calendar
         Livewire.on('absence-created', () => {
