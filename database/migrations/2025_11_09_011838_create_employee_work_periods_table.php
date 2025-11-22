@@ -14,12 +14,24 @@ return new class extends Migration
         Schema::create('employee_work_periods', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->foreignUuid('employee_id')->constrained('employees')->cascadeOnDelete();
-            $table->date('date');
-            $table->time('clock_in_time');
-            $table->time('clock_out_time')->nullable();
-            $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
+
+            // DateTime columns (stored in UTC)
+            $table->dateTimeTz('clock_in_datetime');
+            $table->dateTimeTz('clock_out_datetime')->nullable();
+
+            // Location tracking (lat/long for geofencing)
+            $table->decimal('clock_in_latitude', 10, 7)->nullable();
+            $table->decimal('clock_in_longitude', 10, 7)->nullable();
+            $table->decimal('clock_out_latitude', 10, 7)->nullable();
+            $table->decimal('clock_out_longitude', 10, 7)->nullable();
+
+            $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
+
+            // Indexes for performance
+            $table->index(['employee_id', 'clock_in_datetime'], 'idx_employee_work_period_clock_in');
+            $table->index(['clock_in_datetime', 'clock_out_datetime'], 'idx_work_period_dates');
         });
     }
 

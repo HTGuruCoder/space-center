@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('is_paid');
             $table->boolean('is_break');
+            $table->boolean('requires_validation')->default(false);
             $table->integer('max_per_day')->nullable();
             $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
