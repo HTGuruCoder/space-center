@@ -61,6 +61,8 @@ Route::group(
                 Route::prefix('subordinates')->name('subordinates.')->group(function () {
                     Route::get('/', \App\Livewire\Employee\Subordinates\SubordinatesList::class)
                         ->name('list');
+                    Route::get('/organization-chart', \App\Livewire\Employee\Subordinates\OrganizationChart::class)
+                        ->name('organization-chart');
                     Route::get('/{employee}', \App\Livewire\Employee\Subordinates\SubordinateDetail::class)
                         ->name('detail');
                 });

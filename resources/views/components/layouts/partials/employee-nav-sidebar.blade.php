@@ -11,6 +11,7 @@ $manager = $employee?->manager;
     {{-- Subordinates --}}
     <x-menu-sub title="{{ __('Subordinates') }}" icon="mdi.account-group">
         <x-menu-item title="{{ __('List') }}" icon="mdi.format-list-bulleted" link="{{ route('employees.subordinates.list') }}" />
+        <x-menu-item title="{{ __('Organization Chart') }}" icon="mdi.sitemap" link="{{ route('employees.subordinates.organization-chart') }}" />
     </x-menu-sub>
 
     {{-- Calendar --}}
