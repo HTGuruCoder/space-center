@@ -35,13 +35,13 @@ class Settings extends Component
 
         // Prepare select options
         $this->countries = CountryEnum::options();
-        $this->timezones = Timezone::groupedByRegion();
+        $this->timezones = Timezone::options();
         $this->currencies = CurrencyEnum::options();
     }
 
     public function getPictureUrl(): ?string
     {
-        return auth()->user()->picture_url;
+        return auth()->user()->getProfilePictureUrl();
     }
 
     public function hasPicture(): bool
@@ -74,11 +74,12 @@ class Settings extends Component
 
             // Upload vers storage
             $fileName = 'profile_' . auth()->id() . '_' . time() . '.jpg';
-            Storage::disk('public')->put("profiles/{$fileName}", $imageData);
+            $path = "profiles/{$fileName}";
+            Storage::disk('public')->put($path, $imageData);
 
             // Update user
             auth()->user()->update([
-                'picture_url' => "/storage/profiles/{$fileName}",
+                'picture_url' => $path,
                 'face_token' => $faceToken
             ]);
 
