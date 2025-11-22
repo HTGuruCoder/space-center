@@ -11,6 +11,9 @@ import frLocale from '@fullcalendar/core/locales/fr';
  * Matches DurationHelper.php logic.
  */
 function formatDuration(minutes) {
+    // Round to integer to avoid decimal issues
+    minutes = Math.round(minutes);
+
     if (!minutes || minutes === 0) {
         return '-';
     }
@@ -23,7 +26,7 @@ function formatDuration(minutes) {
     // Less than 24 hours - show in hours and minutes
     if (minutes < 1440) {
         const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
+        const mins = Math.round(minutes % 60);
 
         if (mins > 0) {
             return `${hours}h ${mins}min`;
