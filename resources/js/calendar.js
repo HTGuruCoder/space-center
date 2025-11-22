@@ -18,9 +18,12 @@ function formatDuration(minutes, translations = {}) {
         return '-';
     }
 
+    const minLabel = translations.min || 'min';
+    const hLabel = translations.h || 'h';
+
     // Less than 1 hour - show in minutes
     if (minutes < 60) {
-        return `${minutes}min`;
+        return `${minutes}${minLabel}`;
     }
 
     // Less than 24 hours - show in hours and minutes
@@ -29,9 +32,9 @@ function formatDuration(minutes, translations = {}) {
         const mins = Math.round(minutes % 60);
 
         if (mins > 0) {
-            return `${hours}h ${mins}min`;
+            return `${hours}${hLabel} ${mins}${minLabel}`;
         }
-        return `${hours}h`;
+        return `${hours}${hLabel}`;
     }
 
     // 24 hours or more - show in days and hours
@@ -42,7 +45,7 @@ function formatDuration(minutes, translations = {}) {
     const dayLabel = days > 1 ? (translations.days || 'days') : (translations.day || 'day');
 
     if (hours > 0) {
-        return `${days} ${dayLabel} ${hours}h`;
+        return `${days} ${dayLabel} ${hours}${hLabel}`;
     }
 
     return `${days} ${dayLabel}`;

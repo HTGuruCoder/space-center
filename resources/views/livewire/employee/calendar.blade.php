@@ -12,7 +12,9 @@
             inProgress: '{{ __('In progress') }}',
             close: '{{ __('Close') }}',
             day: '{{ __('day') }}',
-            days: '{{ __('days ') }}'
+            days: '{{ __('days') }}',
+            min: '{{ __('min') }}',
+            h: '{{ __('h') }}'
         };
         this.calendar = window.initializeCalendar(calendarEl, $wire, translations);
 
