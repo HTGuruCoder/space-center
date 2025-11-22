@@ -48,6 +48,9 @@ window.flatpickr = flatpickr;
 import TomSelect from "tom-select";
 window.TomSelect = TomSelect
 
+// Import calendar module
+import './calendar.js';
+
 import Cropper from 'cropperjs';
 window.Cropper = Cropper;
 

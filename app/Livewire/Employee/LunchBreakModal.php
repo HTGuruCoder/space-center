@@ -59,6 +59,9 @@ class LunchBreakModal extends Component
 
             $this->dispatch('break-started', breakEndTime: $result['break_end_time']);
 
+            // Refresh PowerGrid table
+            $this->dispatch('pg:eventRefresh-employee-absences-table');
+
             // Reset form
             $this->reset(['breakDuration', 'latitude', 'longitude']);
         } catch (\Exception $e) {

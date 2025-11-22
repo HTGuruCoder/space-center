@@ -73,6 +73,14 @@ Route::group(
                 Route::get('/calendar', \App\Livewire\Employee\Calendar::class)
                     ->name('calendar');
 
+                // Absences
+                Route::get('/absences', \App\Livewire\Employee\Absences\Index::class)
+                    ->name('absences');
+
+                // Work Periods
+                Route::get('/work-periods', \App\Livewire\Employee\WorkPeriods\Index::class)
+                    ->name('work-periods');
+
                 // Settings
                 Route::get('/settings', \App\Livewire\Employee\Settings::class)
                     ->name('settings');

@@ -65,6 +65,9 @@ class AbsenceRequestModal extends Component
 
             $this->showModal = false;
             $this->dispatch('absence-created');
+
+            // Refresh PowerGrid table
+            $this->dispatch('pg:eventRefresh-employee-absences-table');
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -72,9 +75,26 @@ class AbsenceRequestModal extends Component
 
     public function render()
     {
+        $employee = auth()->user()->employee;
+
         $absenceTypes = AbsenceType::where('is_break', false)
             ->orderBy('name')
             ->get()
+            ->filter(function ($type) use ($employee) {
+                // If no max_per_day limit, always include
+                if (!$type->max_per_day) {
+                    return true;
+                }
+
+                // Count today's absences of this type
+                $todayCount = \App\Models\EmployeeAbsence::where('employee_id', $employee->id)
+                    ->where('absence_type_id', $type->id)
+                    ->whereDate('start_datetime', today())
+                    ->count();
+
+                // Only include if under the limit
+                return $todayCount < $type->max_per_day;
+            })
             ->map(fn($type) => [
                 'id' => $type->id,
                 'name' => $type->name,

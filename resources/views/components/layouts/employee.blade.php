@@ -110,8 +110,10 @@
                 </header>
 
                 {{-- Main Content --}}
-                <main class="flex-1 p-4 md:p-6 lg:p-8">
-                    {{ $slot }}
+                <main class="p-4 md:p-6 lg:p-8">
+                    <div class="w-[calc(100vw-2*16px)] md:w-[calc(100vw-2*24px)] lg:w-[calc(100vw-256px-2*32px)]">
+                        {{ $slot }}
+                    </div>
                 </main>
             </div>
         </div>
