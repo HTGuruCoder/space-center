@@ -17,6 +17,7 @@ class AbsenceType extends Model
         'name',
         'is_paid',
         'is_break',
+        'requires_validation',
         'max_per_day',
         'created_by',
     ];
@@ -24,6 +25,7 @@ class AbsenceType extends Model
     protected $casts = [
         'is_paid' => 'boolean',
         'is_break' => 'boolean',
+        'requires_validation' => 'boolean',
         'max_per_day' => 'integer',
     ];
 

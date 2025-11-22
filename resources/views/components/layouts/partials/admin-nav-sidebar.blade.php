@@ -39,7 +39,8 @@ $currentRoute = request()->route()->getName();
         auth()->user()->can(PermissionEnum::VIEW_ROLES->value) ||
         auth()->user()->can(PermissionEnum::VIEW_STORES->value) ||
         auth()->user()->can(PermissionEnum::VIEW_POSITIONS->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_ABSENCE_TYPES->value)
+        auth()->user()->can(PermissionEnum::VIEW_ABSENCE_TYPES->value) ||
+        auth()->user()->can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
     )
         <x-menu-separator />
 
@@ -54,6 +55,10 @@ $currentRoute = request()->route()->getName();
 
             @can(PermissionEnum::VIEW_POSITIONS->value)
                 <x-menu-item title="{{ __('Positions') }}" icon="mdi.briefcase" link="{{ route('admins.settings.positions') }}" />
+            @endcan
+
+            @can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
+                <x-menu-item title="{{ __('Position Schedules') }}" icon="mdi.calendar-clock" link="{{ route('admins.settings.position-schedules') }}" />
             @endcan
 
             @can(PermissionEnum::VIEW_ABSENCE_TYPES->value)

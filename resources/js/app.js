@@ -20,7 +20,7 @@ const dateFormats = {
     es: {
         dateFormat: 'Y-m-d',      // Format for storage (ISO format)
         altFormat: 'd/m/Y',       // Format for display (DD/MM/YYYY)
-        altInput: true,           // Use alternate input for display
+        altInput: true,          // Use alternate input for display
         allowInput: true          // Allow manual input
     },
     en: {
@@ -39,7 +39,7 @@ if (flatpickrLocales[locale]) {
 // Set default date format configuration
 flatpickr.defaultConfig = {
     ...flatpickr.defaultConfig,
-    ...dateFormats[locale]
+    ...dateFormats[locale],
 };
 
 // Make Flatpickr available globally
@@ -60,3 +60,6 @@ import pinPad from './components/pin-pad';
 
 window.faceCapture = faceCapture;
 window.pinPad = pinPad;
+
+// Geolocation helper for employee time tracking
+import './geolocation';

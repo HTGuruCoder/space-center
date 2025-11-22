@@ -154,6 +154,11 @@ Route::group(
                     Route::get('/absence-types', \App\Livewire\Admin\Settings\AbsenceTypes\Index::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_ABSENCE_TYPES->value)
                         ->name('absence-types');
+
+                    // Position Schedules
+                    Route::get('/position-schedules', \App\Livewire\Admin\Settings\PositionSchedules\Index::class)
+                        ->middleware('permission:' . PermissionEnum::VIEW_POSITION_SCHEDULES->value)
+                        ->name('position-schedules');
                 });
 
                 // Account Settings

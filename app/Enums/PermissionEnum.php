@@ -65,6 +65,12 @@ enum PermissionEnum: string
     case EDIT_ABSENCE_TYPES = 'edit_absence_types';
     case DELETE_ABSENCE_TYPES = 'delete_absence_types';
 
+    // Position Schedule Management
+    case VIEW_POSITION_SCHEDULES = 'view_position_schedules';
+    case CREATE_POSITION_SCHEDULES = 'create_position_schedules';
+    case EDIT_POSITION_SCHEDULES = 'edit_position_schedules';
+    case DELETE_POSITION_SCHEDULES = 'delete_position_schedules';
+
     /**
      * Get the label for display
      */
@@ -110,6 +116,10 @@ enum PermissionEnum: string
             self::CREATE_ABSENCE_TYPES => __('Create Absence Types'),
             self::EDIT_ABSENCE_TYPES => __('Edit Absence Types'),
             self::DELETE_ABSENCE_TYPES => __('Delete Absence Types'),
+            self::VIEW_POSITION_SCHEDULES => __('View Position Schedules'),
+            self::CREATE_POSITION_SCHEDULES => __('Create Position Schedules'),
+            self::EDIT_POSITION_SCHEDULES => __('Edit Position Schedules'),
+            self::DELETE_POSITION_SCHEDULES => __('Delete Position Schedules'),
         };
     }
 
@@ -158,6 +168,10 @@ enum PermissionEnum: string
             self::CREATE_ABSENCE_TYPES => __('Can create new absence types'),
             self::EDIT_ABSENCE_TYPES => __('Can edit existing absence types'),
             self::DELETE_ABSENCE_TYPES => __('Can delete absence types'),
+            self::VIEW_POSITION_SCHEDULES => __('Can view position schedules'),
+            self::CREATE_POSITION_SCHEDULES => __('Can create new position schedules'),
+            self::EDIT_POSITION_SCHEDULES => __('Can edit existing position schedules'),
+            self::DELETE_POSITION_SCHEDULES => __('Can delete position schedules'),
         };
     }
 
@@ -178,6 +192,7 @@ enum PermissionEnum: string
             self::VIEW_STORES, self::CREATE_STORES, self::EDIT_STORES, self::DELETE_STORES => __('Store Management'),
             self::VIEW_POSITIONS, self::CREATE_POSITIONS, self::EDIT_POSITIONS, self::DELETE_POSITIONS => __('Position Management'),
             self::VIEW_ABSENCE_TYPES, self::CREATE_ABSENCE_TYPES, self::EDIT_ABSENCE_TYPES, self::DELETE_ABSENCE_TYPES => __('Absence Type Management'),
+            self::VIEW_POSITION_SCHEDULES, self::CREATE_POSITION_SCHEDULES, self::EDIT_POSITION_SCHEDULES, self::DELETE_POSITION_SCHEDULES => __('Position Schedule Management'),
         };
     }
 
