@@ -3,24 +3,37 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
+import frLocale from '@fullcalendar/core/locales/fr';
 
 export function initializeCalendar(calendarEl, livewireComponent) {
+    // Get locale from HTML lang attribute
+    const locale = document.documentElement.lang || 'en';
+
+    // Map locale codes to FullCalendar locale objects
+    const localeMap = {
+        'es': esLocale,
+        'fr': frLocale,
+        'en': 'en'
+    };
+
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
+        locale: localeMap[locale] || 'en',
         height: 'auto',
         editable: false,
         selectable: true,
         selectMirror: true,
         dayMaxEvents: true,
         weekends: true,
-        displayEventTime: false,
-        displayEventEnd: false,
+        displayEventTime: true,
+        displayEventEnd: true,
         eventDisplay: 'block',
 
         // Fetch events from Livewire
@@ -48,8 +61,8 @@ export function initializeCalendar(calendarEl, livewireComponent) {
                 content = `
                     <div class="p-4">
                         <h3 class="text-lg font-bold mb-2">${event.title}</h3>
-                        <p><strong>Start:</strong> ${new Date(event.start).toLocaleString()}</p>
-                        ${event.end ? `<p><strong>End:</strong> ${new Date(event.end).toLocaleString()}</p>` : '<p class="text-warning">Currently clocked in</p>'}
+                        <p><strong>Start:</strong> ${new Date(event.start).toLocaleString(locale)}</p>
+                        ${event.end ? `<p><strong>End:</strong> ${new Date(event.end).toLocaleString(locale)}</p>` : '<p class="text-warning">Currently clocked in</p>'}
                         <p><strong>Duration:</strong> ${duration}</p>
                     </div>
                 `;
@@ -58,8 +71,8 @@ export function initializeCalendar(calendarEl, livewireComponent) {
                     <div class="p-4">
                         <h3 class="text-lg font-bold mb-2">${event.title}</h3>
                         <p><strong>Status:</strong> <span class="badge badge-${props.status === 'approved' ? 'success' : props.status === 'pending' ? 'warning' : 'error'}">${props.statusLabel}</span></p>
-                        <p><strong>Start:</strong> ${new Date(event.start).toLocaleString()}</p>
-                        <p><strong>End:</strong> ${new Date(event.end).toLocaleString()}</p>
+                        <p><strong>Start:</strong> ${new Date(event.start).toLocaleString(locale)}</p>
+                        <p><strong>End:</strong> ${new Date(event.end).toLocaleString(locale)}</p>
                         ${props.isBreak ? '<p class="text-info">🍽 Break</p>' : ''}
                         ${props.reason ? `<p class="mt-2"><strong>Reason:</strong> ${props.reason}</p>` : ''}
                     </div>
