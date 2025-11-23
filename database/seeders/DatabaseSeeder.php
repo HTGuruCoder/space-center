@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create a super admin user first if doesn't exist
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'tchetcheherman@gmail.com'],
+            [
+                'first_name' => 'TCHETCHE',
+                'last_name' => 'Herman',
+                'phone_number' => '+22891504351',
+                'password' => Hash::make('12345678'),
+                'timezone' => 'UTC',
+                'currency_code' => 'XOF',
+                'country_code' => 'TG',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->command->info('Super Admin user created: ' . $superAdmin->email . ' / password');
+
+        // Seed roles, permissions, stores and positions
+        $this->call([
+            RoleAndPermissionSeeder::class,
+            StoreSeeder::class,
+            PositionSeeder::class,
         ]);
     }
 }

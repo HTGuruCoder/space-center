@@ -12,13 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->uuid('id')->primary()->unique();
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone_number');
+            $table->string('picture_url')->nullable();
+            $table->string('face_token')->nullable()->comment('Face++ face token for facial recognition');
+            $table->string('timezone');
+            $table->date('birth_date')->nullable();
+            $table->string('country_code', 2);
+            $table->string('currency_code', 3);
+            $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -28,7 +38,7 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->uuid('id')->primary()->unique();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();

@@ -1,11 +1,203 @@
+
 @import 'tailwindcss';
+@import "flatpickr/dist/flatpickr.min.css";
+@import 'cropperjs/dist/cropper.css';
+@import "tom-select/dist/css/tom-select.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
+@source "../**/*.blade.php";
 @source '../**/*.js';
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
+@source '../../app/Livewire/*Table.php';
+@source '../../app/Livewire/**/*Table.php';
+@source '../../vendor/power-components/livewire-powergrid/src/Themes/DaisyUI.php';
+@source '../../vendor/power-components/livewire-powergrid/resources/views/**/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Roboto', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+
+/** daisyUI - Light and Dark Themes */
+@plugin "daisyui" {
+    themes: light, dark --default --prefersdark;
+};
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: false;
+  color-scheme: "light";
+  prefersdark: false;
+
+  /*
+   * Light theme with same green primary
+   */
+  --color-base-100: oklch(100% 0 0);           /* White background */
+  --color-base-200: oklch(96% 0 0);            /* Light gray background */
+  --color-base-300: oklch(90% 0 0);            /* Border color */
+  --color-base-content: oklch(20% 0 0);        /* Dark text */
+
+  /* Primary: Same vibrant green as dark theme */
+  --color-primary: oklch(70% 0.19 142);
+  --color-primary-content: oklch(15% 0.01 142);
+
+  /* Secondary: Same purple as dark theme */
+  --color-secondary: oklch(68% 0.18 280);
+  --color-secondary-content: oklch(100% 0 0);
+
+  /* Accent: Same cyan as dark theme */
+  --color-accent: oklch(70% 0.15 195);
+  --color-accent-content: oklch(15% 0.01 195);
+
+  /* Neutral colors */
+  --color-neutral: oklch(30% 0.01 260);
+  --color-neutral-content: oklch(95% 0 0);
+
+  /* Semantic colors */
+  --color-info: oklch(65% 0.15 220);
+  --color-info-content: oklch(15% 0.01 220);
+
+  --color-success: oklch(65% 0.15 145);
+  --color-success-content: oklch(15% 0.01 145);
+
+  --color-warning: oklch(75% 0.15 85);
+  --color-warning-content: oklch(15% 0.01 85);
+
+  --color-error: oklch(60% 0.20 25);
+  --color-error-content: oklch(100% 0 0);
+
+  /* Form elements */
+  --rounded-box: 0.75rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 0.5rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-focus-scale: 0.95;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.5rem;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  default: true;
+  color-scheme: "dark";
+  prefersdark: false;
+
+  /*
+   * Background Strategy: Triple-layer depth system
+   * - Base-200 (deepest): Creates spatial hierarchy
+   * - Base-100 (elevated): Cards float above background
+   * - Base-300 (interactive): Hover states & borders with subtle glow
+   */
+  --color-base-100: oklch(19% 0.01 260);       /* Elevated surfaces - cool neutral */
+  --color-base-200: oklch(14% 0.008 260);      /* Canvas - deep space */
+  --color-base-300: oklch(26% 0.012 260);      /* Interactive elements */
+  --color-base-content: oklch(90% 0.005 260);  /* High-contrast text (WCAG AAA compliant) */
+
+  /*
+   * Primary: Vibrant green with optimal visibility
+   * Using APCA contrast algorithm for better readability
+   */
+  --color-primary: oklch(70% 0.19 142);
+  --color-primary-content: oklch(15% 0.01 142);
+
+  /*
+   * Secondary: Complementary purple for visual balance
+   * Positioned opposite on color wheel for maximum harmony
+   */
+  --color-secondary: oklch(68% 0.18 280);
+  --color-secondary-content: oklch(100% 0 0);
+
+  /*
+   * Accent: Strategic cyan for CTAs and interactive elements
+   * Higher saturation for attention-grabbing without aggression
+   */
+  --color-accent: oklch(72% 0.16 200);
+  --color-accent-content: oklch(100% 0 0);
+
+  /*
+   * Neutral: Foundation for subtle UI elements
+   */
+  --color-neutral: oklch(22% 0.01 260);
+  --color-neutral-content: oklch(92% 0.005 260);
+
+  /*
+   * Semantic Colors: Optimized for accessibility & meaning
+   */
+  --color-info: oklch(68% 0.17 225);           /* Clear, trustworthy blue */
+  --color-info-content: oklch(100% 0 0);
+
+  --color-success: oklch(70% 0.19 142);        /* Matches primary for consistency */
+  --color-success-content: oklch(15% 0.01 142);
+
+  --color-warning: oklch(75% 0.16 75);         /* Warm, visible amber */
+  --color-warning-content: oklch(18% 0.012 75);
+
+  --color-error: oklch(65% 0.21 25);           /* Saturated red for critical alerts */
+  --color-error-content: oklch(100% 0 0);
+
+  /* Layout */
+  --root-bg: var(--color-base-200);
+
+  /*
+   * Border Radius: Golden ratio progression (1.618)
+   * Creates harmonious visual rhythm
+   */
+  --radius-selector: 0.5rem;     /* 8px - compact elements */
+  --radius-field: 0.625rem;      /* 10px - form fields */
+  --radius-box: 0.875rem;        /* 14px - cards & containers */
+  --radius-btn: 0.625rem;        /* 10px - buttons */
+
+  /*
+   * Sizing: Follows 8px grid system
+   * Ensures pixel-perfect alignment
+   */
+  --size-selector: 0.25rem;      /* 4px */
+  --size-field: 0.25rem;         /* 4px */
+
+  /*
+   * Border: Subtle definition without visual noise
+   * Balances separation with cohesion
+   */
+  --border: 1px;
+
+  /*
+   * Effects: Micro-interactions depth
+   * Subtle shadows create z-axis hierarchy
+   */
+  --depth: 1.5;
+  --noise: 0;
+}
+
+
+/**
+* Paginator - Traditional style
+* Because Laravel defaults does not match well the design of daisyUI.
+*/
+
+
+.mary-table-pagination span[aria-current="page"] > span {
+    @apply bg-primary text-base-100
+}
+
+.mary-table-pagination button {
+    @apply cursor-pointer
+}
+
+.input, .select, .file-input, .textarea {
+    border-color: #d9d9d933;
+}
+
+.input:hover, .select:hover, .file-input:hover, .textarea:hover {
+    @apply border-info;
+}
+
+.input:focus,
+  .input:focus-within, .select:focus, .select:focus-within, .file-input:focus, .file-input:focus-within, .textarea:focus, .textarea:focus-within {
+    @apply border-info;
+    box-shadow: 0 0 0 2px var(--fallback-p,oklch(var(--p)/0.2));
+    outline: 0;
 }

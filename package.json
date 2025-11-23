@@ -7,11 +7,25 @@
         "dev": "vite"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
+        "@tailwindcss/vite": "^4.1.16",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
+        "daisyui": "^5.3.9",
         "laravel-vite-plugin": "^2.0.0",
-        "tailwindcss": "^4.0.0",
+        "tailwindcss": "^4.1.16",
         "vite": "^7.0.7"
+    },
+    "dependencies": {
+        "@fullcalendar/core": "^6.1.19",
+        "@fullcalendar/daygrid": "^6.1.19",
+        "@fullcalendar/interaction": "^6.1.19",
+        "@fullcalendar/list": "^6.1.19",
+        "@fullcalendar/timegrid": "^6.1.19",
+        "chart.js": "^4.5.1",
+        "country-flag-icons": "^1.5.21",
+        "cropperjs": "^1.6.2",
+        "face-api.js": "^0.22.2",
+        "flatpickr": "^4.6.13",
+        "tom-select": "^2.4.3"
     }
 }
