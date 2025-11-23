@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             StoreSeeder::class,
             PositionSeeder::class,
+            AbsenceTypeSeeder::class
         ]);
     }
 }
