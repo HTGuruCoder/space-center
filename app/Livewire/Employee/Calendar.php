@@ -24,6 +24,9 @@ class Calendar extends Component
             return [];
         }
 
+        // Get user timezone from DB
+        $userTimezone = auth()->user()->timezone ?? config('app.timezone');
+
         $events = [];
 
         // Get work periods
@@ -35,8 +38,8 @@ class Calendar extends Component
             $events[] = [
                 'id' => 'work-' . $period->id,
                 'title' => __('Work'),
-                'start' => $period->clock_in_datetime->toIso8601String(),
-                'end' => $period->clock_out_datetime?->toIso8601String(),
+                'start' => $period->clock_in_datetime->timezone($userTimezone)->toIso8601String(),
+                'end' => $period->clock_out_datetime?->timezone($userTimezone)->toIso8601String(),
                 'color' => '#10b981', // green
                 'extendedProps' => [
                     'type' => 'work',
@@ -64,8 +67,8 @@ class Calendar extends Component
             $events[] = [
                 'id' => 'absence-' . $absence->id,
                 'title' => $absence->absenceType->name,
-                'start' => $absence->start_datetime->toIso8601String(),
-                'end' => $absence->end_datetime->toIso8601String(),
+                'start' => $absence->start_datetime->timezone($userTimezone)->toIso8601String(),
+                'end' => $absence->end_datetime->timezone($userTimezone)->toIso8601String(),
                 'color' => $color,
                 'extendedProps' => [
                     'type' => 'absence',

@@ -1,3 +1,5 @@
+@use(App\Helpers\DateHelper)
+
 <div>
     {{-- Header --}}
     <div class="mb-6">
@@ -20,7 +22,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <p class="text-sm text-base-content/70">{{ __('Date & Time') }}</p>
-                            <p class="font-medium">{{ $selectedPeriod->clock_in_datetime->format('Y-m-d H:i:s') }}</p>
+                            <p class="font-medium">{{ DateHelper::formatDateTime($selectedPeriod->clock_in_datetime) }}</p>
                         </div>
                         @if($selectedPeriod->clock_in_latitude && $selectedPeriod->clock_in_longitude)
                             <div>
@@ -45,7 +47,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <p class="text-sm text-base-content/70">{{ __('Date & Time') }}</p>
-                                <p class="font-medium">{{ $selectedPeriod->clock_out_datetime->format('Y-m-d H:i:s') }}</p>
+                                <p class="font-medium">{{ DateHelper::formatDateTime($selectedPeriod->clock_out_datetime) }}</p>
                             </div>
                             @if($selectedPeriod->clock_out_latitude && $selectedPeriod->clock_out_longitude)
                                 <div>

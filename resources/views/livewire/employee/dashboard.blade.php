@@ -12,7 +12,7 @@
                 <div class="text-center mb-4">
                     <p class="text-lg font-semibold text-success">{{ __('Currently Clocked In') }}</p>
                     <p class="text-sm text-base-content/70">
-                        {{ __('Since :time', ['time' => $activeWorkPeriod->clock_in_datetime->format('H:i')]) }}
+                        {{ __('Since :time', ['time' => \App\Helpers\DateHelper::formatTime($activeWorkPeriod->clock_in_datetime)]) }}
                     </p>
                 </div>
 

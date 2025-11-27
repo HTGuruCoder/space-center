@@ -9,7 +9,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-base-200 overflow-x-hidden" x-data="{ drawer: false }">
+    <body class="min-h-screen bg-base-200 overflow-x-hidden" x-data="{ drawer: false }" data-user-timezone="{{ auth()->user()?->timezone ?? config('app.timezone') }}">
         {{-- Mobile Drawer Backdrop --}}
         <div
             x-show="drawer"

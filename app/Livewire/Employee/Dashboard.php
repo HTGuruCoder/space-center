@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Employee;
 
+use App\Helpers\DateHelper;
 use App\Helpers\DurationHelper;
 use App\Models\EmployeeAbsence;
 use App\Models\EmployeeWorkPeriod;
@@ -41,10 +42,11 @@ class Dashboard extends Component
     protected function loadKPIs(): void
     {
         $employee = auth()->user()->employee;
+        $userTimezone = auth()->user()->timezone ?? config('app.timezone');
 
-        // Hours Worked This Week
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
+        // Hours Worked This Week (use user's timezone for week boundaries)
+        $startOfWeek = Carbon::now($userTimezone)->startOfWeek()->utc();
+        $endOfWeek = Carbon::now($userTimezone)->endOfWeek()->utc();
 
         $workPeriods = EmployeeWorkPeriod::where('employee_id', $employee->id)
             ->whereBetween('clock_in_datetime', [$startOfWeek, $endOfWeek])
@@ -58,9 +60,9 @@ class Dashboard extends Component
         }
         $this->hoursWorkedThisWeek = DurationHelper::format($totalMinutes);
 
-        // Days Present This Month
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        // Days Present This Month (use user's timezone for month boundaries)
+        $startOfMonth = Carbon::now($userTimezone)->startOfMonth()->utc();
+        $endOfMonth = Carbon::now($userTimezone)->endOfMonth()->utc();
 
         $this->daysThisMonth = EmployeeWorkPeriod::where('employee_id', $employee->id)
             ->whereBetween('clock_in_datetime', [$startOfMonth, $endOfMonth])
@@ -88,8 +90,9 @@ class Dashboard extends Component
     protected function loadHoursPerDayChart(): void
     {
         $employee = auth()->user()->employee;
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
+        $userTimezone = auth()->user()->timezone ?? config('app.timezone');
+        $startOfWeek = Carbon::now($userTimezone)->startOfWeek();
+        $endOfWeek = Carbon::now($userTimezone)->endOfWeek();
 
         $days = [];
         $hours = [];
@@ -98,9 +101,11 @@ class Dashboard extends Component
         for ($date = $startOfWeek->copy(); $date->lte($endOfWeek); $date->addDay()) {
             $days[] = $date->translatedFormat('D'); // Mon, Tue, Wed, etc.
 
-            // Calculate hours for this day
+            // Calculate hours for this day (convert date to UTC range for query)
+            $dayStartUtc = $date->copy()->startOfDay()->utc();
+            $dayEndUtc = $date->copy()->endOfDay()->utc();
             $workPeriods = EmployeeWorkPeriod::where('employee_id', $employee->id)
-                ->whereDate('clock_in_datetime', $date)
+                ->whereBetween('clock_in_datetime', [$dayStartUtc, $dayEndUtc])
                 ->whereNotNull('clock_in_datetime')
                 ->whereNotNull('clock_out_datetime')
                 ->get();
@@ -154,8 +159,9 @@ class Dashboard extends Component
     protected function loadAbsencesBreakdownChart(): void
     {
         $employee = auth()->user()->employee;
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        $userTimezone = auth()->user()->timezone ?? config('app.timezone');
+        $startOfMonth = Carbon::now($userTimezone)->startOfMonth()->utc();
+        $endOfMonth = Carbon::now($userTimezone)->endOfMonth()->utc();
 
         $absencesData = EmployeeAbsence::where('employee_id', $employee->id)
             ->whereBetween('start_datetime', [$startOfMonth, $endOfMonth])
@@ -241,7 +247,7 @@ class Dashboard extends Component
 
         $this->dispatch('show-lunch-break-modal', [
             'hasActiveWorkPeriod' => $activeWorkPeriod !== null,
-            'clockInTime' => $activeWorkPeriod?->clock_in_datetime->format('H:i'),
+            'clockInTime' => $activeWorkPeriod ? DateHelper::formatTime($activeWorkPeriod->clock_in_datetime) : null,
         ]);
     }
 
