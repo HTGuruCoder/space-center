@@ -31,4 +31,44 @@ return [
     // Face comparison errors
     'compare_error' => 'An error occurred with the face recognition service.',
     'compare_exception' => 'An error occurred while comparing faces.',
+
+    // Camera access errors
+    'camera_access_denied' => 'Camera access denied. Please allow camera access.',
+    'camera_permanently_denied' => 'Camera access is blocked. Please follow the instructions below.',
+    'camera_blocked_title' => 'Camera access is blocked by your browser.',
+    'camera_blocked_instructions' => 'You need to manually allow camera access in your browser settings:',
+    'camera_allow_instructions' => 'To use facial recognition, you need to allow camera access in your browser settings.',
+    'click_lock_icon' => 'Click the lock icon',
+    'in_address_bar' => 'in the address bar',
+    'click_site_settings' => 'Click "Site settings" or "Permissions"',
+    'change_camera_allow' => 'Find "Camera" and change from "Block" to "Allow"',
+    'find_camera_allow' => 'Find "Camera" and change to "Allow"',
+    'click_retry' => 'Click the button below to retry',
+    'refresh_page' => 'Refresh this page',
+    'retry_camera_access' => 'Retry Camera Access',
+    'refresh_page_btn' => 'Refresh Page',
+
+    // Camera capture errors
+    'no_face_in_capture' => 'No face detected in captured photo. Please try again.',
+    'multiple_faces_in_capture' => 'Multiple faces in photo. Ensure only you are visible.',
+    'poor_face_quality' => 'Poor photo quality. Please adjust position, lighting, or face angle.',
+    'capture_failed' => 'Failed to capture image. Please try again.',
+    'upload_failed' => 'Failed to upload image. Please try again.',
+    'image_too_small' => 'Image is too small. Minimum 48x48 pixels required.',
+    'image_too_large' => 'Image is too large. Maximum 4096x4096 pixels allowed.',
+
+    // Camera UI
+    'initializing_camera' => 'Initializing camera...',
+    'good_quality' => 'Good quality',
+    'adjust_position' => 'Adjust position',
+    'position_face' => 'Position your face',
+    'capture_photo' => 'Capture Photo',
+    'retake' => 'Retake',
+    'photo_quality_warning' => 'Photo quality can be improved',
+    'move_closer' => 'Move closer to the camera',
+    'move_back' => 'Move back from the camera',
+    'center_face' => 'Center your face in the frame',
+    'look_at_camera' => 'Look directly at the camera',
+    'improve_lighting' => 'Improve lighting or image clarity',
+    'position_instructions' => 'Position your face in the center. Remove sunglasses and look directly at the camera.',
 ];

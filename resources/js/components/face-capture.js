@@ -369,6 +369,33 @@ export default (wireModel = 'photo') => ({
         });
     },
 
+    async retryCamera() {
+        this.error = null;
+        this.isLoading = true;
+
+        try {
+            // Check if the Permissions API is available
+            if (navigator.permissions && navigator.permissions.query) {
+                const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+
+                if (permissionStatus.state === 'denied') {
+                    // Permission is permanently denied - user must change in browser settings
+                    this.error = 'camera_permanently_denied';
+                    this.isLoading = false;
+                    return;
+                }
+            }
+
+            await this.startWebcam();
+            this.detectFace();
+            this.isLoading = false;
+        } catch (err) {
+            console.error('Retry camera error:', err);
+            this.error = this.getErrorMessage(err);
+            this.isLoading = false;
+        }
+    },
+
     stopWebcam() {
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());

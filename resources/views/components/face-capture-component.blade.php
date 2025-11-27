@@ -9,37 +9,103 @@
     {{-- Loading State --}}
     <div x-show="isLoading" class="text-center py-8">
         <span class="loading loading-spinner loading-lg text-primary"></span>
-        <p class="mt-4 text-sm">{{ __('Initializing camera...') }}</p>
+        <p class="mt-4 text-sm">{{ __('face.initializing_camera') }}</p>
     </div>
 
     {{-- Error State --}}
-    <div x-show="error && !isLoading" class="alert alert-error mb-4" x-cloak>
-        <x-icon name="mdi.alert-circle" class="w-5 h-5" />
-        <span x-text="error === 'camera_access_denied' ? '{{ __('Camera access denied. Please allow camera access.') }}' :
-                      error === 'no_face_detected' ? '{{ __('No face detected. Please position your face in the camera.') }}' :
-                      error === 'multiple_faces' ? '{{ __('Multiple faces detected. Please ensure only one person is visible.') }}' :
-                      error === 'poor_face_quality' ? '{{ __('Poor photo quality. Please adjust position, lighting, or face angle.') }}' :
-                      error === 'no_face_in_capture' ? '{{ __('No face detected in captured photo. Please try again.') }}' :
-                      error === 'multiple_faces_in_capture' ? '{{ __('Multiple faces in photo. Ensure only you are visible.') }}' :
-                      error === 'file_too_large' ? '{{ __('Image file size must be less than 2MB.') }}' :
-                      error === 'image_too_small' ? '{{ __('Image is too small. Minimum 48x48 pixels required.') }}' :
-                      error === 'image_too_large' ? '{{ __('Image is too large. Maximum 4096x4096 pixels allowed.') }}' :
-                      error === 'capture_failed' ? '{{ __('Failed to capture image. Please try again.') }}' :
-                      error === 'upload_failed' ? '{{ __('Failed to upload image. Please try again.') }}' :
-                      '{{ __('An error occurred. Please try again.') }}'"></span>
+    <div x-show="error && !isLoading" x-cloak>
+        <div class="alert alert-error mb-4">
+            <x-icon name="mdi.alert-circle" class="w-5 h-5" />
+            <span x-text="error === 'camera_access_denied' ? '{{ __('face.camera_access_denied') }}' :
+                          error === 'camera_permanently_denied' ? '{{ __('face.camera_permanently_denied') }}' :
+                          error === 'no_face_detected' ? '{{ __('face.no_face_detected') }}' :
+                          error === 'multiple_faces' ? '{{ __('face.multiple_faces') }}' :
+                          error === 'poor_face_quality' ? '{{ __('face.poor_face_quality') }}' :
+                          error === 'no_face_in_capture' ? '{{ __('face.no_face_in_capture') }}' :
+                          error === 'multiple_faces_in_capture' ? '{{ __('face.multiple_faces_in_capture') }}' :
+                          error === 'file_too_large' ? '{{ __('face.file_too_large') }}' :
+                          error === 'image_too_small' ? '{{ __('face.image_too_small') }}' :
+                          error === 'image_too_large' ? '{{ __('face.image_too_large') }}' :
+                          error === 'capture_failed' ? '{{ __('face.capture_failed') }}' :
+                          error === 'upload_failed' ? '{{ __('face.upload_failed') }}' :
+                          '{{ __('face.exception') }}'"></span>
+        </div>
+
+        {{-- Retry button for camera access denied --}}
+        <div x-show="error === 'camera_access_denied' || error === 'camera_permanently_denied'" class="text-center">
+            <div class="bg-base-200 rounded-lg p-6 mb-4">
+                <x-icon name="mdi.camera-off" class="w-16 h-16 mx-auto text-base-content/50 mb-4" />
+
+                {{-- Instructions for first-time denial --}}
+                <div x-show="error === 'camera_access_denied'">
+                    <p class="text-sm text-base-content/70 mb-4">
+                        {{ __('face.camera_allow_instructions') }}
+                    </p>
+                    <ol class="text-sm text-left text-base-content/70 mb-4 space-y-1 max-w-sm mx-auto">
+                        <li>1. {{ __('face.click_lock_icon') }} {{ __('face.in_address_bar') }}</li>
+                        <li>2. {{ __('face.find_camera_allow') }}</li>
+                        <li>3. {{ __('face.click_retry') }}</li>
+                    </ol>
+                    <button
+                        type="button"
+                        @click="retryCamera()"
+                        class="btn btn-primary"
+                    >
+                        <x-icon name="mdi.refresh" class="w-5 h-5" />
+                        {{ __('face.retry_camera_access') }}
+                    </button>
+                </div>
+
+                {{-- Instructions for permanently denied --}}
+                <div x-show="error === 'camera_permanently_denied'">
+                    <p class="text-sm text-base-content/70 mb-4 font-semibold">
+                        {{ __('face.camera_blocked_title') }}
+                    </p>
+                    <p class="text-sm text-base-content/70 mb-4">
+                        {{ __('face.camera_blocked_instructions') }}
+                    </p>
+                    <ol class="text-sm text-left text-base-content/70 mb-4 space-y-2 max-w-sm mx-auto">
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold">1.</span>
+                            <span>{{ __('face.click_lock_icon') }} <x-icon name="mdi.lock" class="w-4 h-4 inline" /> {{ __('face.in_address_bar') }}</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold">2.</span>
+                            <span>{{ __('face.click_site_settings') }}</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold">3.</span>
+                            <span>{{ __('face.change_camera_allow') }}</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold">4.</span>
+                            <span>{{ __('face.refresh_page') }}</span>
+                        </li>
+                    </ol>
+                    <button
+                        type="button"
+                        @click="window.location.reload()"
+                        class="btn btn-primary"
+                    >
+                        <x-icon name="mdi.refresh" class="w-5 h-5" />
+                        {{ __('face.refresh_page_btn') }}
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     {{-- Quality Warning (advisory feedback) --}}
     <div x-show="showQualityWarning && !error && !isLoading && !capturedImage" class="alert alert-warning mb-4" x-cloak>
         <x-icon name="mdi.alert" class="w-5 h-5" />
         <div>
-            <span class="font-semibold">{{ __('Photo quality can be improved') }}</span>
+            <span class="font-semibold">{{ __('face.photo_quality_warning') }}</span>
             <ul class="text-sm mt-1 ml-4 list-disc">
-                <li x-show="qualityIssues.includes('face_too_small')">{{ __('Move closer to the camera') }}</li>
-                <li x-show="qualityIssues.includes('face_too_close')">{{ __('Move back from the camera') }}</li>
-                <li x-show="qualityIssues.includes('face_not_centered')">{{ __('Center your face in the frame') }}</li>
-                <li x-show="qualityIssues.includes('face_not_frontal')">{{ __('Look directly at the camera') }}</li>
-                <li x-show="qualityIssues.includes('low_confidence')">{{ __('Improve lighting or image clarity') }}</li>
+                <li x-show="qualityIssues.includes('face_too_small')">{{ __('face.move_closer') }}</li>
+                <li x-show="qualityIssues.includes('face_too_close')">{{ __('face.move_back') }}</li>
+                <li x-show="qualityIssues.includes('face_not_centered')">{{ __('face.center_face') }}</li>
+                <li x-show="qualityIssues.includes('face_not_frontal')">{{ __('face.look_at_camera') }}</li>
+                <li x-show="qualityIssues.includes('low_confidence')">{{ __('face.improve_lighting') }}</li>
             </ul>
         </div>
     </div>
@@ -70,9 +136,9 @@
                           :class="faceDetected && faceQuality === 'good' ? 'bg-success-content' :
                                   faceDetected && faceQuality === 'poor' ? 'bg-warning-content' :
                                   'bg-error-content'"></span>
-                    <span x-text="faceDetected && faceQuality === 'good' ? '{{ __('Good quality') }}' :
-                                  faceDetected && faceQuality === 'poor' ? '{{ __('Adjust position') }}' :
-                                  '{{ __('Position your face') }}'"></span>
+                    <span x-text="faceDetected && faceQuality === 'good' ? '{{ __('face.good_quality') }}' :
+                                  faceDetected && faceQuality === 'poor' ? '{{ __('face.adjust_position') }}' :
+                                  '{{ __('face.position_face') }}'"></span>
                 </div>
             </div>
         </div>
@@ -86,7 +152,7 @@
                 class="btn btn-primary btn-lg"
             >
                 <x-icon name="mdi.camera" class="w-6 h-6" />
-                {{ __('Capture Photo') }}
+                {{ __('face.capture_photo') }}
             </button>
         </div>
     </div>
@@ -106,7 +172,7 @@
                 class="btn btn-outline"
             >
                 <x-icon name="mdi.camera-retake" class="w-5 h-5" />
-                {{ __('Retake') }}
+                {{ __('face.retake') }}
             </button>
         </div>
     </div>
@@ -114,8 +180,8 @@
     {{-- Instructions --}}
     <div class="mt-4 p-3 bg-info/10 border border-info/30 rounded-lg">
         <p class="text-sm flex items-start gap-2">
-            <x-icon name="mdi.lightbulb" class="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
-            <span>{{ __('Position your face in the center. Remove sunglasses and look directly at the camera.') }}</span>
+            <x-icon name="mdi.lightbulb" class="w-4 h-4 text-info mt-0.5 shrink-0" />
+            <span>{{ __('face.position_instructions') }}</span>
         </p>
     </div>
 </div>
