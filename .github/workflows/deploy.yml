@@ -1,0 +1,46 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Production Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ secrets.SSH_PATH }}
+
+            # Pull latest code
+            git pull -f
+
+            # Install/update composer dependencies (without dev)
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            # Run database migrations
+            php artisan migrate --force
+
+            # Clear all caches
+            php artisan optimize:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan config:clear
+
+            # Rebuild caches for production
+            php artisan config:cache
+            php artisan view:cache
+            php artisan optimize
+            php artisan route:clear
+
+            echo "Deployment completed successfully!"
