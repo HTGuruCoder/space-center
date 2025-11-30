@@ -1039,5 +1039,6 @@
     "Location detected": "Ubicación detectada",
     "Updating location...": "Actualizando ubicación...",
     "Location confirmed": "Ubicación confirmada",
-    "Weekly schedule content coming soon...": "Contenido de horario semanal próximamente..."
+    "Weekly schedule content coming soon...": "Contenido de horario semanal próximamente...",
+    "This login is for administrators only. Please use the employee login.": "Este inicio de sesión es solo para administradores. Por favor usa el inicio de sesión de empleado."
 }
