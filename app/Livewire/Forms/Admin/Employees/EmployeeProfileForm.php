@@ -9,9 +9,12 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 class EmployeeProfileForm extends Form
 {
+    use WithFileUploads;
+
     public ?string $userId = null;
     public ?string $employeeId = null;
     public bool $isEditMode = false;
@@ -26,8 +29,11 @@ class EmployeeProfileForm extends Form
     public ?string $started_at = null;
     public ?string $ended_at = null;
     public ?int $probation_period = null;
-    public $contract_file = null;
-    public ?string $contract_file_url = null;
+    public ?string $username = null;
+
+    // Upload multiple - final version
+    public ?array $contract_file = [];        // Fichiers Livewire temporaires
+    public ?array $contract_file_url = [];    // Fichiers enregistrés (URLs)
 
     // Bank Details
     public ?string $bank_name = null;
@@ -35,7 +41,8 @@ class EmployeeProfileForm extends Form
 
     public function rules()
     {
-        $rules = [
+        return [
+            'username' => 'required|string|unique:employees,username|max:255',
             'position_id' => 'required|exists:positions,id',
             'store_id' => 'required|exists:stores,id',
             'manager_id' => 'nullable|exists:employees,id',
@@ -49,18 +56,20 @@ class EmployeeProfileForm extends Form
                 'after:started_at'
             ],
             'probation_period' => 'nullable|integer|min:0',
-            'contract_file' => 'nullable|file|mimes:pdf|max:5120',
+
+            // Multi-upload validation
+            'contract_file.*' => 'nullable|file|mimes:pdf,docx,csv|max:5120',
+
             'bank_name' => 'nullable|string|max:255',
             'bank_account_number' => 'nullable|string|max:255',
         ];
-
-        return $rules;
     }
 
     public function setEmployee(Employee $employee): void
     {
         $this->isEditMode = true;
         $this->userId = $employee->user_id;
+        $this->username = $employee->username ?? "Anonymous";
         $this->employeeId = $employee->id;
         $this->position_id = $employee->position_id;
         $this->store_id = $employee->store_id;
@@ -71,9 +80,34 @@ class EmployeeProfileForm extends Form
         $this->started_at = $employee->started_at;
         $this->ended_at = $employee->ended_at;
         $this->probation_period = $employee->probation_period;
-        $this->contract_file_url = $employee->contract_file_url;
+
+        // On charge les fichiers déjà enregistrés
+        /* $this->contract_file_url = $employee->contract_file_url ?? []; */
+        $this->contract_file_url = is_array($employee->contract_file_url)
+            ? $employee->contract_file_url
+            : ($employee->contract_file_url ? [$employee->contract_file_url] : []);
+
         $this->bank_name = $employee->bank_name;
         $this->bank_account_number = $employee->bank_account_number;
+    }
+
+    public function updatedContractFile($files)
+    {
+        foreach ($files as $file) {
+            // Stockage
+            $path = $file->store('contracts', 'public');
+            // Ajout URL publique
+            $this->contract_file_url[] = asset('storage/' . $path);
+        }
+        //  Clear obligatoire — sinon Livewire ré-uploade les mêmes fichiers en boucle
+        $this->contract_file = [];
+    }
+    public function removeContractFile($index)
+    {
+        unset($this->contract_file_url[$index]);
+
+        // Réindexation propre
+        $this->contract_file_url = array_values($this->contract_file_url);
     }
 
     public function setUserId(string $userId): void
@@ -87,35 +121,21 @@ class EmployeeProfileForm extends Form
         $this->reset();
     }
 
+    /**
+     *  Récupérer le premier fichier (utile si un seul fichier)
+     */
     public function getContractFileUrl()
     {
-        if ($this->contract_file instanceof TemporaryUploadedFile) {
-            return $this->contract_file;
-        }
-
         if (empty($this->contract_file_url)) {
             return null;
         }
-
-        // If stored in public disk, return public URL
-        if (\Storage::disk('public')->exists($this->contract_file_url)) {
-            return \Storage::disk('public')->url($this->contract_file_url);
-        }
-
-        // If stored in local disk, generate temporary URL
-        if (\Storage::disk('local')->exists($this->contract_file_url)) {
-            return \Storage::disk('local')->temporaryUrl(
-                $this->contract_file_url,
-                now()->addMinutes(60)
-            );
-        }
-
-        return null;
+        return $this->contract_file_url[0];
     }
 
     public function getData(): array
     {
         return [
+            'username' => $this->username,
             'user_id' => $this->userId,
             'position_id' => $this->position_id,
             'store_id' => $this->store_id,

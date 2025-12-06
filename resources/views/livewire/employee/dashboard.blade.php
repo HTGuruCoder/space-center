@@ -17,29 +17,18 @@
                 </div>
 
                 <div class="flex gap-4">
-                    <x-button
-                        icon="mdi.clock-out"
-                        class="btn-error"
-                        onclick="handleClockOut()"
-                    >
+                    <x-button icon="mdi.clock-out" class="btn-error" onclick="handleClockOut()">
                         {{ __('Clock Out') }}
                     </x-button>
 
                     @if ($canTakeLunchBreak)
-                        <x-button
-                            icon="mdi.food"
-                            class="btn-warning"
-                            wire:click="requestLunchBreak"
-                        >
+                        <x-button icon="mdi.food" class="btn-warning" wire:click="requestLunchBreak">
                             {{ __('Take Lunch Break') }}
                         </x-button>
                     @endif
 
-                    <x-button
-                        icon="mdi.calendar-remove"
-                        class="btn-secondary"
-                        wire:click="$dispatch('show-absence-request-modal')"
-                    >
+                    <x-button icon="mdi.calendar-remove" class="btn-secondary"
+                        wire:click="$dispatch('show-absence-request-modal')">
                         {{ __('Request Absence') }}
                     </x-button>
                 </div>
@@ -50,29 +39,18 @@
                 </div>
 
                 <div class="flex gap-4">
-                    <x-button
-                        icon="mdi.clock-in"
-                        class="btn-success"
-                        onclick="handleClockIn()"
-                    >
+                    <x-button icon="mdi.clock-in" class="btn-success" onclick="handleClockIn()">
                         {{ __('Clock In') }}
                     </x-button>
 
                     @if ($canTakeLunchBreak)
-                        <x-button
-                            icon="mdi.food"
-                            class="btn-warning"
-                            wire:click="requestLunchBreak"
-                        >
+                        <x-button icon="mdi.food" class="btn-warning" wire:click="requestLunchBreak">
                             {{ __('Take Lunch Break') }}
                         </x-button>
                     @endif
 
-                    <x-button
-                        icon="mdi.calendar-remove"
-                        class="btn-secondary"
-                        wire:click="$dispatch('show-absence-request-modal')"
-                    >
+                    <x-button icon="mdi.calendar-remove" class="btn-secondary"
+                        wire:click="$dispatch('show-absence-request-modal')">
                         {{ __('Request Absence') }}
                     </x-button>
                 </div>
@@ -143,7 +121,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {{-- Hours Per Day Chart --}}
         <x-card title="{{ __('Hours Per Day This Week') }}">
-            @if($hoursWorkedThisWeek !== '0min')
+            @if ($hoursWorkedThisWeek !== '0min')
                 <div style="height: 300px;">
                     <canvas id="hoursPerDayChart"></canvas>
                 </div>
@@ -159,7 +137,7 @@
 
         {{-- Absences Breakdown Chart --}}
         <x-card title="{{ __('Absences Breakdown This Month') }}">
-            @if($absencesThisMonth > 0)
+            @if ($absencesThisMonth > 0)
                 <div style="height: 300px;">
                     <canvas id="absencesBreakdownChart"></canvas>
                 </div>
@@ -176,7 +154,7 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 @endpush
 
 <script>
@@ -253,7 +231,10 @@
 <script>
     async function handleClockIn() {
         try {
-            const { latitude, longitude } = await window.GeolocationHelper.getCurrentPosition();
+            const {
+                latitude,
+                longitude
+            } = await window.GeolocationHelper.getCurrentPosition();
             @this.call('clockIn', latitude, longitude);
         } catch (error) {
             console.error('Clock in geolocation error:', error);
@@ -263,7 +244,10 @@
 
     async function handleClockOut() {
         try {
-            const { latitude, longitude } = await window.GeolocationHelper.getCurrentPosition();
+            const {
+                latitude,
+                longitude
+            } = await window.GeolocationHelper.getCurrentPosition();
             @this.call('clockOut', latitude, longitude);
         } catch (error) {
             console.error('Clock out geolocation error:', error);

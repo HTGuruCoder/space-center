@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Livewire\Admin\Employees\Absences;
+namespace App\Livewire\Admin\Users;
 
 use App\Enums\PermissionEnum;
 use App\Models\EmployeeAbsence;
 use App\Traits\Livewire\HasDeleteModal;
-use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Mary\Traits\Toast;
 
-class Index extends Component
+class LaunchAbsence extends Component
 {
     use HasDeleteModal;
     use Toast;
@@ -17,7 +17,12 @@ class Index extends Component
     public bool $showBulkDeleteModal = false;
     public array $selectedIds = [];
 
-
+    public function render()
+    {
+        return view('livewire.admin.users.launch-absence')
+            ->title('Launch Absence')
+            ->layout('components.layouts.admin');
+    }
     #[On('create-absence')]
     public function handleCreate(): void
     {
@@ -86,12 +91,5 @@ class Index extends Component
     protected function getDeleteSuccessMessage(): string
     {
         return __('Absence deleted successfully.');
-    }
-
-    public function render()
-    {
-        return view('livewire.admin.employees.absences.index')
-            ->layout('components.layouts.admin')
-            ->title(__('Absences'));
     }
 }

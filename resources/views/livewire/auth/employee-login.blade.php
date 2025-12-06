@@ -26,35 +26,26 @@
             {{-- Progress Steps --}}
             <div class="mb-8">
                 <ul class="steps steps-horizontal w-full">
-                    <li class="step @if($form->currentStep >= 1) step-primary @endif">
+                    <li class="step @if ($form->currentStep >= 1) step-primary @endif">
                         {{ __('Email') }}
                     </li>
-                    <li class="step @if($form->currentStep >= 2) step-primary @endif">
+                    <li class="step @if ($form->currentStep >= 2) step-primary @endif">
                         {{ __('Facial Recognition') }}
                     </li>
-                    <li class="step @if($form->currentStep >= 3) step-primary @endif">
+                    <li class="step @if ($form->currentStep >= 3) step-primary @endif">
                         {{ __('PIN') }}
                     </li>
                 </ul>
             </div>
 
             {{-- Step 1: Email --}}
-            @if(!$showFaceCapture && !$showPinPad)
+            @if (!$showFaceCapture && !$showPinPad)
                 <div>
-                    <x-input
-                        label="{{ __('Email Address') }}"
-                        wire:model="form.email"
-                        icon="mdi.email"
-                        placeholder="{{ __('john.doe@example.com') }}"
-                        required
-                    />
+                    <x-input label="{{ __('Email Address') }}" wire:model="form.email" icon="mdi.email"
+                        placeholder="{{ __('john.doe@example.com') }}" required />
 
                     <div class="flex justify-end mt-6">
-                        <x-button
-                            wire:click="nextToFaceCapture"
-                            class="btn-primary"
-                            spinner="nextToFaceCapture"
-                        >
+                        <x-button wire:click="nextToFaceCapture" class="btn-primary" spinner="nextToFaceCapture">
                             {{ __('Next') }}
                             <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
                         </x-button>
@@ -70,30 +61,23 @@
             @endif
 
             {{-- Step 2: Face Capture --}}
-            @if($showFaceCapture)
+            @if ($showFaceCapture)
                 <div>
                     <div class="mb-4">
                         <h3 class="font-semibold text-lg">{{ __('Verify Your Face') }}</h3>
-                        <p class="text-sm text-base-content/70">{{ __('Position your face in front of the camera') }}</p>
+                        <p class="text-sm text-base-content/70">{{ __('Position your face in front of the camera') }}
+                        </p>
                     </div>
 
                     <x-face-capture-component wire-model="form.photo" />
 
                     <div class="flex justify-between mt-6">
-                        <x-button
-                            wire:click="backToEmail"
-                            class="btn-outline"
-                        >
+                        <x-button wire:click="backToEmail" class="btn-outline">
                             <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
                             {{ __('Back') }}
                         </x-button>
 
-                        <x-button
-                            wire:click="verifyFace"
-                            class="btn-primary"
-                            spinner="verifyFace"
-                            :disabled="!$form->photo"
-                        >
+                        <x-button wire:click="verifyFace" class="btn-primary" spinner="verifyFace" :disabled="!$form->photo">
                             {{ __('Verify Face') }}
                             <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
                         </x-button>
@@ -102,34 +86,22 @@
             @endif
 
             {{-- Step 3: PIN --}}
-            @if($showPinPad)
+            @if ($showPinPad)
                 <div>
                     <div class="mb-4 text-center">
                         <h3 class="font-semibold text-lg">{{ __('Enter Your PIN') }}</h3>
                         <p class="text-sm text-base-content/70">{{ __('Enter your 4-6 digit PIN code') }}</p>
                     </div>
 
-                    <x-pin-pad-component
-                        wire-model="form.pin"
-                        :min-length="4"
-                        :max-length="6"
-                        :label="__('PIN Code')"
-                    />
+                    <x-pin-pad-component wire-model="form.pin" :min-length="4" :max-length="6" :label="__('PIN Code')" />
 
                     <div class="flex justify-between mt-6">
-                        <x-button
-                            wire:click="backToEmail"
-                            class="btn-outline"
-                        >
+                        <x-button wire:click="backToEmail" class="btn-outline">
                             <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
                             {{ __('Start Over') }}
                         </x-button>
 
-                        <x-button
-                            wire:click="login"
-                            class="btn-primary"
-                            spinner="login"
-                        >
+                        <x-button wire:click="login" class="btn-primary" spinner="login">
                             {{ __('Login') }}
                             <x-icon name="mdi.login" class="w-5 h-5 ml-2" />
                         </x-button>

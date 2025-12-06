@@ -13,6 +13,9 @@
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- Username  --}}
+                            <x-input label="{{ __('Username') }}" wire:model="form.username"
+                                placeholder="{{ __('Your name') }}" icon="o-user" required />
                             {{-- Position --}}
                             <x-choices-offline label="{{ __('Position') }}" :options="$positions"
                                 wire:model="form.position_id" icon="mdi.briefcase"
@@ -48,7 +51,7 @@
                                 icon="mdi.calendar-start" placeholder="{{ __('Select start date') }}" required />
 
                             {{-- Ended At - only for fixed term contracts --}}
-                            @if($form->type === 'fixed_term')
+                            @if ($form->type === 'fixed_term')
                                 <x-datepicker label="{{ __('Ended At') }}" wire:model="form.ended_at"
                                     icon="mdi.calendar-end" placeholder="{{ __('Select end date') }}" required />
                             @endif
@@ -66,15 +69,43 @@
                                     class="h-40 rounded-lg cursor-pointer hover:opacity-80 transition-opacity hover:scale-105"
                                     onclick="this.parentElement.querySelector('input[type=file]').click()" />
 
-                                @if ($form->contract_file_url)
-                                    <a href="{{ $form->getContractFileUrl() }}" target="_blank" class="link link-primary">
+                                {{-- FICHIERS DÉJÀ ENREGISTRÉS EN BASE --}}
+                                @if (!empty($form->contract_file_url))
+                                    <div class="mt-3 space-y-2">
+                                        @foreach ($form->contract_file_url as $index => $filePath)
+                                            <div
+                                                class="flex items-center justify-between bg-gray-800 text-white p-2 rounded-lg shadow hover:bg-gray-700 transition-colors">
 
-                                        {{ __('View Current Contract') }}
-                                    </a>
+                                                {{-- Nom du fichier extrait du chemin --}}
+                                                <a href="{{ Storage::disk('local')->url($filePath) }}" target="_blank"
+                                                    class="text-sm font-medium hover:underline truncate">
+                                                    {{ basename($filePath) }}
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                {{-- FICHIERS NOUVELLEMENT UPLOADÉS --}}
+                                @if ($form->contract_file)
+                                    <div class="mt-3 space-y-2">
+                                        @foreach ($form->contract_file as $file)
+                                            <div
+                                                class="flex items-center justify-between bg-gray-800 text-white p-2 rounded-lg shadow hover:bg-gray-700 transition-colors">
+
+                                                <a href="{{ $file->temporaryUrl() }}" target="_blank"
+                                                    class="text-sm font-medium hover:underline truncate">
+                                                    {{ $file->getClientOriginalName() }}
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 @endif
 
-                                <x-file wire:model="form.contract_file" accept="application/pdf"
-                                    hint="{{ __('We accept PDF. Max size: 5MB') }}" change-text="{{ __('Change') }}">
+                                <x-file wire:model="form.contract_file" multiple
+                                    accept="application/pdf, 
+                                        application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                    hint="{{ __('We accept PDF, DOCX. Max size: 5MB') }}"
+                                    change-text="{{ __('Change') }}">
                                     <div class="hidden"></div>
                                 </x-file>
                             </div>

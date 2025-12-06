@@ -2,7 +2,12 @@
 @use(App\Models\Store)
 @use(App\Models\Position)
 @use(App\Models\EmployeeAbsence)
-
+<style>
+    .stats {
+        min-width: 16rem;
+        /* environ 256px */
+    }
+</style>
 <div>
     {{-- Page Header --}}
     <div class="mb-6">
@@ -11,54 +16,75 @@
     </div>
 
     {{-- KPI Cards Row --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
         {{-- Total Active Employees --}}
-        <div class="stats shadow-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-            <div class="stat">
-                <div class="stat-figure text-white/30">
-                    <x-icon name="mdi.account-group" class="w-10 h-10" />
+        <a href="#">
+            <div class="stats shadow-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                <div class="stat">
+                    <div class="stat-figure text-white/30">
+                        <x-icon name="mdi.account-group" class="w-10 h-10" />
+                    </div>
+                    <div class="stat-title text-white/80">{{ __('Active Employees') }}</div>
+                    <div class="stat-value">{{ number_format($totalActiveEmployees) }}</div>
+                    <div class="stat-desc text-white/70">{{ __('Currently employed') }}</div>
                 </div>
-                <div class="stat-title text-white/80">{{ __('Active Employees') }}</div>
-                <div class="stat-value">{{ number_format($totalActiveEmployees) }}</div>
-                <div class="stat-desc text-white/70">{{ __('Currently employed') }}</div>
             </div>
-        </div>
+        </a>
 
         {{-- New Employees This Month --}}
-        <div class="stats shadow-xl bg-gradient-to-br from-green-500 to-green-600 text-white">
-            <div class="stat">
-                <div class="stat-figure text-white/30">
-                    <x-icon name="mdi.account-plus" class="w-10 h-10" />
+        <a href="#">
+            <div class="stats shadow-xl bg-gradient-to-br from-green-500 to-green-600 text-white">
+                <div class="stat">
+                    <div class="stat-figure text-white/30">
+                        <x-icon name="mdi.account-plus" class="w-10 h-10" />
+                    </div>
+                    <div class="stat-title text-white/80">{{ __('New This Month') }}</div>
+                    <div class="stat-value">{{ number_format($newEmployeesThisMonth) }}</div>
+                    <div class="stat-desc text-white/70">{{ __('Recently hired') }}</div>
                 </div>
-                <div class="stat-title text-white/80">{{ __('New This Month') }}</div>
-                <div class="stat-value">{{ number_format($newEmployeesThisMonth) }}</div>
-                <div class="stat-desc text-white/70">{{ __('Recently hired') }}</div>
             </div>
-        </div>
+        </a>
 
         {{-- Absences Today --}}
-        <div class="stats shadow-xl bg-gradient-to-br from-red-500 to-red-600 text-white">
-            <div class="stat">
-                <div class="stat-figure text-white/30">
-                    <x-icon name="mdi.calendar-remove" class="w-10 h-10" />
+        <a href="{{ url('/admins/employees/absences') }}">
+            <div class="stats shadow-xl bg-gradient-to-br from-red-500 to-red-600 text-white">
+                <div class="stat">
+                    <div class="stat-figure text-white/30">
+                        <x-icon name="mdi.calendar-remove" class="w-10 h-10" />
+                    </div>
+                    <div class="stat-title text-white/80">{{ __('Absences Today') }}</div>
+                    <div class="stat-value">{{ number_format($absencesToday) }}</div>
+                    <div class="stat-desc text-white/70">{{ __('Out today') }}</div>
                 </div>
-                <div class="stat-title text-white/80">{{ __('Absences Today') }}</div>
-                <div class="stat-value">{{ number_format($absencesToday) }}</div>
-                <div class="stat-desc text-white/70">{{ __('Out today') }}</div>
             </div>
-        </div>
+        </a>
+        {{-- Retard absence --}}
+        <a href="{{ route('admins.absence-retard') }}">
+            <div class="stats shadow-xl bg-gradient-to-br from-yellow-600 to-red-600 text-white">
+                <div class="stat">
+                    <div class="stat-figure text-white/30">
+                        <x-icon name="mdi.clock-alert" class="w-10 h-10" />
+                    </div>
+                    <div class="stat-title text-white/80">{{ __('absence_stop') }}</div>
+                    <div class="stat-value">{{ number_format($launchersAbsencesToday) }}</div>
+                    <div class="stat-desc text-white/70">{{ __('Out today') }}</div>
+                </div>
+            </div>
+        </a>
 
         {{-- Hours Worked This Week --}}
-        <div class="stats shadow-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-            <div class="stat">
-                <div class="stat-figure text-white/30">
-                    <x-icon name="mdi.clock-outline" class="w-10 h-10" />
+        <a href="#">
+            <div class="stats shadow-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                <div class="stat">
+                    <div class="stat-figure text-white/30">
+                        <x-icon name="mdi.clock-outline" class="w-10 h-10" />
+                    </div>
+                    <div class="stat-title text-white/80">{{ __('Hours This Week') }}</div>
+                    <div class="stat-value">{{ number_format($hoursWorkedThisWeek, 1) }}</div>
+                    <div class="stat-desc text-white/70">{{ __('Total hours logged') }}</div>
                 </div>
-                <div class="stat-title text-white/80">{{ __('Hours This Week') }}</div>
-                <div class="stat-value">{{ number_format($hoursWorkedThisWeek, 1) }}</div>
-                <div class="stat-desc text-white/70">{{ __('Total hours logged') }}</div>
             </div>
-        </div>
+        </a>
     </div>
 
     {{-- Main Charts Row --}}
@@ -158,12 +184,14 @@
                     <x-icon name="mdi.account-check" class="w-6 h-6" />
                     {{ __('Retention Rate') }}
                 </h2>
-                <div class="radial-progress text-primary" style="--value:{{ $retentionRate }}; --size: 12rem; --thickness: 1rem;" role="progressbar">
+                <div class="radial-progress text-primary"
+                    style="--value:{{ $retentionRate }}; --size: 12rem; --thickness: 1rem;" role="progressbar">
                     <span class="text-4xl font-bold">{{ number_format($retentionRate, 1) }}%</span>
                 </div>
                 <div class="mt-4 text-center">
                     <p class="text-sm text-base-content/70">
-                        {{ $totalActiveEmployees }} {{ __('of') }} {{ Employee::count() }} {{ __('total employees') }}
+                        {{ $totalActiveEmployees }} {{ __('of') }} {{ Employee::count() }}
+                        {{ __('total employees') }}
                     </p>
                 </div>
             </div>

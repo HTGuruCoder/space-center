@@ -22,6 +22,8 @@ class EmployeeProfileForm extends Component
 
     public EmployeeProfileFormObject $form;
 
+    public $contract_file_url = [];
+    public $contract_file = [];
     public bool $showDrawer = false;
     public bool $showEmploymentInfo = true;
     public bool $showBankDetails = true;
@@ -51,6 +53,26 @@ class EmployeeProfileForm extends Component
         $this->openDrawer();
     }
 
+    public function updatedContractFile($files)
+    {
+        foreach ($files as $file) {
+            // On stocke le fichier
+            $path = $file->store('contracts', 'public');
+            // On ajoute son URL
+            $this->contract_file_url[] = asset('storage/' . $path);
+        }
+        // IMPORTANT : on vide l'input sinon Livewire retraitera les mêmes fichiers
+        $this->contract_file = [];
+    }
+
+    public function removeContractFile($index)
+    {
+        ///dd("hsdgvgshdv");
+        //dd($this->contract_file);
+        unset($this->contract_file_url[$index]);
+        $this->contract_file_url = array_values($this->contract_file_url);
+    }
+
     #[On('edit-employee-profile')]
     public function handleEdit(string $userId): void
     {
@@ -70,6 +92,7 @@ class EmployeeProfileForm extends Component
 
     public function save(): void
     {
+        //dd($this->form);
         if ($this->form->isEditMode) {
             $this->update();
         } else {
@@ -84,10 +107,21 @@ class EmployeeProfileForm extends Component
         $this->form->validate();
 
         $data = $this->form->getData();
-
+        //dd($this->form->contract_file);
         // Handle contract file upload (store in private storage)
-        if ($this->form->contract_file) {
+        /*  if ($this->form->contract_file) {
             $data['contract_file_url'] = $this->form->contract_file->store('contracts', 'local');
+        } */
+        if ($this->form->contract_file) {
+
+            $storedFiles = [];
+
+            foreach ($this->form->contract_file as $file) {
+                $storedFiles[] = $file->store('contracts', 'local');
+            }
+
+            // On stocke sous forme de JSON dans la BDD
+            $data['contract_file_url'] = json_encode($storedFiles);
         }
 
         Employee::create($data);
@@ -108,7 +142,7 @@ class EmployeeProfileForm extends Component
         $data = $this->form->getData();
 
         // Handle contract file upload (store in private storage)
-        if ($this->form->contract_file) {
+        /* if ($this->form->contract_file) {
             // Delete old file if exists
             if ($employee->contract_file_url) {
                 // Try both disks to delete old file
@@ -119,10 +153,30 @@ class EmployeeProfileForm extends Component
                 }
             }
             $data['contract_file_url'] = $this->form->contract_file->store('contracts', 'local');
+        } */
+        if ($this->form->contract_file) {
+
+            // Suppr anciens fichiers si existants
+            if ($employee->contract_file_url) {
+                $oldFiles = json_decode($employee->contract_file_url, true);
+
+                foreach ($oldFiles as $old) {
+                    if (\Storage::disk('local')->exists($old)) {
+                        \Storage::disk('local')->delete($old);
+                    }
+                }
+            }
+            // Upload nouveaux fichiers
+            $storedFiles = [];
+
+            foreach ($this->form->contract_file as $file) {
+                $storedFiles[] = $file->store('contracts', 'local');
+            }
+
+            $data['contract_file_url'] = json_encode($storedFiles);
         }
-
+        
         $employee->update($data);
-
         $this->success(__('Employee profile updated successfully.'));
         $this->dispatch('pg:eventRefresh-employee-profiles-table');
         $this->closeDrawer();

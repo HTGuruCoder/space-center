@@ -22,14 +22,18 @@
     {{-- Employees (with dropdown) --}}
     @can(PermissionEnum::VIEW_EMPLOYEES->value)
         <li>
-            <details @if(request()->routeIs('admins.employees.*')) open @endif>
+            <details @if (request()->routeIs('admins.employees.*')) open @endif>
                 <summary>
                     <x-icon name="mdi.account-hard-hat" class="w-5 h-5" />
                     <span class="hidden lg:inline">{{ __('Employees') }}</span>
                 </summary>
                 <ul class="bg-base-100 rounded-box shadow-lg w-52 p-2 z-50">
                     <li>
-                        <a href="{{ route('admins.employees.list') }}" @class(['active' => request()->routeIs('admins.employees.list') || request()->routeIs('admins.employees.detail')])>
+                        <a href="{{ route('admins.employees.list') }}" @class([
+                            'active' =>
+                                request()->routeIs('admins.employees.list') ||
+                                request()->routeIs('admins.employees.detail'),
+                        ])>
                             <x-icon name="mdi.format-list-bulleted" class="w-5 h-5" />
                             {{ __('List') }}
                         </a>
@@ -37,7 +41,9 @@
 
                     @can(PermissionEnum::VIEW_WORK_PERIODS->value)
                         <li>
-                            <a href="{{ route('admins.employees.work-periods') }}" @class(['active' => request()->routeIs('admins.employees.work-periods')])>
+                            <a href="{{ route('admins.employees.work-periods') }}" @class([
+                                'active' => request()->routeIs('admins.employees.work-periods'),
+                            ])>
                                 <x-icon name="mdi.clock-outline" class="w-5 h-5" />
                                 {{ __('Work Periods') }}
                             </a>
@@ -55,7 +61,9 @@
 
                     @can(PermissionEnum::VIEW_ALLOWED_LOCATIONS->value)
                         <li>
-                            <a href="{{ route('admins.employees.allowed-locations') }}" @class(['active' => request()->routeIs('admins.employees.allowed-locations')])>
+                            <a href="{{ route('admins.employees.allowed-locations') }}" @class([
+                                'active' => request()->routeIs('admins.employees.allowed-locations'),
+                            ])>
                                 <x-icon name="mdi.map-marker" class="w-5 h-5" />
                                 {{ __('Allowed Locations') }}
                             </a>
@@ -67,12 +75,12 @@
     @endcan
 
     {{-- Settings (with dropdown) --}}
-    @if(auth()->user()->can(PermissionEnum::VIEW_ROLES->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_STORES->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_POSITIONS->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_ABSENCE_TYPES->value))
+    @if (auth()->user()->can(PermissionEnum::VIEW_ROLES->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_STORES->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_POSITIONS->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_ABSENCE_TYPES->value))
         <li>
-            <details @if(request()->routeIs('admins.settings.*')) open @endif>
+            <details @if (request()->routeIs('admins.settings.*')) open @endif>
                 <summary>
                     <x-icon name="mdi.cog" class="w-5 h-5" />
                     <span class="hidden lg:inline">{{ __('Settings') }}</span>
@@ -107,7 +115,9 @@
 
                     @can(PermissionEnum::VIEW_ABSENCE_TYPES->value)
                         <li>
-                            <a href="{{ route('admins.settings.absence-types') }}" @class(['active' => request()->routeIs('admins.settings.absence-types')])>
+                            <a href="{{ route('admins.settings.absence-types') }}" @class([
+                                'active' => request()->routeIs('admins.settings.absence-types'),
+                            ])>
                                 <x-icon name="mdi.calendar-remove" class="w-5 h-5" />
                                 {{ __('Absence Types') }}
                             </a>

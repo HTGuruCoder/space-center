@@ -18,6 +18,7 @@ class Dashboard extends Component
     public int $totalActiveEmployees = 0;
     public int $newEmployeesThisMonth = 0;
     public int $absencesToday = 0;
+    public int $launchersAbsencesToday = 0;
     public float $hoursWorkedThisWeek = 0;
     public int $employeesOnProbation = 0;
     public float $retentionRate = 0;
@@ -51,6 +52,11 @@ class Dashboard extends Component
         // Absences Today
         $today = Carbon::today();
         $this->absencesToday = EmployeeAbsence::whereDate('start_datetime', $today)->count();
+        // Launchers Absences Today
+        $today = Carbon::today();
+        $this->launchersAbsencesToday = EmployeeAbsence::whereHas('absenceType', function ($q) {
+            $q->where('is_break', true);
+        })->whereDate('start_datetime', $today)->count();
 
         // Hours Worked This Week
         $startOfWeek = Carbon::now()->startOfWeek();
@@ -108,10 +114,10 @@ class Dashboard extends Component
                 $workPeriods = EmployeeWorkPeriod::whereHas('employee', function ($query) use ($store) {
                     $query->where('store_id', $store->id);
                 })
-                ->whereBetween('clock_in_datetime', [$startOfMonth, $endOfMonth])
-                ->whereNotNull('clock_in_datetime')
-                ->whereNotNull('clock_out_datetime')
-                ->get();
+                    ->whereBetween('clock_in_datetime', [$startOfMonth, $endOfMonth])
+                    ->whereNotNull('clock_in_datetime')
+                    ->whereNotNull('clock_out_datetime')
+                    ->get();
 
                 $totalMinutes = 0;
                 foreach ($workPeriods as $period) {

@@ -24,6 +24,7 @@ class EmployeeLogin extends Component
 
     public function nextToFaceCapture()
     {
+        //dd("sddjhsj");
         $this->form->validateEmail();
 
         // Check if user exists and has employee role

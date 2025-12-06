@@ -3,32 +3,35 @@
     <x-form wire:submit="save">
         <div class="space-y-6">
             {{-- Employee --}}
-            <x-choices-offline label="{{ __('Employee') }}" :options="$employees"
-                wire:model="form.employee_id" icon="mdi.account"
-                placeholder="{{ __('Select employee') }}" single searchable required />
+            <x-choices-offline label="{{ __('Employee') }}" :options="$employees" wire:model="form.employee_id"
+                icon="mdi.account" placeholder="{{ __('Select employee') }}" single searchable required />
 
             {{-- Absence Type --}}
-            <x-choices-offline label="{{ __('Absence Type') }}" :options="$absenceTypes"
-                wire:model="form.absence_type_id" icon="mdi.format-list-bulleted-type"
-                placeholder="{{ __('Select absence type') }}" single searchable required />
+            <x-choices-offline label="{{ __('Absence Type') }}" :options="$absenceTypes" wire:model="form.absence_type_id"
+                icon="mdi.format-list-bulleted-type" placeholder="{{ __('Select absence type') }}" single searchable
+                required />
 
             {{-- Date --}}
-            <x-datepicker label="{{ __('Date') }}" wire:model="form.date"
-                icon="mdi.calendar" placeholder="{{ __('Select date') }}" required />
+            <x-datepicker label="{{ __('Date') }}" wire:model="form.date" icon="mdi.calendar"
+                placeholder="{{ __('Select date') }}" required />
+            {{-- Date of start --}}
+            <x-datepicker label="{{ __('Date of Start') }}" wire:model="form.start_date" icon="mdi.calendar"
+                placeholder="{{ __('Select start date') }}" required />
+            {{-- Date of end --}}
+            <x-datepicker label="{{ __('Date of End') }}" wire:model="form.end_date" icon="mdi.calendar"
+                placeholder="{{ __('Select end date') }}" required />
 
             {{-- Start Time --}}
-            <x-input label="{{ __('Start Time') }}" wire:model="form.start_time"
-                type="time" icon="mdi.clock-start" required />
+            <x-input label="{{ __('Start Time') }}" wire:model="form.start_time" type="time" icon="mdi.clock-start"
+                required />
 
             {{-- End Time --}}
-            <x-input label="{{ __('End Time') }}" wire:model="form.end_time"
-                type="time" icon="mdi.clock-end" required />
+            <x-input label="{{ __('End Time') }}" wire:model="form.end_time" type="time" icon="mdi.clock-end"
+                required />
 
             {{-- Reason --}}
-            <x-textarea label="{{ __('Reason') }}" wire:model="form.reason"
-                icon="mdi.text" rows="4"
-                placeholder="{{ __('Optional reason for absence') }}"
-                hint="{{ __('Maximum 1000 characters') }}" />
+            <x-textarea label="{{ __('Reason') }}" wire:model="form.reason" icon="mdi.text" rows="4"
+                placeholder="{{ __('Optional reason for absence') }}" hint="{{ __('Maximum 1000 characters') }}" />
         </div>
 
         {{-- Action Buttons --}}
@@ -39,7 +42,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-3">
                     {{-- Save & Add Another Button (only in create mode) --}}
-                    @if(!$form->isEditMode)
+                    @if (!$form->isEditMode)
                         <x-button wire:click="saveAndAddAnother" spinner="saveAndAddAnother" class="btn-secondary">
                             {!! __('Save &amp; Add Another') !!}
                         </x-button>

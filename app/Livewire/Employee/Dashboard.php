@@ -75,6 +75,7 @@ class Dashboard extends Component
             ->whereBetween('start_datetime', [$startOfMonth, $endOfMonth])
             ->count();
 
+
         // Subordinates Count
         $this->subordinatesCount = $employee->subordinates()->count();
     }

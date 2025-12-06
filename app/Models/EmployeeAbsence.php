@@ -17,6 +17,8 @@ class EmployeeAbsence extends Model
     protected $fillable = [
         'employee_id',
         'absence_type_id',
+        'start_date',
+        'end_date',
         'start_datetime',
         'end_datetime',
         'status',

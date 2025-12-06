@@ -17,6 +17,7 @@ class Employee extends Model
     use HasFactory, HasUuids, HasCreator, SoftDeletes;
 
     protected $fillable = [
+        'username',
         'user_id',
         'position_id',
         'manager_id',

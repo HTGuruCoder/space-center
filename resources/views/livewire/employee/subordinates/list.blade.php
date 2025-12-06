@@ -11,10 +11,12 @@
                     {{-- Avatar --}}
                     <div class="avatar">
                         <div class="w-16 h-16 rounded-lg">
-                            @if($subordinate->user->getProfilePictureUrl())
-                                <img src="{{ $subordinate->user->getProfilePictureUrl() }}" alt="{{ $subordinate->user->full_name }}" class="object-cover w-full h-full">
+                            @if ($subordinate->user->getProfilePictureUrl())
+                                <img src="{{ $subordinate->user->getProfilePictureUrl() }}"
+                                    alt="{{ $subordinate->user->full_name }}" class="object-cover w-full h-full">
                             @else
-                                <div class="bg-primary text-primary-content flex items-center justify-center w-full h-full text-lg font-bold">
+                                <div
+                                    class="bg-primary text-primary-content flex items-center justify-center w-full h-full text-lg font-bold">
                                     {{ $subordinate->user->initials }}
                                 </div>
                             @endif
@@ -28,7 +30,7 @@
                         <p class="text-sm text-base-content/70">{{ $subordinate->store->name }}</p>
 
                         <div class="mt-2">
-                            @if($subordinate->is_active)
+                            @if ($subordinate->is_active)
                                 <span class="badge badge-success badge-sm">{{ __('Active') }}</span>
                             @else
                                 <span class="badge badge-error badge-sm">{{ __('Inactive') }}</span>
@@ -36,7 +38,8 @@
                         </div>
 
                         <div class="mt-3">
-                            <a href="{{ route('employees.subordinates.detail', $subordinate) }}" class="btn btn-primary btn-sm">
+                            <a href="{{ route('employees.subordinates.detail', $subordinate) }}"
+                                class="btn btn-primary btn-sm">
                                 {{ __('View Details') }}
                             </a>
                         </div>

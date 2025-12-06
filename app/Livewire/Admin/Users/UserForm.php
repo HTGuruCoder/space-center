@@ -150,7 +150,7 @@ class UserForm extends Component
     public function render()
     {
         return view('livewire.admin.users.user-form', [
-            'roles' => Role::all(['id', 'name'])->map(function($role) {
+            'roles' => Role::all(['id', 'name'])->map(function ($role) {
                 // Try to get label from RoleEnum for core roles
                 try {
                     $label = RoleEnum::from($role->name)->label();

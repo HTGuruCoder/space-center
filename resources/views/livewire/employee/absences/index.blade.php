@@ -10,20 +10,13 @@
 
             <div class="flex gap-2">
                 @if ($canTakeLunchBreak)
-                    <x-button
-                        icon="mdi.food"
-                        class="btn-warning"
-                        wire:click="requestLunchBreak"
-                    >
+                    <x-button icon="mdi.food" class="btn-warning" wire:click="requestLunchBreak">
                         {{ __('Take Lunch Break') }}
                     </x-button>
                 @endif
 
-                <x-button
-                    icon="mdi.calendar-remove"
-                    class="btn-primary"
-                    wire:click="$dispatch('show-absence-request-modal')"
-                >
+                <x-button icon="mdi.calendar-remove" class="btn-primary"
+                    wire:click="$dispatch('show-absence-request-modal')">
                     {{ __('Request Absence') }}
                 </x-button>
             </div>
@@ -41,7 +34,7 @@
     <livewire:employee.edit-absence-modal />
 
     {{-- Details Modal --}}
-    @if($selectedAbsence)
+    @if ($selectedAbsence)
         <x-modal wire:model="showDetailsModal" title="{{ __('Absence Details') }}">
             <div class="space-y-4">
                 <div>
@@ -63,18 +56,20 @@
                 <div>
                     <p class="text-sm text-base-content/70">{{ __('Status') }}</p>
                     <div class="mt-1">
-                        @include('livewire.employee.absences.absences-table.status-badge', ['status' => $selectedAbsence->status])
+                        @include('livewire.employee.absences.absences-table.status-badge', [
+                            'status' => $selectedAbsence->status,
+                        ])
                     </div>
                 </div>
 
-                @if($selectedAbsence->reason)
+                @if ($selectedAbsence->reason)
                     <div>
                         <p class="text-sm text-base-content/70">{{ __('Reason') }}</p>
                         <p class="font-medium">{{ $selectedAbsence->reason }}</p>
                     </div>
                 @endif
 
-                @if($selectedAbsence->validator)
+                @if ($selectedAbsence->validator)
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <p class="text-sm text-base-content/70">{{ __('Validated By') }}</p>
@@ -82,7 +77,8 @@
                         </div>
                         <div>
                             <p class="text-sm text-base-content/70">{{ __('Validated At') }}</p>
-                            <p class="font-medium">{{ DateHelper::formatDateTime($selectedAbsence->validated_at) ?? '-' }}</p>
+                            <p class="font-medium">
+                                {{ DateHelper::formatDateTime($selectedAbsence->validated_at) ?? '-' }}</p>
                         </div>
                     </div>
                 @endif
@@ -95,7 +91,7 @@
     @endif
 
     {{-- Delete Modal --}}
-    @if($selectedAbsence)
+    @if ($selectedAbsence)
         <x-modal wire:model="showDeleteModal" title="{{ __('Delete Absence') }}">
             <p>{{ __('Are you sure you want to delete this absence? This action cannot be undone.') }}</p>
 

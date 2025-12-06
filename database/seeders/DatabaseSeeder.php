@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
         $superAdmin = User::firstOrCreate(
             ['email' => 'tchetcheherman@gmail.com'],
             [
-                'first_name' => 'TCHETCHE',
-                'last_name' => 'Herman',
-                'phone_number' => '+22891504351',
-                'password' => Hash::make('12345678'),
+                'first_name' => 'Marck',
+                'last_name' => 'Laurin',
+                'phone_number' => '+2290160995224',
+                'password' => Hash::make('marc2002'),
                 'timezone' => 'UTC',
                 'currency_code' => 'XOF',
                 'country_code' => 'TG',

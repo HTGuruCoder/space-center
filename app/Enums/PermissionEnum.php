@@ -7,65 +7,65 @@ enum PermissionEnum: string
     // Admin Dashboard
     case VIEW_ADMIN_DASHBOARD = 'view_admin_dashboard';
 
-    // User Management
+        // User Management
     case VIEW_USERS = 'view_users';
     case CREATE_USERS = 'create_users';
     case EDIT_USERS = 'edit_users';
     case DELETE_USERS = 'delete_users';
 
-    // Role Management
+        // Role Management
     case VIEW_ROLES = 'view_roles';
     case CREATE_ROLES = 'create_roles';
     case EDIT_ROLES = 'edit_roles';
     case DELETE_ROLES = 'delete_roles';
 
-    // Permission Management
+        // Permission Management
     case VIEW_PERMISSIONS = 'view_permissions';
     case ASSIGN_PERMISSIONS = 'assign_permissions';
 
-    // Employee Management
+        // Employee Management
     case VIEW_EMPLOYEES = 'view_employees';
     case CREATE_EMPLOYEES = 'create_employees';
     case EDIT_EMPLOYEES = 'edit_employees';
     case DELETE_EMPLOYEES = 'delete_employees';
 
-    // Work Periods Management
+        // Work Periods Management
     case VIEW_WORK_PERIODS = 'view_work_periods';
     case CREATE_WORK_PERIODS = 'create_work_periods';
     case EDIT_WORK_PERIODS = 'edit_work_periods';
     case DELETE_WORK_PERIODS = 'delete_work_periods';
 
-    // Absences Management
+        // Absences Management
     case VIEW_ABSENCES = 'view_absences';
     case CREATE_ABSENCES = 'create_absences';
     case EDIT_ABSENCES = 'edit_absences';
     case DELETE_ABSENCES = 'delete_absences';
 
-    // Allowed Locations Management
+        // Allowed Locations Management
     case VIEW_ALLOWED_LOCATIONS = 'view_allowed_locations';
     case CREATE_ALLOWED_LOCATIONS = 'create_allowed_locations';
     case EDIT_ALLOWED_LOCATIONS = 'edit_allowed_locations';
     case DELETE_ALLOWED_LOCATIONS = 'delete_allowed_locations';
 
-    // Store Management
+        // Store Management
     case VIEW_STORES = 'view_stores';
     case CREATE_STORES = 'create_stores';
     case EDIT_STORES = 'edit_stores';
     case DELETE_STORES = 'delete_stores';
 
-    // Position Management
+        // Position Management
     case VIEW_POSITIONS = 'view_positions';
     case CREATE_POSITIONS = 'create_positions';
     case EDIT_POSITIONS = 'edit_positions';
     case DELETE_POSITIONS = 'delete_positions';
 
-    // Absence Type Management
+        // Absence Type Management
     case VIEW_ABSENCE_TYPES = 'view_absence_types';
     case CREATE_ABSENCE_TYPES = 'create_absence_types';
     case EDIT_ABSENCE_TYPES = 'edit_absence_types';
     case DELETE_ABSENCE_TYPES = 'delete_absence_types';
 
-    // Position Schedule Management
+        // Position Schedule Management
     case VIEW_POSITION_SCHEDULES = 'view_position_schedules';
     case CREATE_POSITION_SCHEDULES = 'create_position_schedules';
     case EDIT_POSITION_SCHEDULES = 'edit_position_schedules';
@@ -76,7 +76,7 @@ enum PermissionEnum: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::VIEW_ADMIN_DASHBOARD => __('View Admin Dashboard'),
             self::VIEW_USERS => __('View Users'),
             self::CREATE_USERS => __('Create Users'),
@@ -128,7 +128,7 @@ enum PermissionEnum: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::VIEW_ADMIN_DASHBOARD => __('Can access admin dashboard'),
             self::VIEW_USERS => __('Can view users list'),
             self::CREATE_USERS => __('Can create new users'),
@@ -180,7 +180,7 @@ enum PermissionEnum: string
      */
     public function category(): string
     {
-        return match($this) {
+        return match ($this) {
             self::VIEW_ADMIN_DASHBOARD => __('Admin Dashboard'),
             self::VIEW_USERS, self::CREATE_USERS, self::EDIT_USERS, self::DELETE_USERS => __('User Management'),
             self::VIEW_ROLES, self::CREATE_ROLES, self::EDIT_ROLES, self::DELETE_ROLES => __('Role Management'),

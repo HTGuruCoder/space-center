@@ -7,6 +7,7 @@ use App\Models\Position;
 use App\Observers\PositionObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
         // Super Admin bypasses all permission checks
         Gate::before(function ($user, $ability) {
             return $user->hasRole(RoleEnum::SUPER_ADMIN->value) ? true : null;

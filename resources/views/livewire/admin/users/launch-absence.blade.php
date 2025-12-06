@@ -16,7 +16,7 @@
 
     {{-- PowerGrid Table --}}
     <div class="bg-base-100 shadow-xl rounded-[10px] px-2 py-4">
-        <livewire:admin.employees.absences.absences-table wire:id="absences-table" />
+        <livewire:admin.employees.absences.listing-launch-absence wire:id="launch-absences-table" />
     </div>
 
     {{-- Absence Form Drawer --}}

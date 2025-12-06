@@ -15,37 +15,19 @@
                 </a>
             </div>
         </div>
-
         <x-card class="shadow-xl">
             <x-form wire:submit="login">
-                <x-input
-                    label="{{ __('Email') }}"
-                    wire:model="form.email"
-                    icon="mdi.email"
-                    placeholder="{{ __('Enter your email') }}"
-                    required
-                />
+                
+                <x-input label="{{ __('Email') }}" wire:model="form.email" icon="mdi.email"
+                    placeholder="{{ __('Enter your email') }}" required />
 
-                <x-password
-                    label="{{ __('Password') }}"
-                    wire:model="form.password"
-                    icon="mdi.lock"
-                    placeholder="{{ __('Enter your password') }}"
-                    right
-                    required
-                />
+                <x-password label="{{ __('Password') }}" wire:model="form.password" icon="mdi.lock"
+                    placeholder="{{ __('Enter your password') }}" right required />
 
-                <x-checkbox
-                    label="{{ __('Remember me') }}"
-                    wire:model="form.remember"
-                />
+                <x-checkbox label="{{ __('Remember me') }}" wire:model="form.remember" />
 
                 <x-slot:actions>
-                    <x-button
-                        type="submit"
-                        class="btn-primary w-full"
-                        spinner="login"
-                    >
+                    <x-button type="submit" class="btn-primary w-full" spinner="login">
                         {{ __('Login') }}
                     </x-button>
                 </x-slot:actions>
