@@ -47,14 +47,14 @@ class EmployeeRegister extends Component
             if ($this->currentStep === 1) {
                 $detectResult = $faceService->detectFace($this->form->photo);
 
-                if (!$detectResult['success']) {
-                    $this->error($detectResult['message']);
-                    // Don't throw exception - toast is already shown, just return to prevent step progression
-                    return;
-                }
+                // if (!$detectResult['success']) {
+                //     $this->error($detectResult['message']);
+                //     // Don't throw exception - toast is already shown, just return to prevent step progression
+                //     return;
+                // }
 
                 // Store face_token temporarily for final registration
-                $this->form->face_token = $detectResult['face_token'];
+                //$this->form->face_token = $detectResult['face_token'];
             }
 
             $this->currentStep++;

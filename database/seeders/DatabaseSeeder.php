@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
     {
         // Create a super admin user first if doesn't exist
         $superAdmin = User::firstOrCreate(
-            ['email' => 'tchetcheherman@gmail.com'],
+            ['email' => 'bach@gmail.com'],
             [
-                'first_name' => 'TCHETCHE',
-                'last_name' => 'Herman',
-                'phone_number' => '+22891504351',
+                'first_name' => 'SARE BONI',
+                'last_name' => 'Bachirou',
+                'phone_number' => '+22966914511',
                 'password' => Hash::make('12345678'),
                 'timezone' => 'UTC',
                 'currency_code' => 'XOF',

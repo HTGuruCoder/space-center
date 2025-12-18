@@ -1,11 +1,8 @@
-@props(['wireModel' => 'photo'])
+@props(['wireModel' => 'photo', 'active' => true])
 
-<div
-    x-data="faceCapture('{{ $wireModel }}')"
-    x-init="init()"
-    @destroy="destroy()"
-    class="w-full"
->
+<div x-data="faceCapture('{{ $wireModel }}', {{ $active ? 'true' : 'false' }})" x-init="init()"
+    x-effect="handleActiveChange({{ $active ? 'true' : 'false' }})" @destroy.window="destroy()" class="w-full"
+    wire:ignore.self>
     {{-- Loading State --}}
     <div x-show="isLoading" class="text-center py-8">
         <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -27,6 +24,12 @@
                       error === 'capture_failed' ? '{{ __('Failed to capture image. Please try again.') }}' :
                       error === 'upload_failed' ? '{{ __('Failed to upload image. Please try again.') }}' :
                       '{{ __('An error occurred. Please try again.') }}'"></span>
+
+        {{-- Retry button for camera access denied --}}
+        <button x-show="error === 'camera_access_denied'" @click="error = null; startCamera()"
+            class="btn btn-sm btn-outline ml-2">
+            {{ __('Retry') }}
+        </button>
     </div>
 
     {{-- Quality Warning (advisory feedback) --}}
@@ -47,27 +50,15 @@
     {{-- Camera View --}}
     <div x-show="!capturedImage && !isLoading" class="relative" x-cloak>
         <div class="relative aspect-video bg-base-300 rounded-lg overflow-hidden">
-            <video
-                x-ref="video"
-                autoplay
-                playsinline
-                class="w-full h-full object-cover"
-            ></video>
-            <canvas
-                x-ref="canvas"
-                class="absolute inset-0 w-full h-full"
-            ></canvas>
+            <video x-ref="video" autoplay playsinline class="w-full h-full object-cover"></video>
+            <canvas x-ref="canvas" class="absolute inset-0 w-full h-full"></canvas>
 
             {{-- Face Detection Indicator --}}
             <div class="absolute top-4 left-4">
-                <div
-                    class="badge gap-2"
-                    :class="faceDetected && faceQuality === 'good' ? 'badge-success' :
+                <div class="badge gap-2" :class="faceDetected && faceQuality === 'good' ? 'badge-success' :
                             faceDetected && faceQuality === 'poor' ? 'badge-warning' :
-                            'badge-error'"
-                >
-                    <span class="w-2 h-2 rounded-full animate-pulse"
-                          :class="faceDetected && faceQuality === 'good' ? 'bg-success-content' :
+                            'badge-error'">
+                    <span class="w-2 h-2 rounded-full animate-pulse" :class="faceDetected && faceQuality === 'good' ? 'bg-success-content' :
                                   faceDetected && faceQuality === 'poor' ? 'bg-warning-content' :
                                   'bg-error-content'"></span>
                     <span x-text="faceDetected && faceQuality === 'good' ? '{{ __('Good quality') }}' :
@@ -79,12 +70,8 @@
 
         {{-- Capture Button --}}
         <div class="flex justify-center mt-4">
-            <button
-                type="button"
-                @click="capture()"
-                :disabled="!faceDetected || faceQuality === 'poor'"
-                class="btn btn-primary btn-lg"
-            >
+            <button type="button" @click="capture()" :disabled="!faceDetected || faceQuality === 'poor'"
+                class="btn btn-primary btn-lg">
                 <x-icon name="mdi.camera" class="w-6 h-6" />
                 {{ __('Capture Photo') }}
             </button>
@@ -93,18 +80,10 @@
 
     {{-- Preview --}}
     <div x-show="capturedImage" class="relative" x-cloak>
-        <img
-            :src="capturedImage"
-            alt="Captured photo"
-            class="w-full aspect-video object-cover rounded-lg"
-        />
+        <img :src="capturedImage" alt="Captured photo" class="w-full aspect-video object-cover rounded-lg" />
 
         <div class="flex gap-2 justify-center mt-4">
-            <button
-                type="button"
-                @click="retake()"
-                class="btn btn-outline"
-            >
+            <button type="button" @click="retake()" class="btn btn-outline">
                 <x-icon name="mdi.camera-retake" class="w-5 h-5" />
                 {{ __('Retake') }}
             </button>

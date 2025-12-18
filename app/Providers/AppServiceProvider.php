@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+use Illuminate\Support\Facades\URL;
 
 use App\Enums\RoleEnum;
 use App\Models\Position;
@@ -30,5 +31,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model observers
         Position::observe(PositionObserver::class);
+
+        if ($this->app->environment('production') || $this->app->environment('local')) {
+            URL::forceScheme('https');
+        }
     }
 }

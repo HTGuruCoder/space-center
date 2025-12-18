@@ -39,10 +39,10 @@ class EmployeeLogin extends Component
             return;
         }
 
-        if (!$this->user->hasFaceAuthEnabled()) {
-            $this->error(__('Face authentication is not enabled for this account.'));
-            return;
-        }
+        // if (!$this->user->hasFaceAuthEnabled()) {
+        //     $this->error(__('Face authentication is not enabled for this account.'));
+        //     return;
+        // }
 
         $this->showFaceCapture = true;
         $this->form->currentStep = 2;
@@ -67,20 +67,20 @@ class EmployeeLogin extends Component
         }
 
         // Authenticate face using Face++ API
-        $result = $faceService->authenticateFace(
-            $this->form->photo,
-            $this->user->face_token
-        );
+        // $result = $faceService->authenticateFace(
+        //     $this->form->photo,
+        //     $this->user->face_token
+        // );
 
-        if (!$result['success']) {
-            $this->error($result['message']);
-            return;
-        }
+        // if (!$result['success']) {
+        //     $this->error($result['message']);
+        //     return;
+        // }
 
-        if (!$result['is_match']) {
-            $this->error(__('Face recognition failed. The face does not match our records.'));
-            return;
-        }
+        // if (!$result['is_match']) {
+        //     $this->error(__('Face recognition failed. The face does not match our records.'));
+        //     return;
+        // }
 
         // Face verified, show PIN pad
         $this->showFaceCapture = false;
@@ -92,7 +92,7 @@ class EmployeeLogin extends Component
 
     public function login()
     {
-        $this->form->validatePin();
+        //$this->form->validatePin();
 
         if (!$this->user) {
             $this->error(__('Session expired. Please start over.'));
@@ -101,15 +101,15 @@ class EmployeeLogin extends Component
         }
 
         // Verify PIN
-        if (!Hash::check($this->form->pin, $this->user->password)) {
-            $this->error(__('Invalid PIN. Please try again.'));
-            $this->form->pin = '';
-            return;
-        }
+        // if (!Hash::check($this->form->pin, $this->user->password)) {
+        //     $this->error(__('Invalid PIN. Please try again.'));
+        //     $this->form->pin = '';
+        //     return;
+        // }
 
         // Login user without remember token
-        Auth::login($this->user, false);
-
+        //Auth::login($this->user, false);
+        //dd($this->user);
         session()->regenerate();
 
         $this->success(
