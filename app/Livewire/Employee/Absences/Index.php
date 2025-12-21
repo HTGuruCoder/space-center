@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Employee\Absences;
 
-use App\Helpers\DateHelper;
 use App\Models\EmployeeAbsence;
 use App\Services\EmployeeService;
 use Livewire\Attributes\On;
@@ -24,7 +23,7 @@ class Index extends Component
 
         $this->dispatch('show-lunch-break-modal', [
             'hasActiveWorkPeriod' => $activeWorkPeriod !== null,
-            'clockInTime' => $activeWorkPeriod ? DateHelper::formatTime($activeWorkPeriod->clock_in_datetime) : null,
+            'clockInTime' => $activeWorkPeriod?->clock_in_datetime->format('H:i'),
         ]);
     }
 

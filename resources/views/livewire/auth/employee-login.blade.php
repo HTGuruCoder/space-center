@@ -38,104 +38,71 @@
                 </ul>
             </div>
 
-            {{-- Step 1: Email --}}
-            @if(!$showFaceCapture && !$showPinPad)
-                <div>
-                    <x-input
-                        label="{{ __('Email Address') }}"
-                        wire:model="form.email"
-                        icon="mdi.email"
-                        placeholder="{{ __('john.doe@example.com') }}"
-                        required
-                    />
+            {{-- Step 1: Email - Utiliser hidden au lieu de @if --}}
+            <div @class(['hidden' => $showFaceCapture || $showPinPad])>
+                <x-input label="{{ __('Email Address') }}" wire:model="form.email" icon="mdi.email"
+                    placeholder="{{ __('john.doe@example.com') }}" required />
 
-                    <div class="flex justify-end mt-6">
-                        <x-button
-                            wire:click="nextToFaceCapture"
-                            class="btn-primary"
-                            spinner="nextToFaceCapture"
-                        >
-                            {{ __('Next') }}
-                            <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
-                        </x-button>
-                    </div>
-
-                    <div class="mt-6 p-3 bg-info/10 border border-info/30 rounded-lg">
-                        <p class="text-sm flex items-start gap-2">
-                            <x-icon name="mdi.information" class="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
-                            <span>{{ __('Employee login uses facial recognition and PIN. Make sure you have registered with your face photo.') }}</span>
-                        </p>
-                    </div>
+                <div class="flex justify-end mt-6">
+                    <x-button wire:click="nextToFaceCapture" class="btn-primary" spinner="nextToFaceCapture">
+                        {{ __('Next') }}
+                        <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
+                    </x-button>
                 </div>
-            @endif
 
-            {{-- Step 2: Face Capture --}}
-            @if($showFaceCapture)
-                <div>
-                    <div class="mb-4">
-                        <h3 class="font-semibold text-lg">{{ __('Verify Your Face') }}</h3>
-                        <p class="text-sm text-base-content/70">{{ __('Position your face in front of the camera') }}</p>
-                    </div>
-
-                    <x-face-capture-component wire-model="form.photo" />
-
-                    <div class="flex justify-between mt-6">
-                        <x-button
-                            wire:click="backToEmail"
-                            class="btn-outline"
-                        >
-                            <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
-                            {{ __('Back') }}
-                        </x-button>
-
-                        <x-button
-                            wire:click="verifyFace"
-                            class="btn-primary"
-                            spinner="verifyFace"
-                            :disabled="!$form->photo"
-                        >
-                            {{ __('Verify Face') }}
-                            <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
-                        </x-button>
-                    </div>
+                <div class="mt-6 p-3 bg-info/10 border border-info/30 rounded-lg">
+                    <p class="text-sm flex items-start gap-2">
+                        <x-icon name="mdi.information" class="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
+                        <span>{{ __('Employee login uses facial recognition and PIN. Make sure you have registered with your face photo.') }}</span>
+                    </p>
                 </div>
-            @endif
+            </div>
 
-            {{-- Step 3: PIN --}}
-            @if($showPinPad)
-                <div>
-                    <div class="mb-4 text-center">
-                        <h3 class="font-semibold text-lg">{{ __('Enter Your PIN') }}</h3>
-                        <p class="text-sm text-base-content/70">{{ __('Enter your 4-6 digit PIN code') }}</p>
-                    </div>
-
-                    <x-pin-pad-component
-                        wire-model="form.pin"
-                        :min-length="4"
-                        :max-length="6"
-                        :label="__('PIN Code')"
-                    />
-
-                    <div class="flex justify-between mt-6">
-                        <x-button
-                            wire:click="backToEmail"
-                            class="btn-outline"
-                        >
-                            <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
-                            {{ __('Start Over') }}
-                        </x-button>
-
-                        <x-button
-                            wire:click="login"
-                            class="btn-primary"
-                            spinner="login"
-                        >
-                            {{ __('Login') }}
-                            <x-icon name="mdi.login" class="w-5 h-5 ml-2" />
-                        </x-button>
-                    </div>
+            {{-- Step 2: Face Capture - Utiliser hidden au lieu de @if --}}
+            <div @class(['hidden' => !$showFaceCapture])>
+                <div class="mb-4">
+                    <h3 class="font-semibold text-lg">{{ __('Verify Your Face') }}</h3>
+                    <p class="text-sm text-base-content/70">{{ __('Position your face in front of the camera') }}</p>
                 </div>
-            @endif
+
+                {{-- Passer la prop :active pour contrôler la caméra --}}
+                <x-face-capture-component wire-model="form.photo" :active="$showFaceCapture" />
+
+                <div class="flex justify-between mt-6">
+                    <x-button wire:click="backToEmail" class="btn-outline">
+                        <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
+                        {{ __('Back') }}
+                    </x-button>
+
+                    <x-button wire:click="verifyFace" class="btn-primary" spinner="verifyFace"
+                        :disabled="!$form->photo">
+                        {{ __('Verify Face') }}
+                        <x-icon name="mdi.arrow-right" class="w-5 h-5 ml-2" />
+                    </x-button>
+                </div>
+            </div>
+
+            {{-- Step 3: PIN - Utiliser hidden au lieu de @if --}}
+            <div @class(['hidden' => !$showPinPad])>
+                <div class="mb-4 text-center">
+                    <h3 class="font-semibold text-lg">{{ __('Enter Your PIN') }}</h3>
+                    <p class="text-sm text-base-content/70">{{ __('Enter your 4-6 digit PIN code') }}</p>
+                </div>
+
+                <x-pin-pad-component wire-model="form.pin" :min-length="4" :max-length="6" :label="__('PIN Code')" />
+
+                <div class="flex justify-between mt-6">
+                    <x-button wire:click="backToEmail" class="btn-outline">
+                        <x-icon name="mdi.arrow-left" class="w-5 h-5 mr-2" />
+                        {{ __('Start Over') }}
+                    </x-button>
+
+                    <x-button wire:click="login" class="btn-primary" spinner="login">
+                        {{ __('Login') }}
+                        <x-icon name="mdi.login" class="w-5 h-5 ml-2" />
+                    </x-button>
+                </div>
+            </div>
         </x-card>
     </div>
 </div>

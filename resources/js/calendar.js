@@ -51,44 +51,9 @@ function formatDuration(minutes, translations = {}) {
     return `${days} ${dayLabel}`;
 }
 
-/**
- * Format a date for display.
- * Matches DateHelper.php format for consistency.
- * - Spanish (es): d/m/Y H:i (24-hour)
- * - English (en): m/d/Y h:i A (12-hour with AM/PM)
- *
- * Note: PHP already sends dates in the user's timezone, so no timezone conversion needed here.
- */
-function formatDateForDisplay(date, locale) {
-    const d = new Date(date);
-
-    // Extract date parts directly (date is already in user's timezone from PHP)
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    const hours = d.getHours();
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-
-    if (locale === 'es') {
-        // Spanish: d/m/Y H:i (24-hour)
-        const hour24 = String(hours).padStart(2, '0');
-        return `${day}/${month}/${year} ${hour24}:${minutes}`;
-    } else {
-        // English: m/d/Y h:i A (12-hour with AM/PM)
-        const hour12 = hours % 12 || 12;
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        const hourStr = String(hour12).padStart(2, '0');
-        return `${month}/${day}/${year} ${hourStr}:${minutes} ${ampm}`;
-    }
-}
-
 export function initializeCalendar(calendarEl, livewireComponent, translations = {}) {
     // Get locale from HTML lang attribute
     const locale = document.documentElement.lang || 'en';
-
-    // Get user timezone from data attribute (from DB) - this takes priority
-    // Only fallback to browser timezone if no user timezone is set in DB
-    const userTimezone = document.body.dataset.userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     // Map locale codes to FullCalendar locale objects
     const localeMap = {
@@ -100,7 +65,6 @@ export function initializeCalendar(calendarEl, livewireComponent, translations =
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
-        timeZone: userTimezone,
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
@@ -142,8 +106,8 @@ export function initializeCalendar(calendarEl, livewireComponent, translations =
                 content = `
                     <div class="p-4">
                         <h3 class="text-lg font-bold mb-2">${event.title}</h3>
-                        <p><strong>${translations.start || 'Start'}:</strong> ${formatDateForDisplay(event.start, locale)}</p>
-                        ${event.end ? `<p><strong>${translations.end || 'End'}:</strong> ${formatDateForDisplay(event.end, locale)}</p>` : `<p class="text-warning">${translations.currentlyClocked || 'Currently clocked in'}</p>`}
+                        <p><strong>${translations.start || 'Start'}:</strong> ${new Date(event.start).toLocaleString(locale)}</p>
+                        ${event.end ? `<p><strong>${translations.end || 'End'}:</strong> ${new Date(event.end).toLocaleString(locale)}</p>` : `<p class="text-warning">${translations.currentlyClocked || 'Currently clocked in'}</p>`}
                         <p><strong>${translations.duration || 'Duration'}:</strong> ${duration}</p>
                     </div>
                 `;
@@ -158,8 +122,8 @@ export function initializeCalendar(calendarEl, livewireComponent, translations =
                     <div class="p-4">
                         <h3 class="text-lg font-bold mb-2">${event.title}</h3>
                         <p><strong>${translations.status || 'Status'}:</strong> <span class="badge badge-${props.status === 'approved' ? 'success' : props.status === 'pending' ? 'warning' : 'error'}">${props.statusLabel}</span></p>
-                        <p><strong>${translations.start || 'Start'}:</strong> ${formatDateForDisplay(event.start, locale)}</p>
-                        <p><strong>${translations.end || 'End'}:</strong> ${formatDateForDisplay(event.end, locale)}</p>
+                        <p><strong>${translations.start || 'Start'}:</strong> ${new Date(event.start).toLocaleString(locale)}</p>
+                        <p><strong>${translations.end || 'End'}:</strong> ${new Date(event.end).toLocaleString(locale)}</p>
                         <p><strong>${translations.duration || 'Duration'}:</strong> ${duration}</p>
                         ${props.isBreak ? '<p class="text-info">🍽 Break</p>' : ''}
                         ${props.reason ? `<p class="mt-2"><strong>${translations.reason || 'Reason'}:</strong> ${props.reason}</p>` : ''}

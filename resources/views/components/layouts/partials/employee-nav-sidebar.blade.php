@@ -28,6 +28,11 @@ $manager = $employee?->manager;
 
     {{-- Settings --}}
     <x-menu-item title="{{ __('Settings') }}" icon="mdi.cog" link="{{ route('employees.settings') }}" />
+    <x-menu-item
+    title="{{ __('My Breaks') }}"
+    icon="mdi.food"
+    link="{{ route('employees.breaks.index') }}"
+   />
 </x-menu>
 
 {{-- Manager Card --}}

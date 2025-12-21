@@ -1,6 +1,6 @@
 import * as faceapi from 'face-api.js';
 
-export default (wireModel = 'photo') => ({
+export default (wireModel = 'photo', initialActive = true) => ({
     stream: null,
     isLoading: true,
     isDetecting: false,
@@ -14,13 +14,74 @@ export default (wireModel = 'photo') => ({
     video: null,
     capturedImage: null,
 
+    // NEW: Track active state
+    isActive: initialActive,
+    modelsLoaded: false,
+    detectLoop: null, // Reference to detection timeout
+
     async init() {
         this.video = this.$refs.video;
         this.canvas = this.$refs.canvas;
 
         try {
-            // Load face-api.js models
-            await this.loadModels();
+            // Load face-api.js models (only once)
+            if (!this.modelsLoaded) {
+                await this.loadModels();
+                this.modelsLoaded = true;
+            }
+
+            // Only start webcam if active
+            if (this.isActive) {
+                await this.startCamera();
+            } else {
+                this.isLoading = false;
+            }
+        } catch (err) {
+            console.error('Initialization error:', err);
+            this.error = this.getErrorMessage(err);
+            this.isLoading = false;
+        }
+    },
+
+    /**
+     * NEW: Handle active prop changes from Livewire/Alpine
+     * Called via x-effect in the blade component
+     */
+    handleActiveChange(newActive) {
+        // Avoid unnecessary operations if state hasn't changed
+        if (newActive === this.isActive) {
+            return;
+        }
+
+        this.isActive = newActive;
+
+        if (newActive) {
+            // Activate: start camera
+            this.startCamera();
+        } else {
+            // Deactivate: stop camera to free resources
+            this.stopCamera();
+        }
+    },
+
+    /**
+     * NEW: Start camera and face detection
+     */
+    async startCamera() {
+        // Prevent multiple starts
+        if (this.stream) {
+            return;
+        }
+
+        this.isLoading = true;
+        this.error = null;
+
+        try {
+            // Ensure models are loaded
+            if (!this.modelsLoaded) {
+                await this.loadModels();
+                this.modelsLoaded = true;
+            }
 
             // Start webcam
             await this.startWebcam();
@@ -30,9 +91,37 @@ export default (wireModel = 'photo') => ({
 
             this.isLoading = false;
         } catch (err) {
-            console.error('Initialization error:', err);
+            console.error('Camera start error:', err);
             this.error = this.getErrorMessage(err);
             this.isLoading = false;
+        }
+    },
+
+    /**
+     * NEW: Stop camera and free resources
+     */
+    stopCamera() {
+        // Stop detection loop
+        if (this.detectLoop) {
+            clearTimeout(this.detectLoop);
+            this.detectLoop = null;
+        }
+
+        // Stop webcam stream
+        this.stopWebcam();
+
+        // Reset detection state (but keep captured image if any)
+        this.faceDetected = false;
+        this.faceQuality = null;
+        this.qualityIssues = [];
+        this.showQualityWarning = false;
+        this.qualityCheckCount = 0;
+        this.isDetecting = false;
+
+        // Clear canvas
+        if (this.canvas) {
+            const ctx = this.canvas.getContext('2d');
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
     },
 
@@ -71,6 +160,11 @@ export default (wireModel = 'photo') => ({
     },
 
     async detectFace() {
+        // NEW: Stop detection if not active or no stream
+        if (!this.isActive || !this.stream) {
+            return;
+        }
+
         if (!this.video || this.video.paused || this.video.ended) {
             return;
         }
@@ -140,8 +234,10 @@ export default (wireModel = 'photo') => ({
 
         this.isDetecting = false;
 
-        // Continue detecting
-        setTimeout(() => this.detectFace(), 100);
+        // NEW: Continue detecting only if still active
+        if (this.isActive && this.stream) {
+            this.detectLoop = setTimeout(() => this.detectFace(), 100);
+        }
     },
 
     checkFaceQuality(detection) {
@@ -282,8 +378,8 @@ export default (wireModel = 'photo') => ({
 
             // Upload to Livewire
             this.$wire.upload(wireModel, file, () => {
-                // Success callback
-                this.stopWebcam();
+                // Success callback - stop camera after successful capture
+                this.stopCamera();
             }, (error) => {
                 // Error callback
                 console.error('Upload error:', error);
@@ -364,42 +460,20 @@ export default (wireModel = 'photo') => ({
     retake() {
         this.capturedImage = null;
         this.error = null;
-        this.startWebcam().then(() => {
-            this.detectFace();
-        });
-    },
 
-    async retryCamera() {
-        this.error = null;
-        this.isLoading = true;
-
-        try {
-            // Check if the Permissions API is available
-            if (navigator.permissions && navigator.permissions.query) {
-                const permissionStatus = await navigator.permissions.query({ name: 'camera' });
-
-                if (permissionStatus.state === 'denied') {
-                    // Permission is permanently denied - user must change in browser settings
-                    this.error = 'camera_permanently_denied';
-                    this.isLoading = false;
-                    return;
-                }
-            }
-
-            await this.startWebcam();
-            this.detectFace();
-            this.isLoading = false;
-        } catch (err) {
-            console.error('Retry camera error:', err);
-            this.error = this.getErrorMessage(err);
-            this.isLoading = false;
-        }
+        // NEW: Use startCamera instead of directly calling startWebcam
+        this.startCamera();
     },
 
     stopWebcam() {
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());
             this.stream = null;
+        }
+
+        // Clear video source
+        if (this.video) {
+            this.video.srcObject = null;
         }
     },
 
@@ -411,7 +485,9 @@ export default (wireModel = 'photo') => ({
     },
 
     destroy() {
-        this.stopWebcam();
+        // NEW: Use stopCamera for complete cleanup
+        this.stopCamera();
+
         if (this.capturedImage) {
             URL.revokeObjectURL(this.capturedImage);
         }

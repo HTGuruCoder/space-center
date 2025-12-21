@@ -6,6 +6,7 @@ use App\Helpers\RedirectHelper;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Livewire\Employee\Breaks\Index as BreaksIndex;
 
 Route::group(
     [
@@ -90,6 +91,8 @@ Route::group(
                 // Allowed Locations
                 Route::get('/allowed-locations', \App\Livewire\Employee\AllowedLocations::class)
                     ->name('allowed-locations');
+                // Breaks
+                Route::get('/breaks', BreaksIndex::class)->name('breaks.index');
             });
 
         // ============================================
@@ -139,6 +142,8 @@ Route::group(
                     Route::get('/{employee}', \App\Livewire\Admin\Employees\EmployeeDetail::class)
                         ->middleware('permission:' . PermissionEnum::VIEW_EMPLOYEES->value)
                         ->name('detail');
+
+                    Route::get('/breaks', BreaksIndex::class)->name('breaks.index');
                 });
 
                 // ============================================
