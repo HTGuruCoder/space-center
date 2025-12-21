@@ -35,11 +35,6 @@
                     required
                 />
 
-                <x-checkbox
-                    label="{{ __('Remember me') }}"
-                    wire:model="form.remember"
-                />
-
                 <x-slot:actions>
                     <x-button
                         type="submit"

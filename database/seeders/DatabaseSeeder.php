@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
     {
         // Create a super admin user first if doesn't exist
         $superAdmin = User::firstOrCreate(
-            ['email' => 'bach@gmail.com'],
+            ['email' => 'tchetcheherman@gmail.com'],
             [
-                'first_name' => 'SARE BONI',
-                'last_name' => 'Bachirou',
-                'phone_number' => '+22966914511',
+                'first_name' => 'TCHETCHE',
+                'last_name' => 'Herman',
+                'phone_number' => '+22891504351',
                 'password' => Hash::make('12345678'),
                 'timezone' => 'UTC',
                 'currency_code' => 'XOF',
@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             StoreSeeder::class,
             PositionSeeder::class,
+            AbsenceTypeSeeder::class
         ]);
     }
 }

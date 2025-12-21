@@ -35,7 +35,6 @@ class FaceRecognitionService
     public function detectFace(UploadedFile|string $image): array
     {
         try {
-            //dd(123);
             $imagePath = $image instanceof UploadedFile
                 ? $image->getRealPath()
                 : Storage::disk('private')->path($image);
@@ -53,8 +52,6 @@ class FaceRecognitionService
             if (!$validation['success']) {
                 return $validation;
             }
-
-            //dd($this->apiKey);
 
             $response = Http::asMultipart()
                 ->post("{$this->apiUrl}/detect", [
@@ -77,10 +74,7 @@ class FaceRecognitionService
                     ],
                 ]);
 
-            dd(123);
-
             $data = $response->json();
-            dd($data);
 
             if (isset($data['error_message'])) {
                 Log::error('Face++ Detect API Error', ['error' => $data]);
