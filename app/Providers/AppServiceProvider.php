@@ -32,8 +32,8 @@ class AppServiceProvider extends ServiceProvider
         // Register model observers
         Position::observe(PositionObserver::class);
 
-        if ($this->app->environment('production') || $this->app->environment('local')) {
-            URL::forceScheme('https');
-        }
+        // if ($this->app->environment('production') || $this->app->environment('local')) {
+        //     URL::forceScheme('https');
+        // }
     }
 }
