@@ -82,11 +82,24 @@ class FaceVerificationModal extends Component
         $this->errorMessage = null;
 
         try {
-            $employee = auth()->user()->employee;
+            $user = auth()->user();
+            $employee = $user->employee;
 
-            // Check if employee has a stored face token
-            if (!$employee->face_token) {
-                Log::warning('FaceVerificationModal: No face token for employee', [
+            if (!$employee) {
+                Log::error('FaceVerificationModal: No employee record');
+                $this->error(__('Employee record not found.'));
+                $this->isVerifying = false;
+                return;
+            }
+
+            // IMPORTANT: face_token is stored on the USER model, not the Employee model!
+            // This is how it's used in EmployeeLogin.php during authentication
+            $faceToken = $user->face_token;
+
+            // Check if user has a stored face token
+            if (!$faceToken) {
+                Log::warning('FaceVerificationModal: No face token for user', [
+                    'user_id' => $user->id,
                     'employee_id' => $employee->id
                 ]);
                 $this->error(__('No face registered. Please contact your administrator.'));
@@ -94,9 +107,10 @@ class FaceVerificationModal extends Component
                 return;
             }
 
-            Log::info('FaceVerificationModal: Employee has face token', [
+            Log::info('FaceVerificationModal: User has face token', [
+                'user_id' => $user->id,
                 'employee_id' => $employee->id,
-                'face_token' => substr($employee->face_token, 0, 10) . '...'
+                'face_token' => substr($faceToken, 0, 10) . '...'
             ]);
 
             // Convert base64 to temporary file
@@ -112,7 +126,7 @@ class FaceVerificationModal extends Component
             Log::info('FaceVerificationModal: Temp image saved', ['path' => $tempPath]);
 
             // Authenticate face using Face++ API
-            $result = $faceService->authenticateFace($tempPath, $employee->face_token);
+            $result = $faceService->authenticateFace($tempPath, $faceToken);
 
             Log::info('FaceVerificationModal: Face++ result', $result);
 

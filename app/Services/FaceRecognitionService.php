@@ -35,11 +35,25 @@ class FaceRecognitionService
     public function detectFace(UploadedFile|string $image): array
     {
         try {
-            $imagePath = $image instanceof UploadedFile
-                ? $image->getRealPath()
-                : Storage::disk('private')->path($image);
+            // Determine the image path
+            if ($image instanceof UploadedFile) {
+                $imagePath = $image->getRealPath();
+            } elseif (file_exists($image)) {
+                // It's already an absolute path that exists
+                $imagePath = $image;
+            } else {
+                // Try as a Storage path
+                $imagePath = Storage::disk('private')->path($image);
+            }
+
+            Log::info('FaceRecognitionService: detectFace called', [
+                'input_type' => $image instanceof UploadedFile ? 'UploadedFile' : 'string',
+                'resolved_path' => $imagePath,
+                'file_exists' => file_exists($imagePath)
+            ]);
 
             if (!file_exists($imagePath)) {
+                Log::error('FaceRecognitionService: File not found', ['path' => $imagePath]);
                 return [
                     'success' => false,
                     'error' => 'file_not_found',
@@ -50,10 +64,17 @@ class FaceRecognitionService
             // Validate image
             $validation = $this->validateImage($imagePath);
             if (!$validation['success']) {
+                Log::warning('FaceRecognitionService: Image validation failed', $validation);
                 return $validation;
             }
 
-            $response = Http::asMultipart()
+            Log::info('FaceRecognitionService: Sending request to Face++ API', [
+                'url' => "{$this->apiUrl}/detect",
+                'file_size' => filesize($imagePath)
+            ]);
+
+            $response = Http::timeout(30)
+                ->asMultipart()
                 ->post("{$this->apiUrl}/detect", [
                     [
                         'name' => 'api_key',
@@ -76,12 +97,18 @@ class FaceRecognitionService
 
             $data = $response->json();
 
+            Log::info('FaceRecognitionService: Face++ API response', [
+                'status' => $response->status(),
+                'has_faces' => isset($data['faces']) ? count($data['faces']) : 0,
+                'error' => $data['error_message'] ?? null
+            ]);
+
             if (isset($data['error_message'])) {
                 Log::error('Face++ Detect API Error', ['error' => $data]);
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('face.api_error'),
+                    'message' => __('face.api_error') . ' (' . $data['error_message'] . ')',
                 ];
             }
 
@@ -109,6 +136,10 @@ class FaceRecognitionService
                 return $qualityCheck;
             }
 
+            Log::info('FaceRecognitionService: Face detected successfully', [
+                'face_token' => substr($face['face_token'], 0, 10) . '...'
+            ]);
+
             return [
                 'success' => true,
                 'face_token' => $face['face_token'],
@@ -118,6 +149,8 @@ class FaceRecognitionService
         } catch (\Exception $e) {
             Log::error('Face++ Detect Exception', [
                 'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
 
@@ -139,21 +172,34 @@ class FaceRecognitionService
     public function compareFaces(string $faceToken1, string $faceToken2): array
     {
         try {
-            $response = Http::asForm()->post("{$this->apiUrl}/compare", [
-                'api_key' => $this->apiKey,
-                'api_secret' => $this->apiSecret,
-                'face_token1' => $faceToken1,
-                'face_token2' => $faceToken2,
+            Log::info('FaceRecognitionService: Comparing faces', [
+                'token1' => substr($faceToken1, 0, 10) . '...',
+                'token2' => substr($faceToken2, 0, 10) . '...'
             ]);
 
+            $response = Http::timeout(30)
+                ->asForm()
+                ->post("{$this->apiUrl}/compare", [
+                    'api_key' => $this->apiKey,
+                    'api_secret' => $this->apiSecret,
+                    'face_token1' => $faceToken1,
+                    'face_token2' => $faceToken2,
+                ]);
+
             $data = $response->json();
+
+            Log::info('FaceRecognitionService: Compare response', [
+                'status' => $response->status(),
+                'confidence' => $data['confidence'] ?? null,
+                'error' => $data['error_message'] ?? null
+            ]);
 
             if (isset($data['error_message'])) {
                 Log::error('Face++ Compare API Error', ['error' => $data]);
                 return [
                     'success' => false,
                     'error' => 'api_error',
-                    'message' => __('face.compare_error'),
+                    'message' => __('face.compare_error') . ' (' . $data['error_message'] . ')',
                 ];
             }
 
@@ -162,6 +208,12 @@ class FaceRecognitionService
 
             // 1e-5 threshold = 76.5 confidence (high confidence match)
             $isMatch = $confidence >= 76.5;
+
+            Log::info('FaceRecognitionService: Compare result', [
+                'confidence' => $confidence,
+                'is_match' => $isMatch,
+                'thresholds' => $thresholds
+            ]);
 
             return [
                 'success' => true,
@@ -209,7 +261,7 @@ class FaceRecognitionService
                 $params['tags'] = implode(',', $tags);
             }
 
-            $response = Http::asForm()->post("{$this->apiUrl}/faceset/create", $params);
+            $response = Http::timeout(30)->asForm()->post("{$this->apiUrl}/faceset/create", $params);
 
             $data = $response->json();
 
@@ -243,20 +295,20 @@ class FaceRecognitionService
     }
 
     /**
-     * Add a face token to a FaceSet (makes it permanent).
+     * Add face tokens to a FaceSet.
      *
      * @param string $facesetToken FaceSet token or outer_id
-     * @param string $faceToken Face token to add
+     * @param array $faceTokens Array of face tokens to add
      * @return array{success: bool, face_added?: int, face_count?: int, error?: string, message?: string}
      */
-    public function addToFaceSet(string $facesetToken, string $faceToken): array
+    public function addToFaceSet(string $facesetToken, array $faceTokens): array
     {
         try {
-            $response = Http::asForm()->post("{$this->apiUrl}/faceset/addface", [
+            $response = Http::timeout(30)->asForm()->post("{$this->apiUrl}/faceset/addface", [
                 'api_key' => $this->apiKey,
                 'api_secret' => $this->apiSecret,
                 'faceset_token' => $facesetToken,
-                'face_tokens' => $faceToken,
+                'face_tokens' => implode(',', $faceTokens),
             ]);
 
             $data = $response->json();
@@ -299,7 +351,7 @@ class FaceRecognitionService
     public function getFaceSetDetail(string $facesetToken): array
     {
         try {
-            $response = Http::asForm()->post("{$this->apiUrl}/faceset/getdetail", [
+            $response = Http::timeout(30)->asForm()->post("{$this->apiUrl}/faceset/getdetail", [
                 'api_key' => $this->apiKey,
                 'api_secret' => $this->apiSecret,
                 'faceset_token' => $facesetToken,
@@ -344,21 +396,35 @@ class FaceRecognitionService
      */
     public function authenticateFace(UploadedFile|string $liveImage, string $storedFaceToken): array
     {
+        Log::info('FaceRecognitionService: Starting authentication', [
+            'image_type' => $liveImage instanceof UploadedFile ? 'UploadedFile' : 'string',
+            'stored_token' => substr($storedFaceToken, 0, 10) . '...'
+        ]);
+
         // Step 1: Detect face in live image
         $detectResult = $this->detectFace($liveImage);
 
         if (!$detectResult['success']) {
+            Log::warning('FaceRecognitionService: Detection failed', $detectResult);
             return $detectResult;
         }
 
         $liveFaceToken = $detectResult['face_token'];
 
+        Log::info('FaceRecognitionService: Face detected, comparing with stored token');
+
         // Step 2: Compare tokens
         $compareResult = $this->compareFaces($liveFaceToken, $storedFaceToken);
 
         if (!$compareResult['success']) {
+            Log::warning('FaceRecognitionService: Comparison failed', $compareResult);
             return $compareResult;
         }
+
+        Log::info('FaceRecognitionService: Authentication complete', [
+            'confidence' => $compareResult['confidence'],
+            'is_match' => $compareResult['is_match']
+        ]);
 
         return [
             'success' => true,
@@ -451,18 +517,11 @@ class FaceRecognitionService
         }
 
         // Check eyestatus attributes
-        // According to Face++ API documentation:
-        // - Values are floating-point numbers between [0,100]
-        // - The sum of all values for each eye = 100 (probability distribution)
-        // - dark_glasses: confidence that the eye wears dark glasses
-        // - no_glass_eye_open/normal_glass_eye_open: confidence that eye is open
         if (isset($attributes['eyestatus'])) {
             $leftEye = $attributes['eyestatus']['left_eye_status'] ?? [];
             $rightEye = $attributes['eyestatus']['right_eye_status'] ?? [];
 
-            // 1. Check for dark glasses
-            // Since sum = 100, dark_glasses > 60 means it's the dominant state
-            // We require BOTH eyes to show dark glasses to avoid false positives
+            // Check for dark glasses
             $leftDarkGlasses = $leftEye['dark_glasses'] ?? 0;
             $rightDarkGlasses = $rightEye['dark_glasses'] ?? 0;
 
@@ -474,22 +533,13 @@ class FaceRecognitionService
                 ];
             }
 
-            // 2. Check if eyes are open
-            // Sum all "eye open" states for each eye
-            $leftEyeOpen = ($leftEye['no_glass_eye_open'] ?? 0) +
-                          ($leftEye['normal_glass_eye_open'] ?? 0);
-
-            $rightEyeOpen = ($rightEye['no_glass_eye_open'] ?? 0) +
-                           ($rightEye['normal_glass_eye_open'] ?? 0);
-
-            // Calculate total "closed" probability for each eye
+            // Check if eyes are closed
             $leftEyeClosed = ($leftEye['no_glass_eye_close'] ?? 0) +
-                            ($leftEye['normal_glass_eye_close'] ?? 0);
+                ($leftEye['normal_glass_eye_close'] ?? 0);
 
             $rightEyeClosed = ($rightEye['no_glass_eye_close'] ?? 0) +
-                             ($rightEye['normal_glass_eye_close'] ?? 0);
+                ($rightEye['normal_glass_eye_close'] ?? 0);
 
-            // Only fail if BOTH eyes show closed state is dominant (>60)
             if ($leftEyeClosed > 60 && $rightEyeClosed > 60) {
                 return [
                     'success' => false,
