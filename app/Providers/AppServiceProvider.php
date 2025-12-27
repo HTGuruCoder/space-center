@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+
 use Illuminate\Support\Facades\URL;
 
 use App\Enums\RoleEnum;
@@ -8,6 +9,7 @@ use App\Models\Position;
 use App\Observers\PositionObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->hasRole(RoleEnum::SUPER_ADMIN->value) ? true : null;
         });
-
+        Schema::defaultStringLength(191);
         // Register model observers
         Position::observe(PositionObserver::class);
 

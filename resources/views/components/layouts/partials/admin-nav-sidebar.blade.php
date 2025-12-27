@@ -1,7 +1,7 @@
 @use(App\Enums\PermissionEnum)
 
 @php
-$currentRoute = request()->route()->getName();
+    $currentRoute = request()->route()->getName();
 @endphp
 
 <x-menu activate-by-route>
@@ -21,32 +21,34 @@ $currentRoute = request()->route()->getName();
             <x-menu-item title="{{ __('Profiles') }}" icon="mdi.badge-account" link="{{ route('admins.employees.list') }}" />
 
             @can(PermissionEnum::VIEW_WORK_PERIODS->value)
-                <x-menu-item title="{{ __('Work Periods') }}" icon="mdi.calendar-clock" link="{{ route('admins.employees.work-periods') }}" />
+                <x-menu-item title="{{ __('Work Periods') }}" icon="mdi.calendar-clock"
+                    link="{{ route('admins.employees.work-periods') }}" />
             @endcan
 
             @can(PermissionEnum::VIEW_ABSENCES->value)
-                <x-menu-item title="{{ __('Absences') }}" icon="mdi.calendar-remove" link="{{ route('admins.employees.absences') }}" />
+                <x-menu-item title="{{ __('Absences') }}" icon="mdi.calendar-remove"
+                    link="{{ route('admins.employees.absences') }}" />
             @endcan
 
             @can(PermissionEnum::VIEW_ALLOWED_LOCATIONS->value)
-                <x-menu-item title="{{ __('Allowed Locations') }}" icon="mdi.map-marker-multiple" link="{{ route('admins.employees.allowed-locations') }}" />
+                <x-menu-item title="{{ __('Allowed Locations') }}" icon="mdi.map-marker-multiple"
+                    link="{{ route('admins.employees.allowed-locations') }}" />
             @endcan
         </x-menu-sub>
     @endcan
 
     {{-- Settings Section --}}
-    @if(
-        auth()->user()->can(PermissionEnum::VIEW_ROLES->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_STORES->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_POSITIONS->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_ABSENCE_TYPES->value) ||
-        auth()->user()->can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
-    )
+    @if (auth()->user()->can(PermissionEnum::VIEW_ROLES->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_STORES->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_POSITIONS->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_ABSENCE_TYPES->value) ||
+            auth()->user()->can(PermissionEnum::VIEW_POSITION_SCHEDULES->value))
         <x-menu-separator />
 
         <x-menu-sub title="{{ __('Settings') }}" icon="mdi.cog">
             @can(PermissionEnum::VIEW_ROLES->value)
-                <x-menu-item title="{{ __('Roles') }}" icon="mdi.shield-account" link="{{ route('admins.settings.roles') }}" />
+                <x-menu-item title="{{ __('Roles') }}" icon="mdi.shield-account"
+                    link="{{ route('admins.settings.roles') }}" />
             @endcan
 
             @can(PermissionEnum::VIEW_STORES->value)
@@ -54,15 +56,17 @@ $currentRoute = request()->route()->getName();
             @endcan
 
             @can(PermissionEnum::VIEW_POSITIONS->value)
-                <x-menu-item title="{{ __('Positions') }}" icon="mdi.briefcase" link="{{ route('admins.settings.positions') }}" />
+                <x-menu-item title="{{ __('Positions') }}" icon="mdi.briefcase"
+                    link="{{ route('admins.settings.positions') }}" />
             @endcan
 
-             {{-- @can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
+            {{-- @can(PermissionEnum::VIEW_POSITION_SCHEDULES->value)
                 <x-menu-item title="{{ __('Position Schedules') }}" icon="mdi.calendar-clock" link="{{ route('admins.settings.position-schedules') }}" />
             @endcan --}}
 
             @can(PermissionEnum::VIEW_ABSENCE_TYPES->value)
-                <x-menu-item title="{{ __('Absence Types') }}" icon="mdi.calendar-alert" link="{{ route('admins.settings.absence-types') }}" />
+                <x-menu-item title="{{ __('Absence Types') }}" icon="mdi.calendar-alert"
+                    link="{{ route('admins.settings.absence-types') }}" />
             @endcan
         </x-menu-sub>
     @endif

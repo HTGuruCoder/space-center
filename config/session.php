@@ -129,7 +129,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug((string) env('APP_NAME', 'laravel')).'-session'
+        Str::slug((string) env('APP_NAME', 'laravel')) . '-session'
     ),
 
     /*
@@ -200,7 +200,6 @@ return [
     */
 
     'same_site' => env('SESSION_SAME_SITE', 'lax'),
-
     /*
     |--------------------------------------------------------------------------
     | Partitioned Cookies
@@ -211,6 +210,7 @@ return [
     | when flagged "secure" and the Same-Site attribute is set to "none".
     |
     */
+
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 

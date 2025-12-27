@@ -1,7 +1,7 @@
 @php
-$currentRoute = request()->route()->getName();
-$employee = auth()->user()->employee;
-$manager = $employee?->manager;
+    $currentRoute = request()->route()->getName();
+    $employee = auth()->user()->employee;
+    $manager = $employee?->manager;
 @endphp
 
 <x-menu activate-by-route>
@@ -12,7 +12,7 @@ $manager = $employee?->manager;
     {{-- <x-menu-sub title="{{ __('Subordinates') }}" icon="mdi.account-group">
         <x-menu-item title="{{ __('List') }}" icon="mdi.format-list-bulleted" link="{{ route('employees.subordinates.list') }}" />
         <x-menu-item title="{{ __('Organization Chart') }}" icon="mdi.sitemap" link="{{ route('employees.subordinates.organization-chart') }}" />
-    </x-menu-sub>--}}
+    </x-menu-sub> --}}
 
     {{-- Calendar --}}
     <x-menu-item title="{{ __('Calendar') }}" icon="mdi.calendar" link="{{ route('employees.calendar') }}" />
@@ -21,35 +21,33 @@ $manager = $employee?->manager;
     <x-menu-item title="{{ __('My Absences') }}" icon="mdi.calendar-remove" link="{{ route('employees.absences') }}" />
 
     {{-- Work Periods --}}
-    <x-menu-item title="{{ __('My Work Periods') }}" icon="mdi.clock-outline" link="{{ route('employees.work-periods') }}" />
+    <x-menu-item title="{{ __('My Work Periods') }}" icon="mdi.clock-outline"
+        link="{{ route('employees.work-periods') }}" />
 
     {{-- Divider --}}
     <x-menu-separator />
 
     {{-- Settings --}}
     <x-menu-item title="{{ __('Settings') }}" icon="mdi.cog" link="{{ route('employees.settings') }}" />
-    <x-menu-item
-    title="{{ __('My Breaks') }}"
-    icon="mdi.food"
-    link="{{ route('employees.breaks.index') }}"
-   />
 </x-menu>
 
 {{-- Manager Card --}}
-@if($manager)
+@if ($manager)
     <div class="mt-4">
         <x-card class="bg-base-200">
             <div class="flex flex-col items-center text-center gap-3">
                 {{-- Manager Avatar --}}
-                @if($manager->user->getProfilePictureUrl())
+                @if ($manager->user->getProfilePictureUrl())
                     <div class="avatar">
                         <div class="w-16 h-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                            <img src="{{ $manager->user->getProfilePictureUrl() }}" alt="{{ $manager->user->full_name }}" />
+                            <img src="{{ $manager->user->getProfilePictureUrl() }}"
+                                alt="{{ $manager->user->full_name }}" />
                         </div>
                     </div>
                 @else
                     <div class="avatar placeholder">
-                        <div class="w-16 h-16 rounded-full bg-primary text-primary-content ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary text-primary-content ring ring-primary ring-offset-base-100 ring-offset-2">
                             <span class="text-xl font-bold">
                                 {{ strtoupper(substr($manager->user->first_name, 0, 1) . substr($manager->user->last_name, 0, 1)) }}
                             </span>
@@ -61,20 +59,22 @@ $manager = $employee?->manager;
                 <div>
                     <p class="text-xs text-base-content/60 mb-1">{{ __('Your Manager') }}</p>
                     <p class="font-semibold">{{ $manager->user->full_name }}</p>
-                    @if($manager->position)
+                    @if ($manager->position)
                         <p class="text-xs text-base-content/70">{{ $manager->position->name }}</p>
                     @endif
                 </div>
 
                 {{-- Contact Info --}}
                 <div class="flex gap-2">
-                    @if($manager->user->email)
-                        <a href="mailto:{{ $manager->user->email }}" class="btn btn-circle btn-ghost btn-sm" title="{{ __('Email') }}">
+                    @if ($manager->user->email)
+                        <a href="mailto:{{ $manager->user->email }}" class="btn btn-circle btn-ghost btn-sm"
+                            title="{{ __('Email') }}">
                             <x-icon name="mdi.email" class="w-4 h-4" />
                         </a>
                     @endif
-                    @if($manager->user->phone_number)
-                        <a href="tel:{{ $manager->user->phone_number }}" class="btn btn-circle btn-ghost btn-sm" title="{{ __('Phone') }}">
+                    @if ($manager->user->phone_number)
+                        <a href="tel:{{ $manager->user->phone_number }}" class="btn btn-circle btn-ghost btn-sm"
+                            title="{{ __('Phone') }}">
                             <x-icon name="mdi.phone" class="w-4 h-4" />
                         </a>
                     @endif

@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Livewire\Admin\Users;
+
+use App\Enums\PermissionEnum;
+use App\Models\EmployeeAbsence;
+use App\Traits\Livewire\HasDeleteModal;
+use Livewire\Component;
+use Livewire\Attributes\On;
+use Mary\Traits\Toast;
+
+class LaunchAbsence extends Component
+{
+    use HasDeleteModal;
+    use Toast;
+
+    public bool $showBulkDeleteModal = false;
+    public array $selectedIds = [];
+
+    public function render()
+    {
+        return view('livewire.admin.users.launch-absence')
+            ->title('Launch Absence')
+            ->layout('components.layouts.admin');
+    }
+    #[On('create-absence')]
+    public function handleCreate(): void
+    {
+        $this->authorize(PermissionEnum::CREATE_ABSENCES->value);
+    }
+
+    #[On('delete-absence')]
+    public function handleDelete(string $absenceId): void
+    {
+        $this->confirmDelete($absenceId);
+    }
+
+    #[On('confirmBulkDelete')]
+    public function confirmBulkDelete(array $items): void
+    {
+        if (!auth()->user()->can($this->getDeletePermission())) {
+            $this->error(__('You do not have permission to delete these items.'));
+            return;
+        }
+
+        if (empty($items)) {
+            $this->error(__('No items selected.'));
+            return;
+        }
+
+        $this->selectedIds = $items;
+        $this->showBulkDeleteModal = true;
+    }
+
+    public function bulkDelete(): void
+    {
+        $this->authorize($this->getDeletePermission());
+
+        if (!empty($this->selectedIds)) {
+            $count = count($this->selectedIds);
+            EmployeeAbsence::destroy($this->selectedIds);
+
+            $this->success(__(':count item(s) deleted successfully.', ['count' => $count]));
+            $this->showBulkDeleteModal = false;
+            $this->selectedIds = [];
+            $this->dispatch('pg:eventRefresh-absences-table');
+        }
+    }
+
+    public function cancelBulkDelete(): void
+    {
+        $this->showBulkDeleteModal = false;
+        $this->selectedIds = [];
+    }
+
+    protected function getDeletePermission(): string
+    {
+        return PermissionEnum::DELETE_ABSENCES->value;
+    }
+
+    protected function getModelClass(): string
+    {
+        return EmployeeAbsence::class;
+    }
+
+    protected function getRefreshEvent(): string
+    {
+        return 'pg:eventRefresh-absences-table';
+    }
+
+    protected function getDeleteSuccessMessage(): string
+    {
+        return __('Absence deleted successfully.');
+    }
+}

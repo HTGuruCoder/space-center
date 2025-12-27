@@ -12,7 +12,8 @@ Route::group(
     [
         'prefix' => LaravelLocalization::setLocale(),
         'middleware' => ['localeCookieRedirect', 'localizationRedirect', 'localeViewPath'],
-    ], function () {
+    ],
+    function () {
         Livewire::setUpdateRoute(function ($handle) {
             return Route::post('/livewire/update', $handle)->name('app.livewire.update');
         });
@@ -80,6 +81,7 @@ Route::group(
                 Route::get('/absences', \App\Livewire\Employee\Absences\Index::class)
                     ->name('absences');
 
+
                 // Work Periods
                 Route::get('/work-periods', \App\Livewire\Employee\WorkPeriods\Index::class)
                     ->name('work-periods');
@@ -111,6 +113,10 @@ Route::group(
                 Route::get('/users', \App\Livewire\Admin\Users\Index::class)
                     ->middleware('permission:' . PermissionEnum::VIEW_USERS->value)
                     ->name('users');
+
+                Route::get('launch-absence', \App\Livewire\Admin\Users\LaunchAbsence::class)
+                    ->middleware('permission:' . PermissionEnum::VIEW_ADMIN_DASHBOARD->value)
+                    ->name('absence-retard');
 
                 // ============================================
                 // EMPLOYEES SECTION
@@ -180,4 +186,5 @@ Route::group(
                 Route::get('/account/settings', \App\Livewire\Admin\Account\Settings::class)
                     ->name('account.settings');
             });
-    });
+    }
+);
